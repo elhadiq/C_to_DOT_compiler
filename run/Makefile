@@ -1,4 +1,7 @@
-all: a.out
+ouput.pdf:ouput.dot
+	$ dot -Tpdf ouput.dot -o ouput.pdf
+	
+ouput.dot: a.out
 	$ cat $A| ./a.out
 	$ rm -r y.tab.c y.tab.h y.output lex.yy.c
 a.out: y.tab.c lex.yy.c
@@ -11,5 +14,5 @@ lex.yy.c:../final/lexer.l
 y.output y.tab.c y.tab.h: ../final/parser.y
 	$ yacc -v -d ../final/parser.y
 
-clean:y.tab.c y.tab.h y.output lex.yy.c
-	$ rm -r y.tab.c y.tab.h y.output lex.yy.c
+clean:y.tab.c y.tab.h y.output lex.yy.c  ouput.dot
+	$ rm -r y.tab.c y.tab.h y.output lex.yy.c  ouput.dot
