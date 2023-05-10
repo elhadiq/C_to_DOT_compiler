@@ -1,5 +1,6 @@
 ouput.pdf:ouput.dot
-	$ dot -Tpdf ouput.dot -o ouput.pdf
+	$ dot -Tpdf output.dot -o output.pdf
+	$ evince output.pdf &
 	
 ouput.dot: a.out
 	$ cat $A| ./a.out
