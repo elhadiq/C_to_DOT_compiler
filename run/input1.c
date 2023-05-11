@@ -1,4 +1,4 @@
-extern int aa();extern int ac();extern int ab();
+extern int printd(int f,int j);
 int main() {
 int i=10;
 int x=1;
@@ -9,7 +9,7 @@ int a=3;
         printf("Hi!");
         a = x * 3 + 100;
         if(x>a) {
-            printf("Hi!");
+            printd(5);
             a = x * 3 + 100;
         }
         else {

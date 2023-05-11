@@ -29,7 +29,7 @@ unary "++"|"--"
 ^"#include"[ ]*<.+\.h>      { strcpy(yylval.nd_obj.nom,(yytext)); return INCLUDE; }
 "true"                      { strcpy(yylval.nd_obj.nom,(yytext)); return TRUE; }
 "false"                     { strcpy(yylval.nd_obj.nom,(yytext)); return FALSE; }
-[-]?{digit}+                { strcpy(yylval.nd_obj.nom,(yytext)); return CONSTANTE; }
+[-]?{digit}+                { strcpy(yylval.nd_obj.nom,(yytext)); printf("une constante %s",yytext); return CONSTANTE; }
 [-]?{digit}+\.{digit}{1,6}  { strcpy(yylval.nd_obj.nom,(yytext)); return FLOAT_NUM; }
 {alpha}({alpha}|{digit})*   { strcpy(yylval.nd_obj.nom,(yytext)); return IDENTIFICATEUR ; }
 {unary}                     { strcpy(yylval.nd_obj.nom,(yytext)); return UNARY; }
