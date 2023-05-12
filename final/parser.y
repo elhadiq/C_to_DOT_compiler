@@ -20,9 +20,9 @@
 	char *get_type(char *);
 	struct noeud* faire_noeud(struct noeud *gauche, struct noeud *droite, char *lexeme);
 	struct noeud_lcrs* faire_noeud_lcrs(struct noeud_lcrs *left_child, struct noeud_lcrs *right_sibling, char *label,char *style,char *shape);
-    void afficher_les_dependances_dot_lcrs(FILE* f,struct noeud *tree,int* j);
+    void afficher_les_dependances_dot_lcrs(FILE* f,struct noeud_lcrs *tree,int* j);
 	void afficher_les_dependances_dot(FILE* f,struct noeud *tree,int* j);
-	void affichage_prifixe_de_larbre_syntaxique_dot_lcrs(FILE* f,struct noeud *tree,int* j);
+	void affichage_prifixe_de_larbre_syntaxique_dot_lcrs(FILE* f,struct noeud_lcrs *tree,int* j);
 	struct dataType {
         char * nom_id;
         char * type_data;
@@ -612,15 +612,15 @@ void affichage_prifixe_de_larbre_syntaxique_dot(FILE* f,struct noeud *tree,int* 
 
 
 }
-void affichage_prifixe_de_larbre_syntaxique_dot_lcrs(FILE* f,struct noeud *tree,int* j) {
-	fprintf(f,"\nnode%d [label=\"%s\" shape=ellipse ];",*j, tree->lexeme);
+void affichage_prifixe_de_larbre_syntaxique_dot_lcrs(FILE* f,struct noeud_lcrs *tree,int* j) {
+	fprintf(f,"\nnode%d [label=\"%s\" shape=ellipse ];",*j, tree->label);
 	*j=*j+1;
-	if (tree->gauche) {
-		affichage_prifixe_de_larbre_syntaxique_dot_lcrs(f,tree->gauche,j);
-	}
-	if (tree->droite) {
-		affichage_prifixe_de_larbre_syntaxique_dot_lcrs(f,tree->droite,j);
-	}
+	if (tree->left_child) {
+		affichage_prifixe_de_larbre_syntaxique_dot_lcrs(f,tree->left_child,j);
+}
+	if (tree->right_sibling) {
+		affichage_prifixe_de_larbre_syntaxique_dot_lcrs(f,tree->right_sibling,j);
+}
 
 
 }
@@ -639,19 +639,19 @@ void afficher_les_dependances_dot(FILE* f,struct noeud *tree,int* j) {
 		if (tree->droite) fprintf(f,"\nnode%d->node%d;",p,d);
 		}
 
-void afficher_les_dependances_dot_lcrs(FILE* f,struct noeud *tree,int* j) {
+void afficher_les_dependances_dot_lcrs(FILE* f,struct noeud_lcrs *tree,int* j) {
 	int p=*j;
 	*j=*(j)+1;
 	int g=*j;
-	if (tree->gauche) {
-		afficher_les_dependances_dot_lcrs(f,tree->gauche,j);
+	if (tree->left_child) {
+		afficher_les_dependances_dot_lcrs(f,tree->left_child,j);
 	}
 	int d=*j;
-	if (tree->droite) {
-		afficher_les_dependances_dot_lcrs(f,tree->droite,j);
+	if (tree->right_sibling) {
+		afficher_les_dependances_dot_lcrs(f,tree->right_sibling,j);
 	}
-		if (tree->gauche) fprintf(f,"\nnode%d->node%d;",p,g);
-		if (tree->droite) fprintf(f,"\nnode%d->node%d;",p,d);
+		if (tree->left_child) fprintf(f,"\nnode%d->node%d;",p,g);
+		if (tree->right_sibling) fprintf(f,"\nnode%d->node%d;",p,d);
 		}
 
 void inserer_type() {
