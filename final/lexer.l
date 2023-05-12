@@ -10,11 +10,7 @@ unary "++"|"--"
 
 %%
 "extern"                    { strcpy(yylval.nd_obj.nom,(yytext)); return EXTERN; }
-"printf"                    { strcpy(yylval.nd_obj.nom,(yytext)); return PRINTFF; }
-"scanf"                     { strcpy(yylval.nd_obj.nom,(yytext)); return SCANFF; }
 "int"                       { strcpy(yylval.nd_obj.nom,(yytext)); return INT; }
-"float"                     { strcpy(yylval.nd_obj.nom,(yytext)); return FLOAT; }
-"char"                      { strcpy(yylval.nd_obj.nom,(yytext)); return CHAR; }
 "void"                      { strcpy(yylval.nd_obj.nom,(yytext)); return VOID; }
 "return"                    { strcpy(yylval.nd_obj.nom,(yytext)); return RETURN; }
 "for"	                    { strcpy(yylval.nd_obj.nom,(yytext)); return FOR; }

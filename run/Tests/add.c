@@ -1,5 +1,7 @@
+extern int printd(int j);
 int main() {
-  int i,j;
+  int i;
+  int j;
   i = 45000;
   j = -123;
   printd(i+j);
