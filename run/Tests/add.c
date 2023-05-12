@@ -1,7 +1,7 @@
 extern int printd(int j);
 int main() {
   int i;
-  int j;
+  int k;
   i = 45000;
   j = -123;
   printd(i+j);

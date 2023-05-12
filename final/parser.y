@@ -11,13 +11,13 @@
     void inserer_type();
     int chercher(char *);
 	void afficher_arbre(struct noeud*);
-	void afficher_arbre_dot(FILE* f,struct noeud*);
+	void afficher_arbre_to_file(FILE* f,struct noeud*);
 	void afficher_dans_lorder(struct noeud *);
-	void affichage_prifixe_de_larbre_syntaxique_dot(FILE* f,struct noeud *,int* j);
+	void affichage_prifixe_de_larbre_syntaxique(FILE* f,struct noeud *,int* j);
     void verefier_declaration(char *);
 	void verefier_type_de_return(char *);
 	int verefier_type(char *, char *);
-	char *get_type(char *);
+	char *retrurner_type(char *);
 	struct noeud* faire_noeud(struct noeud *gauche, struct noeud *droite, char *lexeme);
 	struct noeud_lcrs* faire_noeud_lcrs(struct noeud_lcrs *left_child, struct noeud_lcrs *right_sibling, char *label,char *style,char *shape);
     void afficher_les_dependances_dot_lcrs(FILE* f,struct noeud_lcrs *tree,int* j);
@@ -43,7 +43,7 @@
 	int is_for=0;
 	char buff[300];
 	char errors[10][100];
-	char reserved[12][10] = {"extern", "int", "void", "for", "while", "if", "then","else", "switch", "case", "default", "break"};
+	char reserves[12][10] = {"extern", "int", "void", "for", "while", "if", "then","else", "switch", "case", "default", "break"};
 	char code3v[50][100];
 
 	struct noeud { 
@@ -78,14 +78,14 @@
 			char nom[100];
 			struct noeud* nd;
 			struct noeud_lcrs* nd_dot;
-			char if_body[5];
-			char else_body[5];
+			char if_corps[5];
+			char else_corps[5];
 		} nd_obj3;
 	} 
 %token VOID 
-%token <nd_obj> EXTERN CHARACTER INT CHAR FOR WHILE SWITCH CASE DEFAULT BREAK IF ELSE TRUE FALSE CONSTANTE FLOAT_NUM IDENTIFICATEUR LEQ GEQ EQ NOT GT LT LAND LOR NEQ STR  PLUS MUL DIV MOINS UNARY INCLUDE RETURN 
-%type <nd_obj> externe externs main liste_instructions liste_expressions returne appel datatype statement arithmetic relop programme else instruction binary_op
-%type <nd_obj2> init value expression variable
+%token <nd_obj> EXTERN INT CHAR FOR WHILE SWITCH CASE DEFAULT BREAK IF ELSE TRUE FALSE CONSTANTE IDENTIFICATEUR LEQ GEQ EQ NOT GT LT LAND LOR NEQ STR  PLUS MUL DIV MOINS UNARY INCLUDE RETURN 
+%type <nd_obj> externe externs main liste_instructions liste_expressions returne appel datatype instruction1 arithmetic relop programme else instruction binary_op
+%type <nd_obj2> init valeur expression variable
 %type <nd_obj3> condition
 
 %%
@@ -141,20 +141,20 @@ liste_instructions :	instruction liste_instructions   {$$.nd=faire_noeud($1.nd,$
 	| instruction
 	|
 ;
-instruction: FOR { ajouter('K'); is_for = 1; } '(' statement ';' condition ';' statement ')' '{' liste_instructions '}' { 
+instruction: FOR { ajouter('K'); is_for = 1; } '(' instruction1 ';' condition ';' instruction1 ')' '{' liste_instructions '}' { 
 	struct noeud *temp = faire_noeud($6.nd, $8.nd, "CONDITION"); 
 	struct noeud *temp2 = faire_noeud($4.nd, temp, "CONDITION"); 
 	$$.nd = faire_noeud(temp2, $11.nd, $1.nom); 
 	strcpy(code3v[DOT_index++], buff);
-	sprintf(code3v[DOT_index++], "JUMP to %s\n", $6.if_body);
-	sprintf(code3v[DOT_index++], "\nLABEL %s:\n", $6.else_body);
+	sprintf(code3v[DOT_index++], "JUMP to %s\n", $6.if_corps);
+	sprintf(code3v[DOT_index++], "\nLABEL %s:\n", $6.else_corps);
 }
-| IF { ajouter('K'); is_for = 0; } '(' condition ')' { sprintf(code3v[DOT_index++], "\nLABEL %s:\n", $4.if_body); } '{' liste_instructions '}' { sprintf(code3v[DOT_index++], "\nLABEL %s:\n", $4.else_body); } else { 
+| IF { ajouter('K'); is_for = 0; } '(' condition ')' { sprintf(code3v[DOT_index++], "\nLABEL %s:\n", $4.if_corps); } '{' liste_instructions '}' { sprintf(code3v[DOT_index++], "\nLABEL %s:\n", $4.else_corps); } else { 
 	struct noeud *iff = faire_noeud($4.nd, $8.nd, $1.nom); 
 	$$.nd = faire_noeud(iff, $11.nd, "if-else"); 
 	sprintf(code3v[DOT_index++], "GOTO next\n");
 }
-| statement ';' { $$.nd = $1.nd; }
+| instruction1 ';' { $$.nd = $1.nd; }
 | liste_instructions liste_instructions { $$.nd = faire_noeud($1.nd, $2.nd, "instructions"); }
 | appel {$$.nd=$1.nd;}
 ;
@@ -184,17 +184,17 @@ binary_op	:PLUS
 	|	MUL
 	|	DIV
 ;
-condition: value relop value { 
+condition: valeur relop valeur { 
 	$$.nd = faire_noeud($1.nd, $3.nd, $2.nom); 
 	if(is_for) {
-		sprintf($$.if_body, "L%d", label++);
-		sprintf(code3v[DOT_index++], "\nLABEL %s:\n", $$.if_body);
+		sprintf($$.if_corps, "L%d", label++);
+		sprintf(code3v[DOT_index++], "\nLABEL %s:\n", $$.if_corps);
 		sprintf(code3v[DOT_index++], "\nif NOT (%s %s %s) GOTO L%d\n", $1.nom, $2.nom, $3.nom, label);
-		sprintf($$.else_body, "L%d", label++);
+		sprintf($$.else_corps, "L%d", label++);
 	} else {
 		sprintf(code3v[DOT_index++], "\nif (%s %s %s) GOTO L%d else GOTO L%d\n", $1.nom, $2.nom, $3.nom, label, label+1);
-		sprintf($$.if_body, "L%d", label++);
-		sprintf($$.else_body, "L%d", label++);
+		sprintf($$.if_corps, "L%d", label++);
+		sprintf($$.else_corps, "L%d", label++);
 	}
 }
 | TRUE { ajouter('K'); $$.nd = NULL; }
@@ -202,32 +202,32 @@ condition: value relop value {
 | { $$.nd = NULL; }
 ;
 
-statement: datatype IDENTIFICATEUR { ajouter('V'); } init { 
+instruction1: datatype IDENTIFICATEUR { ajouter('V'); } init { 
 	$2.nd = faire_noeud(NULL, NULL, $2.nom); 
 	int t = verefier_type($1.nom, $4.type); 
 	if(t>0) { 
 		if(t == 1) {
-			struct noeud *temp = faire_noeud(NULL, $4.nd, "floattoint"); 
+			struct noeud *temp = faire_noeud(NULL, $4.nd, "float_vers_int"); 
 			$$.nd = faire_noeud($2.nd, temp, ":="); 
 		} 
 		else if(t == 2) { 
-			struct noeud *temp = faire_noeud(NULL, $4.nd, "inttofloat"); 
+			struct noeud *temp = faire_noeud(NULL, $4.nd, "int_vers_float"); 
 			$$.nd = faire_noeud($2.nd, temp, ":="); 
 		} 
 		else if(t == 3) { 
-			struct noeud *temp = faire_noeud(NULL, $4.nd, "chartoint"); 
+			struct noeud *temp = faire_noeud(NULL, $4.nd, "char_vers_int"); 
 			$$.nd = faire_noeud($2.nd, temp, ":="); 
 		} 
 		else if(t == 4) { 
-			struct noeud *temp = faire_noeud(NULL, $4.nd, "inttochar"); 
+			struct noeud *temp = faire_noeud(NULL, $4.nd, "int_to_char"); 
 			$$.nd = faire_noeud($2.nd, temp, ":="); 
 		} 
 		else if(t == 5) { 
-			struct noeud *temp = faire_noeud(NULL, $4.nd, "chartofloat"); 
+			struct noeud *temp = faire_noeud(NULL, $4.nd, "char_to_float"); 
 			$$.nd = faire_noeud($2.nd, temp, ":="); 
 		} 
 		else{
-			struct noeud *temp = faire_noeud(NULL, $4.nd, "floattochar"); 
+			struct noeud *temp = faire_noeud(NULL, $4.nd, "float_to_char"); 
 			$$.nd = faire_noeud($2.nd, temp, ":="); 
 		}
 	} 
@@ -238,37 +238,37 @@ statement: datatype IDENTIFICATEUR { ajouter('V'); } init {
 }
 | IDENTIFICATEUR { verefier_declaration($1.nom); } '=' expression {
 	$1.nd = faire_noeud(NULL, NULL, $1.nom); 
-	char *id_type = get_type($1.nom); 
+	char *id_type = retrurner_type($1.nom); 
 	if(strcmp(id_type, $4.type)) {
 		if(!strcmp(id_type, "int")) {
 			if(!strcmp($4.type, "float")){
-				struct noeud *temp = faire_noeud(NULL, $4.nd, "floattoint");
+				struct noeud *temp = faire_noeud(NULL, $4.nd, "float_vers_int");
 				$$.nd = faire_noeud($1.nd, temp, ":="); 
 			}
 			else{
-				struct noeud *temp = faire_noeud(NULL, $4.nd, "chartoint");
+				struct noeud *temp = faire_noeud(NULL, $4.nd, "char_vers_int");
 				$$.nd = faire_noeud($1.nd, temp, ":="); 
 			}
 			
 		}
 		else if(!strcmp(id_type, "float")) {
 			if(!strcmp($4.type, "int")){
-				struct noeud *temp = faire_noeud(NULL, $4.nd, "inttofloat");
+				struct noeud *temp = faire_noeud(NULL, $4.nd, "int_vers_float");
 				$$.nd = faire_noeud($1.nd, temp, ":="); 
 			}
 			else{
-				struct noeud *temp = faire_noeud(NULL, $4.nd, "chartofloat");
+				struct noeud *temp = faire_noeud(NULL, $4.nd, "char_to_float");
 				$$.nd = faire_noeud($1.nd, temp, ":="); 
 			}
 			
 		}
 		else{
 			if(!strcmp($4.type, "int")){
-				struct noeud *temp = faire_noeud(NULL, $4.nd, "inttochar");
+				struct noeud *temp = faire_noeud(NULL, $4.nd, "int_to_char");
 				$$.nd = faire_noeud($1.nd, temp, ":="); 
 			}
 			else{
-				struct noeud *temp = faire_noeud(NULL, $4.nd, "floattochar");
+				struct noeud *temp = faire_noeud(NULL, $4.nd, "float_to_char");
 				$$.nd = faire_noeud($1.nd, temp, ":="); 
 			}
 		}
@@ -305,7 +305,7 @@ statement: datatype IDENTIFICATEUR { ajouter('V'); } init {
 }
 ;
 
-init: '=' value { $$.nd = $2.nd; strcpy($$.type, $2.type); strcpy($$.nom, $2.nom); }
+init: '=' valeur { $$.nd = $2.nd; strcpy($$.type, $2.type); strcpy($$.nom, $2.nom); }
 | { strcpy($$.type, "null"); $$.nd = faire_noeud(NULL, NULL, "NULL"); strcpy($$.nom, "NULL"); }
 ;
 
@@ -316,32 +316,32 @@ expression: expression arithmetic expression {
 	}
 	else {
 		if(!strcmp($1.type, "int") && !strcmp($3.type, "float")) {
-			struct noeud *temp = faire_noeud(NULL, $1.nd, "inttofloat");
+			struct noeud *temp = faire_noeud(NULL, $1.nd, "int_vers_float");
 			strcpy($$.type, $3.type);
 			$$.nd = faire_noeud(temp, $3.nd, $2.nom);
 		}
 		else if(!strcmp($1.type, "float") && !strcmp($3.type, "int")) {
-			struct noeud *temp = faire_noeud(NULL, $3.nd, "inttofloat");
+			struct noeud *temp = faire_noeud(NULL, $3.nd, "int_vers_float");
 			strcpy($$.type, $1.type);
 			$$.nd = faire_noeud($1.nd, temp, $2.nom);
 		}
 		else if(!strcmp($1.type, "int") && !strcmp($3.type, "char")) {
-			struct noeud *temp = faire_noeud(NULL, $3.nd, "chartoint");
+			struct noeud *temp = faire_noeud(NULL, $3.nd, "char_vers_int");
 			strcpy($$.type, $1.type);
 			$$.nd = faire_noeud($1.nd, temp, $2.nom);
 		}
 		else if(!strcmp($1.type, "char") && !strcmp($3.type, "int")) {
-			struct noeud *temp = faire_noeud(NULL, $1.nd, "chartoint");
+			struct noeud *temp = faire_noeud(NULL, $1.nd, "char_vers_int");
 			strcpy($$.type, $3.type);
 			$$.nd = faire_noeud(temp, $3.nd, $2.nom);
 		}
 		else if(!strcmp($1.type, "float") && !strcmp($3.type, "char")) {
-			struct noeud *temp = faire_noeud(NULL, $3.nd, "chartofloat");
+			struct noeud *temp = faire_noeud(NULL, $3.nd, "char_to_float");
 			strcpy($$.type, $1.type);
 			$$.nd = faire_noeud($1.nd, temp, $2.nom);
 		}
 		else {
-			struct noeud *temp = faire_noeud(NULL, $1.nd, "chartofloat");
+			struct noeud *temp = faire_noeud(NULL, $1.nd, "char_to_float");
 			strcpy($$.type, $3.type);
 			$$.nd = faire_noeud(temp, $3.nd, $2.nom);
 		}
@@ -350,7 +350,7 @@ expression: expression arithmetic expression {
 	temp_var++;
 	sprintf(code3v[DOT_index++], "%s = %s %s %s\n",  $$.nom, $1.nom, $2.nom, $3.nom);
 }
-| value { strcpy($$.nom, $1.nom); strcpy($$.type, $1.type); $$.nd = $1.nd; }
+| valeur { strcpy($$.nom, $1.nom); strcpy($$.type, $1.type); $$.nd = $1.nd; }
 ;
 
 arithmetic: PLUS 
@@ -367,13 +367,11 @@ relop: LT
 | NOT
 ;
 
-value: CONSTANTE { strcpy($$.nom, $1.nom); strcpy($$.type, "int"); ajouter('C'); $$.nd = faire_noeud(NULL, NULL, $1.nom); }
-| FLOAT_NUM { strcpy($$.nom, $1.nom); strcpy($$.type, "float"); ajouter('C'); $$.nd = faire_noeud(NULL, NULL, $1.nom); }
-| CHARACTER { strcpy($$.nom, $1.nom); strcpy($$.type, "char"); ajouter('C'); $$.nd = faire_noeud(NULL, NULL, $1.nom); }
-| IDENTIFICATEUR { strcpy($$.nom, $1.nom); char *id_type = get_type($1.nom); strcpy($$.type, id_type); verefier_declaration($1.nom); $$.nd = faire_noeud(NULL, NULL, $1.nom); }
+valeur: CONSTANTE { strcpy($$.nom, $1.nom); strcpy($$.type, "int"); ajouter('C'); $$.nd = faire_noeud(NULL, NULL, $1.nom); }
+| IDENTIFICATEUR { strcpy($$.nom, $1.nom); char *id_type = retrurner_type($1.nom); strcpy($$.type, id_type); verefier_declaration($1.nom); $$.nd = faire_noeud(NULL, NULL, $1.nom); }
 ;
 
-returne: RETURN  value ';' 
+returne: RETURN  valeur ';' 
 
 { verefier_type_de_return($2.nom); $1.nd = faire_noeud(NULL, NULL, "return"); $$.nd = faire_noeud($1.nd, $2.nd, "RETURN"); }
 | RETURN 
@@ -404,7 +402,7 @@ int main() {
 	
 	FILE *fp;
 	fp = fopen("output.dot", "w"); // create or open the file for writing
-	afficher_arbre_dot(fp,head); 
+	afficher_arbre_to_file(fp,head); 
     fclose(fp); // close the file
 	printf("\n\n\n\n");
 	printf("\t\t\t\t\t\t\t\t PHASE 3: L'ANALYSE SEMANTIQUE\n\n");
@@ -447,9 +445,9 @@ void verefier_declaration(char *c) {
     }
 }
 
-void verefier_type_de_return(char *value) {
-	char *main_datatype = get_type("main");
-	char *return_datatype = get_type(value);
+void verefier_type_de_return(char *valeur) {
+	char *main_datatype = retrurner_type("main");
+	char *return_datatype = retrurner_type(valeur);
 	if((!strcmp(main_datatype, "int") && !strcmp(return_datatype, "CONST")) || !strcmp(main_datatype, return_datatype)){
 		return ;
 	}
@@ -481,7 +479,7 @@ int verefier_type(char *type1, char *type2){
 		return 6;
 }
 
-char *get_type(char *var){
+char *retrurner_type(char *var){
 	for(int i=0; i<compter; i++) {
 		// Handle case of use before declaration
 		if(!strcmp(table_de_symbols[i].nom_id, var)) {
@@ -493,7 +491,7 @@ char *get_type(char *var){
 void ajouter(char c) {
 	if(c == 'V'){
 		for(int i=0; i<10; i++){
-			if(!strcmp(reserved[i], strdup(yytext))){
+			if(!strcmp(reserves[i], strdup(yytext))){
         		sprintf(errors[sem_errors], "Line %d: Variable nom \"%s\" est un mot clé reservé!\n", CompterN+1, yytext);
 				sem_errors++;
 				return;
@@ -569,13 +567,13 @@ struct noeud_lcrs* faire_noeud_lcrs(struct noeud_lcrs *left_child, struct noeud_
 }
 
 void afficher_arbre(struct noeud* tree) {
-	printf("\n\nInorder traversal of the Parse Tree is: \n\n");
+	printf("\n\nLe parcour INFIXE DE l'arbre syntaxique est : \n\n");
 	afficher_dans_lorder(tree);
 }
-void afficher_arbre_dot(FILE* f,struct noeud* tree) {
+void afficher_arbre_to_file(FILE* f,struct noeud* tree) {
 	fprintf(f,"digraph mon_programme {\n");
 	int j=1;
-	affichage_prifixe_de_larbre_syntaxique_dot(f,tree,&j);
+	affichage_prifixe_de_larbre_syntaxique(f,tree,&j);
 	j=1;
 	afficher_les_dependances_dot(f,tree,&j);
 	fprintf(f,"\n}");
@@ -600,14 +598,14 @@ void afficher_dans_lorder(struct noeud *tree) {
 		afficher_dans_lorder(tree->droite);
 	}
 }
-void affichage_prifixe_de_larbre_syntaxique_dot(FILE* f,struct noeud *tree,int* j) {
+void affichage_prifixe_de_larbre_syntaxique(FILE* f,struct noeud *tree,int* j) {
 	fprintf(f,"\nnode%d [label=\"%s\" shape=ellipse ];",*j, tree->lexeme);
 	*j=*j+1;
 	if (tree->gauche) {
-		affichage_prifixe_de_larbre_syntaxique_dot(f,tree->gauche,j);
+		affichage_prifixe_de_larbre_syntaxique(f,tree->gauche,j);
 	}
 	if (tree->droite) {
-		affichage_prifixe_de_larbre_syntaxique_dot(f,tree->droite,j);
+		affichage_prifixe_de_larbre_syntaxique(f,tree->droite,j);
 	}
 
 
@@ -659,8 +657,8 @@ void inserer_type() {
 }
 
 void yyerror(const char *msg) {
-    fprintf(stderr, "Syntax error: %s\n", msg);
-    fprintf(stderr, "Last token read was '%s'\n", yytext);
-    fprintf(stderr, "Error occurred at line %d, column \n", CompterN+1 );
-    fprintf(stderr, "The input was: %.*s\n", yyleng, yytext);
+    fprintf(stderr, "Erreur de Syntax: %s\n", msg);
+    fprintf(stderr, "Le dernier lexème lue est '%s'\n", yytext);
+    fprintf(stderr, "L'erreur est apparue dans la ligne %d, column \n", CompterN+1 );
+    fprintf(stderr, "L'entree etait: %.*s\n", yyleng, yytext);
 }

@@ -25,8 +25,7 @@ unary "++"|"--"
 ^"#include"[ ]*<.+\.h>      { strcpy(yylval.nd_obj.nom,(yytext)); return INCLUDE; }
 "true"                      { strcpy(yylval.nd_obj.nom,(yytext)); return TRUE; }
 "false"                     { strcpy(yylval.nd_obj.nom,(yytext)); return FALSE; }
-[-]?{digit}+                { strcpy(yylval.nd_obj.nom,(yytext)); printf("une constante %s",yytext); return CONSTANTE; }
-[-]?{digit}+\.{digit}{1,6}  { strcpy(yylval.nd_obj.nom,(yytext)); return FLOAT_NUM; }
+[-]?{digit}+                { strcpy(yylval.nd_obj.nom,(yytext)); return CONSTANTE; }
 {alpha}({alpha}|{digit})*   { strcpy(yylval.nd_obj.nom,(yytext)); return IDENTIFICATEUR ; }
 {unary}                     { strcpy(yylval.nd_obj.nom,(yytext)); return UNARY; }
 "<="                        { strcpy(yylval.nd_obj.nom,(yytext)); return LEQ; }
@@ -47,9 +46,6 @@ unary "++"|"--"
 [ \t]*                      { ; }
 [\n]                        { CompterN++; }
 .	                        { return *yytext; }
-["].*["]                    { strcpy(yylval.nd_obj.nom,(yytext)); return STR; }
-['].[']                     { strcpy(yylval.nd_obj.nom,(yytext)); return CHARACTER; }
-
 %%
 
 int yywrap() {
