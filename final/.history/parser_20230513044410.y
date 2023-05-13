@@ -159,7 +159,7 @@ instruction:
 	$$.nd = faire_noeud(iff, $11.nd, "if-else"); 
 	sprintf(code3v[DOT_index++], "GOTO next\n");
 }
-| instruction1 ';' { $$.nd = $1.nd; }
+| instruction1  { $$.nd = $1.nd; }
 | liste_instructions liste_instructions { $$.nd = faire_noeud($1.nd, $2.nd, "instructions"); }
 | appel {$$.nd=$1.nd;}
 
@@ -208,7 +208,7 @@ condition: valeur relop valeur {
 | { $$.nd = NULL; }
 ;
 
-instruction1:{strcpy(debug,"ID1");} datatype IDENTIFICATEUR {ajouter('V');} ";"
+instruction1:{strcpy(debug,"ID1");} datatype IDENTIFICATEUR {ajouter('V');} ',' ";"
 | datatype IDENTIFICATEUR { ajouter('V'); } init { 
 	$2.nd = faire_noeud(NULL, NULL, $2.nom); 
 	int t = verefier_type($1.nom, $4.type); 

@@ -208,7 +208,7 @@ condition: valeur relop valeur {
 | { $$.nd = NULL; }
 ;
 
-instruction1:{strcpy(debug,"ID1");} datatype IDENTIFICATEUR {ajouter('V');} ";"
+instruction1:{strcpy(debug,"ID1");} datatype IDENTIFICATEUR {ajouter('V');} ',' IDENTIFICATEUR {ajouter('V');} ";"
 | datatype IDENTIFICATEUR { ajouter('V'); } init { 
 	$2.nd = faire_noeud(NULL, NULL, $2.nom); 
 	int t = verefier_type($1.nom, $4.type); 

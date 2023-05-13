@@ -90,8 +90,36 @@
 %type <nd_obj> externe externs main liste_instructions liste_expressions returne appel datatype instruction1 arithmetic relop programme else instruction binary_op
 %type <nd_obj2> init valeur expression variable
 %type <nd_obj3> condition
-%start programme
+%start programme1
 %%
+
+programme1	:	
+		liste_declarations liste_fonctions
+;
+liste_declarations	:	
+		liste_declarations declaration 
+	|	
+;
+liste_fonctions	:	
+		liste_fonctions fonction
+|               fonction
+|
+;
+declaration	:	
+		datatype liste_declarateurs ';'
+;
+liste_declarateurs	:	
+		liste_declarateurs ',' declarateur
+	|	declarateur
+;
+declarateur	:	
+		IDENTIFICATEUR
+	|	declarateur '[' CONSTANTE ']'
+;
+fonction	:	
+		datatype IDENTIFICATEUR '(' liste_parms ')' '{' liste_declarations liste_instructions '}'
+	|	EXTERN datatype IDENTIFICATEUR '(' liste_parms ')' ';'
+;
 
 programme: main '(' ')' '{' liste_instructions returne '}' { 
 $1.nd = faire_noeud($5.nd, NULL, "main");
@@ -208,7 +236,7 @@ condition: valeur relop valeur {
 | { $$.nd = NULL; }
 ;
 
-instruction1:{strcpy(debug,"ID1");} datatype IDENTIFICATEUR {ajouter('V');} ";"
+instruction1:{strcpy(debug,"ID1");} datatype IDENTIFICATEUR {ajouter('V');} ',' IDENTIFICATEUR {ajouter('V');} ";"
 | datatype IDENTIFICATEUR { ajouter('V'); } init { 
 	$2.nd = faire_noeud(NULL, NULL, $2.nom); 
 	int t = verefier_type($1.nom, $4.type); 
