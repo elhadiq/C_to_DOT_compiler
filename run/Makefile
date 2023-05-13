@@ -1,5 +1,6 @@
 result/ouput.pdf:ouput.dot
 	$ mkdir -p result
+	$ dot -Tpdf ArbreSyntaxique.dot -o result/ArbreSyntaxique.pdf
 	$ dot -Tpdf output.dot -o result/output.pdf
 	$ nohup firefox result/output.pdf &
 	

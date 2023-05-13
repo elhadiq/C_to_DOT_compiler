@@ -90,7 +90,7 @@
 %type <nd_obj> externe externs main liste_instructions liste_expressions returne appel datatype instruction1 arithmetic relop programme else instruction binary_op
 %type <nd_obj2> init valeur expression variable
 %type <nd_obj3> condition
-%start programme
+%start programme1
 %%
 
 programme: main '(' ')' '{' liste_instructions returne '}' { 

@@ -23,7 +23,6 @@
     void afficher_les_dependances_dot_lcrs(FILE* f,struct noeud_lcrs *tree);
 	void afficher_les_dependances_dot(FILE* f,struct noeud *tree,int* j);
 	void affichage_prifixe_de_larbre_syntaxique_dot_lcrs(FILE* f,struct noeud_lcrs *tree,int* j);
-	void afficher_arbre_dot_lcrs(FILE* f,struct noeud_lcrs* tree);
 	struct dataType {
         char * nom_id;
         char * type_data;
@@ -90,7 +89,7 @@
 %type <nd_obj> externe externs main liste_instructions liste_expressions returne appel datatype instruction1 arithmetic relop programme else instruction binary_op
 %type <nd_obj2> init valeur expression variable
 %type <nd_obj3> condition
-%start programme
+
 %%
 
 programme: main '(' ')' '{' liste_instructions returne '}' { 
@@ -110,7 +109,7 @@ head_dot=$$.nd_dot;
 }
 ;
 
-main: datatype IDENTIFICATEUR { ajouter('F'); } {sprintf(buff,"%s, %s",$2.nom,$1.nom);$$.nd_dot=faire_noeud_lcrs(NULL, NULL, buff,"invtrapezium","");}
+main: datatype IDENTIFICATEUR { ajouter('F'); } {$$.nd_dot=faire_noeud_lcrs(NULL, NULL, "main","","");}
 ;
 externs: externs externe
 |externe
@@ -627,9 +626,9 @@ void affichage_prifixe_de_larbre_syntaxique(FILE* f,struct noeud *tree,int* j) {
 
 }
 void affichage_prifixe_de_larbre_syntaxique_dot_lcrs(FILE* f,struct noeud_lcrs *tree,int* j) {
-	fprintf(f,"\nnode%d [label=\"%s\"  ",*j, tree->label);
-	fprintf(f,"shape=\"%s\" ", tree->shape);
-	fprintf(f,"style=\"%s\" ", tree->style);
+	fprintf(f,"\nnode%d [label=%s ",*j, tree->label);
+	if !strcmp(tree->shape,"")fprintf(f,"shape=%s ", tree->shape);
+	if !strcmp(tree->style,"")fprintf(f,"style=%s ", tree->style);
 	fprintf(f,"]");
 	tree->inode=*j;
 	*j=*j+1;

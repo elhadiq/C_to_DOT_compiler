@@ -1,4 +1,0 @@
-digraph mon_programme {
-
-node1 [label=prog shape=triangle style=dotted ]
-}

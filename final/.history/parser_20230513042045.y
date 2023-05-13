@@ -90,7 +90,7 @@
 %type <nd_obj> externe externs main liste_instructions liste_expressions returne appel datatype instruction1 arithmetic relop programme else instruction binary_op
 %type <nd_obj2> init valeur expression variable
 %type <nd_obj3> condition
-%start programme
+
 %%
 
 programme: main '(' ')' '{' liste_instructions returne '}' { 
@@ -110,7 +110,7 @@ head_dot=$$.nd_dot;
 }
 ;
 
-main: datatype IDENTIFICATEUR { ajouter('F'); } {sprintf(buff,"%s, %s",$2.nom,$1.nom);$$.nd_dot=faire_noeud_lcrs(NULL, NULL, buff,"invtrapezium","");}
+main: datatype IDENTIFICATEUR { ajouter('F'); } {sprintf(buff,"%s, %s",$2,$1.nom);$$.nd_dot=faire_noeud_lcrs(NULL, NULL, buff,"invtrapezium","");}
 ;
 externs: externs externe
 |externe
