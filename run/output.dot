@@ -1,4 +1,6 @@
 digraph mon_programme {
 
 node1 [label="main, int"  shape="invtrapezium" style="" ]
+node2 [label="bloc"  shape="" style="" ]
+node1->node2;
 }
