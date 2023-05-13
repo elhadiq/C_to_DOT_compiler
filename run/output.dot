@@ -1,6 +1,12 @@
 digraph mon_programme {
 
-node1 [label="main, int"  shape="invtrapezium" style="" ]
-node2 [label="bloc"  shape="" style="" ]
+node1 [label="main, int" shape=invtrapezium]
+node2 [label=BLOC]
+node3 [label=instructions]
+node4 [label=test]
+node5 [label=RETURN shape=trapezium color=blue]
 node1->node2;
+node2->node3;
+node3->node4;
+node3->node5;
 }
