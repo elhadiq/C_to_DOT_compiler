@@ -2,7 +2,7 @@ result/ouput.pdf:ouput.dot
 	$ mkdir -p result
 	$ dot -Tpdf ArbreSyntaxique.dot -o result/ArbreSyntaxique.pdf
 	$ dot -Tpdf output.dot -o result/output.pdf
-	$ nohup firefox result/output.pdf &
+	$ nohup google-chrome result/output.pdf &
 	
 ouput.dot: a.out
 	$ cat $A| ./a.out
