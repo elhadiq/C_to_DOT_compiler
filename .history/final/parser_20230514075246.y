@@ -165,10 +165,7 @@ instruction:
 	strcpy(code3v[DOT_index++], buff);
 	sprintf(code3v[DOT_index++], "JUMP to %s\n", $6.if_corps);
 	sprintf(code3v[DOT_index++], "\nLABEL %s:\n", $6.else_corps);
-	$$.nd_dot=faire_noeud_lcrs($4.nd_dot,NULL,"label=for");
-	$6.nd_dot=faire_noeud(NULL,NULL,"label=condition");
-	$4.nd_dot->right_sibling=$6.nd_dot;
-	$6.nd_dot->right_sibling=$8.nd_dot;
+	$$.nd_dot=faire_noeud_lcrs(NULL,NULL,"label=for");
 }
 | IF { ajouter('K'); is_for = 0; } '(' condition ')' { sprintf(code3v[DOT_index++], "\nLABEL %s:\n", $4.if_corps); } '{' liste_instructions '}' { sprintf(code3v[DOT_index++], "\nLABEL %s:\n", $4.else_corps); } else { 
 	struct noeud *iff = faire_noeud($4.nd, $8.nd, $1.nom); 
@@ -265,7 +262,7 @@ expression	:
 	$$.nd_dot=faire_noeud_lcrs($1.nd_dot,NULL,buff);
 	$1.nd_dot->right_sibling=$3.nd_dot;
 	} 
-	|	MOINS expression {$$.nd=$2.nd;$$.nd_dot=faire_noeud_lcrs($2.nd_dot,NULL,"label=\"-\" ");}
+	|	MOINS expression {$$.nd=$2.nd;$$.nd_dot=faire_noeud(NULL,NULL,"label=MOINS");}
 	|	CONSTANTE { ajouter('C'); } 
 	{struct noeud* tmp=faire_noeud(NULL,NULL,$1.nom);
 	$$.nd=tmp;
@@ -311,7 +308,7 @@ expression: expression arithmetic expression {
 	sprintf($$.nom, "t%d", temp_var);
 	temp_var++;
 	sprintf(code3v[DOT_index++], "%s = %s %s %s\n",  $$.nom, $1.nom, $2.nom, $3.nom);
-	sprintf(buff,"label= \"%s\" ",$2.nom);
+	sprintf(buff,"label= arr ",$2.nom);
 	$1.nd_dot->right_sibling=$3.nd_dot;
 	$$.nd_dot=faire_noeud_lcrs($1.nd_dot,NULL, buff); 
 }

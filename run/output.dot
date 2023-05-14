@@ -2,45 +2,29 @@ digraph mon_programme {
 
 node1 [label="main, int" shape=invtrapezium color=blue]
 node2 [label=BLOC]
-node3 [label=":="]
-node4 [label=i]
-node5 [label=45000]
-node6 [label=":="]
-node7 [label=j]
-node8 [label=-123]
-node9 [label=printd shape=septagon]
+node3 [label=for]
+node4 [label=":="]
+node5 [label=i]
+node6 [label=0]
+node7 [label=condition]
+node8 [label=":="]
+node9 [label=i]
 node10 [label="+"]
 node11 [label=i]
-node12 [label="-"]
-node13 [label=8]
-node14 [label=9]
-node15 [label=printd shape=septagon]
-node16 [label="+"]
-node17 [label=45000]
-node18 [label=i]
-node19 [label=RETURN shape=trapezium color=blue]
-node20 [label="+"]
-node21 [label=i]
-node22 [label=j]
+node12 [label=1]
+node13 [label=RETURN shape=trapezium color=blue]
+node14 [label=0]
 node1->node2;
 node2->node3;
 node3->node4;
-node3->node5;
-node2->node6;
-node6->node7;
-node6->node8;
-node2->node9;
-node9->node10;
+node4->node5;
+node4->node6;
+node3->node7;
+node3->node8;
+node8->node9;
+node8->node10;
 node10->node11;
 node10->node12;
-node12->node13;
-node12->node14;
-node2->node15;
-node15->node16;
-node16->node17;
-node16->node18;
-node2->node19;
-node19->node20;
-node20->node21;
-node20->node22;
+node2->node13;
+node13->node14;
 }

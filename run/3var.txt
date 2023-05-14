@@ -1,2 +1,9 @@
-i = 45000
-j = -123
+i = 0
+
+LABEL L0:
+
+if NOT (i < 1000) GOTO L1
+i = i
+label=printd shape=septagonJUMP to L0
+
+LABEL L1:

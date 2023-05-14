@@ -165,10 +165,8 @@ instruction:
 	strcpy(code3v[DOT_index++], buff);
 	sprintf(code3v[DOT_index++], "JUMP to %s\n", $6.if_corps);
 	sprintf(code3v[DOT_index++], "\nLABEL %s:\n", $6.else_corps);
-	$$.nd_dot=faire_noeud_lcrs($4.nd_dot,NULL,"label=for");
-	$6.nd_dot=faire_noeud(NULL,NULL,"label=condition");
-	$4.nd_dot->right_sibling=$6.nd_dot;
-	$6.nd_dot->right_sibling=$8.nd_dot;
+	$$.nd_dot=faire_noeud_lcrs(NULL,NULL,"label=for");
+	
 }
 | IF { ajouter('K'); is_for = 0; } '(' condition ')' { sprintf(code3v[DOT_index++], "\nLABEL %s:\n", $4.if_corps); } '{' liste_instructions '}' { sprintf(code3v[DOT_index++], "\nLABEL %s:\n", $4.else_corps); } else { 
 	struct noeud *iff = faire_noeud($4.nd, $8.nd, $1.nom); 
