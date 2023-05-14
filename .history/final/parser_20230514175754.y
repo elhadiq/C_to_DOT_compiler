@@ -229,14 +229,8 @@ ELSE instruction
 	{struct noeud *iff = faire_noeud($4.nd, $7.nd, $1.nom); 
 	$$.nd = faire_noeud(iff, $10.nd, "if-else"); 
 	sprintf(code3v[DOT_index++], "GOTO next\n");
-<<<<<<< HEAD
-	$$.nd_dot=faire_noeud_lcrs($4.nd_dot,NULL,"label=if shape=diamond");}	
-=======
 	$$.nd_dot=faire_noeud_lcrs($4.nd_dot,NULL,"label=if shape=diamond");
-	struct noeud_lcrs* then=faire_noeud_lcrs(NULL,$7.nd_dot,"label=then");
-	$4.nd_dot->right_sibling=then;
 	}	
->>>>>>> condition
 	|	SWITCH '(' expression ')' instruction
 	|	CASE CONSTANTE ':' instruction
 	|	DEFAULT ':' instruction

@@ -661,3 +661,21 @@ MESA-INTEL: warning: Haswell Vulkan support is incomplete
 Opening in existing browser session.
 libva error: vaGetDriverNameByIndex() failed with unknown libva error, driver_name = (null)
 Warning: disabling flag --expose_wasm due to conflicting flags
+<<<<<<< HEAD
+=======
+MESA-INTEL: warning: Haswell Vulkan support is incomplete
+Opening in existing browser session.
+libva error: vaGetDriverNameByIndex() failed with unknown libva error, driver_name = (null)
+MESA-INTEL: warning: Haswell Vulkan support is incomplete
+Opening in existing browser session.
+libva error: vaGetDriverNameByIndex() failed with unknown libva error, driver_name = (null)
+MESA-INTEL: warning: Haswell Vulkan support is incomplete
+Opening in existing browser session.
+libva error: vaGetDriverNameByIndex() failed with unknown libva error, driver_name = (null)
+MESA-INTEL: warning: Haswell Vulkan support is incomplete
+Opening in existing browser session.
+libva error: vaGetDriverNameByIndex() failed with unknown libva error, driver_name = (null)
+MESA-INTEL: warning: Haswell Vulkan support is incomplete
+Opening in existing browser session.
+libva error: vaGetDriverNameByIndex() failed with unknown libva error, driver_name = (null)
+>>>>>>> condition
