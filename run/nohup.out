@@ -679,3 +679,6 @@ MESA-INTEL: warning: Haswell Vulkan support is incomplete
 Opening in existing browser session.
 libva error: vaGetDriverNameByIndex() failed with unknown libva error, driver_name = (null)
 >>>>>>> condition
+MESA-INTEL: warning: Haswell Vulkan support is incomplete
+Opening in existing browser session.
+libva error: vaGetDriverNameByIndex() failed with unknown libva error, driver_name = (null)
