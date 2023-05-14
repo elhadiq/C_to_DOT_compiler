@@ -260,7 +260,7 @@ expression	:
 	
 	sprintf(buff,"label=\"%s\"",$2.nom);
 	$$.nd_dot=faire_noeud_lcrs($1.nd_dot,NULL,buff);
-	$1.nd_dot->right_sibling=$3.nd_dot;
+	$1.nd_dot->right_sibling=
 	} 
 	|	MOINS expression {$$.nd=$2.nd;}
 	|	CONSTANTE { ajouter('C'); } 

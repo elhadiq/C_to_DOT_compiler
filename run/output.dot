@@ -8,14 +8,20 @@ node5 [label=45000]
 node6 [label=":="]
 node7 [label=j]
 node8 [label=-123]
-node9 [label=appel10]
-node10 [label=appel10]
-node11 [label=RETURN shape=trapezium color=blue]
-node12 [label=TAB]
-node13 [label=i]
-node14 [label=5 style=dotted shape=triangle]
-node15 [label=9 style=dotted shape=triangle]
-node16 [label=8 style=dotted shape=triangle]
+node9 [label=printd shape=septagon]
+node10 [label="+"]
+node11 [label=i]
+node12 [label="-"]
+node13 [label=8]
+node14 [label=9]
+node15 [label=printd shape=septagon]
+node16 [label="+"]
+node17 [label=45000]
+node18 [label=i]
+node19 [label=RETURN shape=trapezium color=blue]
+node20 [label="+"]
+node21 [label=i]
+node22 [label=j]
 node1->node2;
 node2->node3;
 node3->node4;
@@ -24,11 +30,17 @@ node2->node6;
 node6->node7;
 node6->node8;
 node2->node9;
-node2->node10;
-node2->node11;
-node11->node12;
+node9->node10;
+node10->node11;
+node10->node12;
 node12->node13;
 node12->node14;
-node12->node15;
-node12->node16;
+node2->node15;
+node15->node16;
+node16->node17;
+node16->node18;
+node2->node19;
+node19->node20;
+node20->node21;
+node20->node22;
 }

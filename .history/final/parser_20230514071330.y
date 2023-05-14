@@ -224,12 +224,7 @@ init: '=' valeur { $$.nd = $2.nd; strcpy($$.type, $2.type); strcpy($$.nom, $2.no
 ;
 
 appel	:	
-		IDENTIFICATEUR '(' liste_expressions ')' ';'
-		{
-			$1.nd=faire_noeud($3.nd,NULL,$1.nom); $$.nd=$1.nd;
-			sprintf(buff,"label=%s shape=septagon",$1.nom);
-				$$.nd_dot=faire_noeud_lcrs($3.nd_dot,NULL,buff);
-		}
+		IDENTIFICATEUR '(' liste_expressions ')' ';'{$1.nd=faire_noeud($3.nd,NULL,$1.nom); $$.nd=$1.nd;}
 ;
 variable	:	
 		IDENTIFICATEUR  
@@ -255,13 +250,9 @@ tableu: tableu '[' expression ']' 	{
 expression	:	
 		'(' expression ')' {$$.nd=$2.nd;$$.nd_dot=$2.nd_dot;}
 	|	expression binary_op expression %prec OP 
-	{
-	$$.nd=faire_noeud($1.nd,$3.nd,$2.nom);
-	
-	sprintf(buff,"label=\"%s\"",$2.nom);
-	$$.nd_dot=faire_noeud_lcrs($1.nd_dot,NULL,buff);
-	$1.nd_dot->right_sibling=$3.nd_dot;
-	} 
+	{$$.nd=faire_noeud($1.nd,$3.nd,$2.nom);
+	sprintf(buff,"label=%s",$2.nom);
+	$$.nd_dot=faire_noeud_lcrs($1.nd_dot,$3.nd_dot,buff);} 
 	|	MOINS expression {$$.nd=$2.nd;}
 	|	CONSTANTE { ajouter('C'); } 
 	{struct noeud* tmp=faire_noeud(NULL,NULL,$1.nom);
@@ -308,7 +299,7 @@ expression: expression arithmetic expression {
 	sprintf($$.nom, "t%d", temp_var);
 	temp_var++;
 	sprintf(code3v[DOT_index++], "%s = %s %s %s\n",  $$.nom, $1.nom, $2.nom, $3.nom);
-	sprintf(buff,"label= arr ",$2.nom);
+	sprintf(buff,"label= %s ",$2.nom);
 	$1.nd_dot->right_sibling=$3.nd_dot;
 	$$.nd_dot=faire_noeud_lcrs($1.nd_dot,NULL, buff); 
 }

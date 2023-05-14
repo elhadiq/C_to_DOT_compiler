@@ -4,7 +4,7 @@ int main() {
   int i,j[10];
   i = 45000;
   j = -123;
-  printd(i+j);
-  printd(45000+j);
-  return i[5][9][8];
+  printd(i+8-(9));
+  printd(45000+i);
+  return i+j;
 }

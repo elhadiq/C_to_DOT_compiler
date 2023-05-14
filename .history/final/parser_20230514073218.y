@@ -258,9 +258,8 @@ expression	:
 	{
 	$$.nd=faire_noeud($1.nd,$3.nd,$2.nom);
 	
-	sprintf(buff,"label=\"%s\"",$2.nom);
-	$$.nd_dot=faire_noeud_lcrs($1.nd_dot,NULL,buff);
-	$1.nd_dot->right_sibling=$3.nd_dot;
+	sprintf(buff,"label=%s",$2.nom);
+	$$.nd_dot=faire_noeud_lcrs($1.nd_dot,$3.nd_dot,buff);
 	} 
 	|	MOINS expression {$$.nd=$2.nd;}
 	|	CONSTANTE { ajouter('C'); } 

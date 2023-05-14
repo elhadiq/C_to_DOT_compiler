@@ -24,6 +24,7 @@ unary "++"|"--"
 "true"                      { strcpy(yylval.nd_obj.nom,(yytext)); return TRUE; }
 "false"                     { strcpy(yylval.nd_obj.nom,(yytext)); return FALSE; }
 "-"                         { strcpy(yylval.nd_obj.nom,(yytext)); return MOINS; }
+
 [-]?{digit}+                { strcpy(yylval.nd_obj.nom,(yytext)); return CONSTANTE; }
 {alpha}({alpha}|{digit})*   { strcpy(yylval.nd_obj.nom,(yytext)); return IDENTIFICATEUR ; }
 {unary}                     { strcpy(yylval.nd_obj.nom,(yytext)); return UNARY; }
