@@ -90,7 +90,7 @@
 %type <nd_obj> externe externs main liste_instructions liste_declarations declaration selection tableu liste_declarateurs declarateur liste_expressions returne appel datatype instruction1 arithmetic relop programme else instruction binary_op
 %type <nd_obj2> init valeur expression variable 
 %type <nd_obj3> condition
-%start programme
+%start programme1
 %%
 
 programme: main '(' ')' '{' liste_instructions returne '}' { 
@@ -166,6 +166,7 @@ instruction:
 	sprintf(code3v[DOT_index++], "JUMP to %s\n", $6.if_corps);
 	sprintf(code3v[DOT_index++], "\nLABEL %s:\n", $6.else_corps);
 	$$.nd_dot=faire_noeud_lcrs($4.nd_dot,NULL,"label=for");
+	$6.nd_dot=faire_noeud_lcrs(NULL,NULL,"label=condition");
 	$4.nd_dot->right_sibling=$6.nd_dot;
 	$6.nd_dot->right_sibling=$8.nd_dot;
 }

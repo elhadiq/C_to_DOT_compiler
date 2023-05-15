@@ -166,6 +166,7 @@ instruction:
 	sprintf(code3v[DOT_index++], "JUMP to %s\n", $6.if_corps);
 	sprintf(code3v[DOT_index++], "\nLABEL %s:\n", $6.else_corps);
 	$$.nd_dot=faire_noeud_lcrs($4.nd_dot,NULL,"label=for");
+	$6.nd_dot=faire_noeud_lcrs(NULL,NULL,"label=condition");
 	$4.nd_dot->right_sibling=$6.nd_dot;
 	$6.nd_dot->right_sibling=$8.nd_dot;
 }

@@ -15,7 +15,6 @@
 	void afficher_dans_lorder(struct noeud *);
 	void affichage_prifixe_de_larbre_syntaxique(FILE* f,struct noeud *,int* j);
     void verefier_declaration(char *);
-	void verefier_type_de_return(char *);
 	char *retrurner_type(char *);
 	struct noeud* faire_noeud(struct noeud *gauche, struct noeud *droite, char *lexeme);
 	struct noeud_lcrs* faire_noeud_lcrs(struct noeud_lcrs *left_child, struct noeud_lcrs *right_sibling, char *description);
@@ -49,7 +48,6 @@
 	char errors[10][100];
 	char reserves[12][10] = {"extern", "int", "void", "for", "while", "if", "then","else", "switch", "case", "default", "break"};
 	char code3v[500][100];
-
 	struct noeud { 
 		struct noeud *gauche; 
 		struct noeud *droite; 
@@ -87,22 +85,26 @@
 	} 
 %token VOID 
 %token <nd_obj> EXTERN INT CHAR FOR WHILE SWITCH CASE DEFAULT BREAK IF ELSE TRUE FALSE CONSTANTE IDENTIFICATEUR LEQ GEQ EQ NOT GT LT LAND LOR NEQ STR  PLUS MUL DIV MOINS UNARY INCLUDE RETURN 
-%type <nd_obj> externe externs main liste_instructions liste_declarations declaration selection tableu liste_declarateurs declarateur liste_expressions returne appel datatype instruction1 arithmetic relop programme else instruction binary_op
+%type <nd_obj> externe fonction nomfonction externs liste_instructions liste_declarations liste_fonctions declaration affectation selection tableu liste_declarateurs declarateur liste_expressions  saut appel datatype instruction1 arithmetic relop programme else instruction binary_op
 %type <nd_obj2> init valeur expression variable 
 %type <nd_obj3> condition
 %start programme
 %%
-
-programme: main '(' ')' '{' liste_instructions returne '}' { 
-$1.nd = faire_noeud($5.nd, NULL, "main");
-$$.nd = faire_noeud($1.nd, $6.nd, "programme");
+programme	:	
+		liste_declarations  liste_fonctions
+		{
+$$.nd=$2.nd;
+$$.nd_dot=$2.nd_dot;
 head = $$.nd;
+head_dot=$$.nd_dot;}
+;
 
+fonction: nomfonction '(' liste_parms ')' '{' liste_instructions '}' { 
+$1.nd = faire_noeud($6.nd, NULL, $1.nom);
+$$.nd = faire_noeud(NULL, NULL, "programme");
 
-$$.nd_dot = $1.nd_dot;
-$1.nd_dot->left_child=faire_noeud_lcrs($5.nd_dot, NULL, "label=BLOC");
-ajouter_dernier_fils($1.nd_dot->left_child,$6.nd_dot);
-head_dot=$$.nd_dot;
+sprintf(buff,"label=\"%s\" shape=invtrapezium color=blue",$1.nom);
+$$.nd_dot=faire_noeud_lcrs($6.nd_dot, NULL, buff);
 } 
 | externs programme {
 	$$.nd=$2.nd;
@@ -112,10 +114,30 @@ head_dot=$$.nd_dot;
 }
 ;
 
-main: datatype IDENTIFICATEUR { ajouter('F'); } 
-{sprintf(buff,"label=\"%s, %s\" shape=invtrapezium color=blue",$2.nom,$1.nom);
-$$.nd_dot=faire_noeud_lcrs(NULL, NULL, buff);}
+nomfonction:datatype IDENTIFICATEUR { ajouter('F');} {sprintf($$.nom,"%s, %s",$2.nom,$2.nom);}; 
+
+liste_declarations	:	
+		liste_declarations declaration 
+	|	
 ;
+liste_fonctions	:	
+		fonction liste_fonctions {$$.nd=faire_noeud($1.nd,$2.nd,"fonctions");$1.nd_dot->right_sibling=$2.nd_dot; $$.nd_dot=$1.nd_dot;}
+|               fonction {$$.nd=$1.nd;$$.nd_dot=$1.nd_dot;}
+|
+;
+declaration	:	
+		datatype liste_declarateurs ';'
+;
+liste_declarateurs	:	
+		liste_declarateurs ',' declarateur
+	|	declarateur
+;
+declarateur	:	
+		IDENTIFICATEUR
+	|	declarateur '[' CONSTANTE ']'
+;
+
+
 externs:externs externe
 |externe
 ;
@@ -129,10 +151,7 @@ liste_parms	:liste_parms ',' parm
 parm	:	
 		INT { inserer_type(); } IDENTIFICATEUR { ajouter('V'); }
 ;
-liste_declarations	:	
-		liste_declarations declaration 
-	|	declaration
-;
+
 liste_declarateurs	: declarateur ',' liste_declarateurs 
 	|	declarateur
 	| declarateur init 
@@ -166,6 +185,7 @@ instruction:
 	sprintf(code3v[DOT_index++], "JUMP to %s\n", $6.if_corps);
 	sprintf(code3v[DOT_index++], "\nLABEL %s:\n", $6.else_corps);
 	$$.nd_dot=faire_noeud_lcrs($4.nd_dot,NULL,"label=for");
+	$6.nd_dot=faire_noeud_lcrs(NULL,NULL,"label=condition");
 	$4.nd_dot->right_sibling=$6.nd_dot;
 	$6.nd_dot->right_sibling=$8.nd_dot;
 }
@@ -174,18 +194,19 @@ instruction:
 | appel {$$.nd=$1.nd;
 $$.nd_dot=$1.nd_dot;}
 |declaration {$$.nd_dot=NULL;}
+|saut {$$.nd=$1.nd;$$.nd_dot=$1.nd_dot;}
 ;
 
-
-
-instruction1:
-| IDENTIFICATEUR { verefier_declaration($1.nom); } '=' expression {
-	$1.nd = faire_noeud(NULL, NULL, $1.nom); 
+affectation	: variable { verefier_declaration($1.nom); } '=' expression {
 	$$.nd = faire_noeud($1.nd, $4.nd, ":="); 
 	sprintf(code3v[DOT_index++], "%s = %s\n", $1.nom, $4.nom);
 	sprintf(buff,"label=%s",$1.nom);
-	$$.nd_dot=faire_noeud_lcrs(faire_noeud_lcrs(NULL,$4.nd_dot,buff),NULL,"label=\":=\"");
+	$$.nd_dot=faire_noeud_lcrs($1.nd_dot,NULL,"label=\":=\"");
+	$1.nd_dot->right_sibling=$4.nd_dot;
 }
+;
+
+instruction1:affectation{$$.nd=$1.nd;$$.nd_dot=$1.nd_dot;}
 | IDENTIFICATEUR { verefier_declaration($1.nom); } relop expression {
 	 $1.nd = faire_noeud(NULL, NULL, $1.nom);
 	  $$.nd = faire_noeud($1.nd, $4.nd, $3.nom); 
@@ -237,8 +258,17 @@ ELSE instruction
 	|	DEFAULT ':' instruction
 ;
 
-
-
+saut	:	BREAK ';'
+{$$.nd=$1.nd;$$.nd_dot=$$.nd_dot;}
+|RETURN  expression ';' 
+{$1.nd = faire_noeud(NULL, NULL, "return");
+$$.nd = faire_noeud($1.nd, $2.nd, "RETURN"); 
+$$.nd_dot=faire_noeud_lcrs($2.nd_dot,NULL,"label=RETURN shape=trapezium color=blue");}
+| RETURN ';'
+{$$.nd = faire_noeud(NULL, NULL, "return");
+$$.nd_dot=faire_noeud_lcrs(NULL,NULL,"label=RETURN shape=trapezium color=blue");}
+| 
+;
 appel	:	
 		IDENTIFICATEUR '(' liste_expressions ')' ';'
 		{
@@ -253,11 +283,14 @@ variable	:
 		sprintf(buff,"label=%s",$1.nom);
 		$$.nd_dot=faire_noeud_lcrs(NULL,NULL,buff);
 		}
-	|	tableu {$$.nd_dot= faire_noeud_lcrs($1.nd_dot,NULL,"label=TAB");}
+	|	tableu {
+		$$.nd=faire_noeud(NULL,NULL,"tabel");
+		$$.nd_dot= faire_noeud_lcrs($1.nd_dot,NULL,"label=TAB");}
 	
 ;
 tableu: tableu '[' expression ']' 	{
-		$3.nd_dot->description=concatener($3.nd_dot->description," style=dotted shape=triangle");
+	$$.nd=faire_noeud(NULL,NULL,"tabel");
+//		$3.nd_dot->description=concatener($3.nd_dot->description," style=dotted shape=triangle");
 		get_last_sibling($1.nd_dot)->right_sibling=$3.nd_dot;
 		$$.nd_dot= $1.nd_dot;
 	}
@@ -365,18 +398,7 @@ strcpy($$.nom, $1.nom);
 | IDENTIFICATEUR { strcpy($$.nom, $1.nom); char *id_type = retrurner_type($1.nom); strcpy($$.type, id_type); verefier_declaration($1.nom); $$.nd = faire_noeud(NULL, NULL, $1.nom); }
 ;
 
-returne: RETURN  expression ';' 
-{ verefier_type_de_return($2.nom);
- $1.nd = faire_noeud(NULL, NULL, "return");
-$$.nd = faire_noeud($1.nd, $2.nd, "RETURN"); 
-$$.nd_dot=faire_noeud_lcrs($2.nd_dot,NULL,"label=RETURN shape=trapezium color=blue");
-}
-| RETURN ';'{
-$$.nd = faire_noeud(NULL, NULL, "return");
-$$.nd_dot=faire_noeud_lcrs(NULL,NULL,"label=RETURN shape=trapezium color=blue");
-}
-| 
-;
+
 
 %%
 
@@ -452,17 +474,6 @@ void verefier_declaration(char *c) {
     }
 }
 
-void verefier_type_de_return(char *valeur) {
-	char *main_datatype = retrurner_type("main");
-	char *return_datatype = retrurner_type(valeur);
-	if((!strcmp(main_datatype, "int") && !strcmp(return_datatype, "CONST")) || !strcmp(main_datatype, return_datatype)){
-		return ;
-	}
-	else {
-		sprintf(errors[sem_errors], "Ligne %d: Le type de return est incorrect\n", CompterN+1);
-		sem_errors++;
-	}
-}
 
 char *retrurner_type(char *var){
 	for(int i=0; i<compter; i++) {
@@ -474,6 +485,9 @@ char *retrurner_type(char *var){
 }
 
 void ajouter(char c) {
+	if(c=='F'){
+		exit -1;
+	}else exit 0;
 	if(c == 'V'){
 		for(int i=0; i<10; i++){
 			if(!strcmp(reserves[i], strdup(yytext))){
