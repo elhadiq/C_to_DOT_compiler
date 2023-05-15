@@ -174,7 +174,6 @@ instruction:
 | appel {$$.nd=$1.nd;
 $$.nd_dot=$1.nd_dot;}
 |declaration {$$.nd_dot=NULL;}
-|returne {$$.nd=$1.nd;$$.nd_dot=$1.nd_dot;}
 ;
 
 

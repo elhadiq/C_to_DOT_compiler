@@ -24,8 +24,6 @@ node21 [label=printd shape=septagon]
 node22 [label=5]
 node23 [label=printd shape=septagon]
 node24 [label=i]
-node25 [label=RETURN shape=trapezium color=blue]
-node26 [label=0]
 node1->node2;
 node2->node3;
 node3->node4;
@@ -49,6 +47,4 @@ node15->node21;
 node21->node22;
 node2->node23;
 node23->node24;
-node2->node25;
-node25->node26;
 }

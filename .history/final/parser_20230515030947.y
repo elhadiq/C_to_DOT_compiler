@@ -95,12 +95,13 @@
 
 programme: main '(' ')' '{' liste_instructions  '}' { 
 $1.nd = faire_noeud($5.nd, NULL, "main");
-$$.nd = faire_noeud($1.nd, NULL, "programme");
+$$.nd = faire_noeud($1.nd, $6.nd, "programme");
 head = $$.nd;
 
 
 $$.nd_dot = $1.nd_dot;
 $1.nd_dot->left_child=faire_noeud_lcrs($5.nd_dot, NULL, "label=BLOC");
+ajouter_dernier_fils($1.nd_dot->left_child,$6.nd_dot);
 head_dot=$$.nd_dot;
 } 
 | externs programme {
@@ -174,7 +175,6 @@ instruction:
 | appel {$$.nd=$1.nd;
 $$.nd_dot=$1.nd_dot;}
 |declaration {$$.nd_dot=NULL;}
-|returne {$$.nd=$1.nd;$$.nd_dot=$1.nd_dot;}
 ;
 
 
