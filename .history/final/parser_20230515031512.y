@@ -175,7 +175,7 @@ instruction:
 $$.nd_dot=$1.nd_dot;}
 |declaration {$$.nd_dot=NULL;}
 |returne {$$.nd=$1.nd;$$.nd_dot=$1.nd_dot;}
-| BREAK ';'{$$.nd=faire_noeud(NULL,NULL,"break");$$.nd_dot=faire_noeud_lcrs(NULL,NULL,"label=break");}
+| BREAK ';'{$$.nd=faire_noeud(NULL,NULL,"break");$$.nd=faire_noeud_lcrs(NULL,NULL,"label=break");}
 ;
 
 
