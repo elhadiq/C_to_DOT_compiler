@@ -86,7 +86,7 @@
 		} nd_obj3;
 	} 
 %token VOID 
-%token <nd_obj> EXTERN INT CHAR FOR WHILE SWITCH CASE DEFAULT BREAK THEN IF ELSE TRUE FALSE CONSTANTE IDENTIFICATEUR LEQ GEQ EQ NOT GT LT LAND LOR NEQ STR  PLUS MUL DIV MOINS UNARY INCLUDE RETURN 
+%token <nd_obj> EXTERN INT CHAR FOR WHILE SWITCH CASE DEFAULT BREAK IF ELSE TRUE FALSE CONSTANTE IDENTIFICATEUR LEQ GEQ EQ NOT GT LT LAND LOR NEQ STR  PLUS MUL DIV MOINS UNARY INCLUDE RETURN 
 %type <nd_obj> externe externs main liste_instructions liste_declarations declaration selection tableu liste_declarateurs declarateur liste_expressions returne appel datatype instruction1 arithmetic relop programme else instruction binary_op
 %type <nd_obj2> init valeur expression variable 
 %type <nd_obj3> condition
@@ -224,7 +224,7 @@ init: '=' valeur { $$.nd = $2.nd; strcpy($$.type, $2.type); strcpy($$.nom, $2.no
 ;
 
 selection	:		IF { ajouter('K'); is_for = 0; } '(' condition  ')' 
-{ sprintf(code3v[DOT_index++], "\nLABEL %s:\n", $4.if_corps); }   instruction %prec THEN
+{ sprintf(code3v[DOT_index++], "\nLABEL %s:\n", $4.if_corps); }   instruction 
 	{struct noeud *iff = faire_noeud($4.nd, $7.nd, $1.nom); 
 	sprintf(code3v[DOT_index++], "GOTO next\n");
 	$$.nd_dot=faire_noeud_lcrs($4.nd_dot,NULL,"label=if shape=diamond");
@@ -232,10 +232,10 @@ selection	:		IF { ajouter('K'); is_for = 0; } '(' condition  ')'
 	}
 	|IF { ajouter('K'); is_for = 0; } '(' condition  ')' 
 { sprintf(code3v[DOT_index++], "\nLABEL %s:\n", $4.if_corps); }   instruction   
-{ sprintf(code3v[DOT_index++], "\nLABEL %s:\n", $4.else_corps); } 
+{ sprintf(code3v[DOT_index++], "\nLABEL %s:\n", $4.else_corps); } %prec
 ELSE instruction
 	{struct noeud *iff = faire_noeud($4.nd, $7.nd, $1.nom); 
-	$$.nd = faire_noeud(iff, $10.nd, "if-else"); 
+	$$.nd = faire_noeud(iff, $11.nd, "if-else"); 
 	sprintf(code3v[DOT_index++], "GOTO next\n");
 	$$.nd_dot=faire_noeud_lcrs($4.nd_dot,NULL,"label=if shape=diamond");
 	$4.nd_dot->right_sibling=$7.nd_dot;
@@ -389,7 +389,7 @@ $$.nd_dot=faire_noeud_lcrs(NULL,NULL,"label=RETURN shape=trapezium color=blue");
 
 %%
 
-int main(int argc, char *argv[]) {
+int main() {
 	FILE* flog;
 	flog=fopen("compilation.log","w");
     yyparse();
@@ -413,7 +413,6 @@ int main(int argc, char *argv[]) {
 	fp = fopen("ArbreSyntaxique.dot", "w"); // create or open the file for writing
 	afficher_arbre_to_file(fp,head); 
     fclose(fp); // close the file
-
 	printf("\n\n\n\n");
 
 	FILE *fp_dot;
@@ -441,9 +440,6 @@ int main(int argc, char *argv[]) {
 	}
 	fclose(fp); // close the file
 	printf("\n\n");
-	system("mkdir -p result");
-	system("dot -Tpdf ArbreSyntaxique.dot -o result/ArbreSyntaxique.pdf");
-	system("dot -Tpdf output.dot -o result/output.pdf");
 }
 
 int chercher(char *type) {

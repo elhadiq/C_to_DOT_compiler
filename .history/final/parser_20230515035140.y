@@ -224,7 +224,7 @@ init: '=' valeur { $$.nd = $2.nd; strcpy($$.type, $2.type); strcpy($$.nom, $2.no
 ;
 
 selection	:		IF { ajouter('K'); is_for = 0; } '(' condition  ')' 
-{ sprintf(code3v[DOT_index++], "\nLABEL %s:\n", $4.if_corps); }   instruction %prec THEN
+{ sprintf(code3v[DOT_index++], "\nLABEL %s:\n", $4.if_corps); }   instruction %prec instruction
 	{struct noeud *iff = faire_noeud($4.nd, $7.nd, $1.nom); 
 	sprintf(code3v[DOT_index++], "GOTO next\n");
 	$$.nd_dot=faire_noeud_lcrs($4.nd_dot,NULL,"label=if shape=diamond");
@@ -389,7 +389,7 @@ $$.nd_dot=faire_noeud_lcrs(NULL,NULL,"label=RETURN shape=trapezium color=blue");
 
 %%
 
-int main(int argc, char *argv[]) {
+int main() {
 	FILE* flog;
 	flog=fopen("compilation.log","w");
     yyparse();
@@ -413,7 +413,6 @@ int main(int argc, char *argv[]) {
 	fp = fopen("ArbreSyntaxique.dot", "w"); // create or open the file for writing
 	afficher_arbre_to_file(fp,head); 
     fclose(fp); // close the file
-
 	printf("\n\n\n\n");
 
 	FILE *fp_dot;
@@ -441,9 +440,6 @@ int main(int argc, char *argv[]) {
 	}
 	fclose(fp); // close the file
 	printf("\n\n");
-	system("mkdir -p result");
-	system("dot -Tpdf ArbreSyntaxique.dot -o result/ArbreSyntaxique.pdf");
-	system("dot -Tpdf output.dot -o result/output.pdf");
 }
 
 int chercher(char *type) {

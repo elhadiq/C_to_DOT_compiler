@@ -389,7 +389,7 @@ $$.nd_dot=faire_noeud_lcrs(NULL,NULL,"label=RETURN shape=trapezium color=blue");
 
 %%
 
-int main(int argc, char *argv[]) {
+int main() {
 	FILE* flog;
 	flog=fopen("compilation.log","w");
     yyparse();
@@ -441,8 +441,8 @@ int main(int argc, char *argv[]) {
 	}
 	fclose(fp); // close the file
 	printf("\n\n");
-	system("mkdir -p result");
-	system("dot -Tpdf ArbreSyntaxique.dot -o result/ArbreSyntaxique.pdf");
+	system("$ mkdir -p result");
+	system("dot -Tpdf ArbreSyntaxique.dot -o result/ArbreSyntaxique.pdf";
 	system("dot -Tpdf output.dot -o result/output.pdf");
 }
 

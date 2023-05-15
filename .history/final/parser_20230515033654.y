@@ -86,7 +86,7 @@
 		} nd_obj3;
 	} 
 %token VOID 
-%token <nd_obj> EXTERN INT CHAR FOR WHILE SWITCH CASE DEFAULT BREAK THEN IF ELSE TRUE FALSE CONSTANTE IDENTIFICATEUR LEQ GEQ EQ NOT GT LT LAND LOR NEQ STR  PLUS MUL DIV MOINS UNARY INCLUDE RETURN 
+%token <nd_obj> EXTERN INT CHAR FOR WHILE SWITCH CASE DEFAULT BREAK IF ELSE TRUE FALSE CONSTANTE IDENTIFICATEUR LEQ GEQ EQ NOT GT LT LAND LOR NEQ STR  PLUS MUL DIV MOINS UNARY INCLUDE RETURN 
 %type <nd_obj> externe externs main liste_instructions liste_declarations declaration selection tableu liste_declarateurs declarateur liste_expressions returne appel datatype instruction1 arithmetic relop programme else instruction binary_op
 %type <nd_obj2> init valeur expression variable 
 %type <nd_obj3> condition
@@ -389,7 +389,7 @@ $$.nd_dot=faire_noeud_lcrs(NULL,NULL,"label=RETURN shape=trapezium color=blue");
 
 %%
 
-int main(int argc, char *argv[]) {
+int main() {
 	FILE* flog;
 	flog=fopen("compilation.log","w");
     yyparse();
@@ -413,7 +413,6 @@ int main(int argc, char *argv[]) {
 	fp = fopen("ArbreSyntaxique.dot", "w"); // create or open the file for writing
 	afficher_arbre_to_file(fp,head); 
     fclose(fp); // close the file
-
 	printf("\n\n\n\n");
 
 	FILE *fp_dot;
@@ -441,9 +440,6 @@ int main(int argc, char *argv[]) {
 	}
 	fclose(fp); // close the file
 	printf("\n\n");
-	system("mkdir -p result");
-	system("dot -Tpdf ArbreSyntaxique.dot -o result/ArbreSyntaxique.pdf");
-	system("dot -Tpdf output.dot -o result/output.pdf");
 }
 
 int chercher(char *type) {

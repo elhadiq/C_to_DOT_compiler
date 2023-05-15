@@ -389,7 +389,7 @@ $$.nd_dot=faire_noeud_lcrs(NULL,NULL,"label=RETURN shape=trapezium color=blue");
 
 %%
 
-int main(int argc, char *argv[]) {
+int main() {
 	FILE* flog;
 	flog=fopen("compilation.log","w");
     yyparse();

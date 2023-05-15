@@ -16,7 +16,8 @@ unary "++"|"--"
 "for"	                    { strcpy(yylval.nd_obj.nom,(yytext)); return FOR; }
 "while"	                    { strcpy(yylval.nd_obj.nom,(yytext)); return WHILE; }
 "if"	                    { strcpy(yylval.nd_obj.nom,(yytext)); return IF; }
-"then"	                    { strcpy(yylval.nd_obj.nom,(yytext)); return THEN; }
+"if"	                    { strcpy(yylval.nd_obj.nom,(yytext)); return IF; }
+
 "else"	                    { strcpy(yylval.nd_obj.nom,(yytext)); return ELSE; }
 "switch"                    { strcpy(yylval.nd_obj.nom,(yytext)); return SWITCH; }
 "case"	                    { strcpy(yylval.nd_obj.nom,(yytext)); return CASE; }
