@@ -223,7 +223,7 @@ instruction1:
 init: '=' valeur { $$.nd = $2.nd; strcpy($$.type, $2.type); strcpy($$.nom, $2.nom); }
 ;
 
-selection	:	IF { ajouter('K'); is_for = 0; } '(' condition  ')' 
+selection	:	IF1 { ajouter('K'); is_for = 0; } '(' condition4  ')' 
 { sprintf(code3v[DOT_index++], "\nLABEL %s:\n", $4.if_corps); }   instruction
 	{struct noeud *iff = faire_noeud($4.nd, $7.nd, $1.nom); 
 	sprintf(code3v[DOT_index++], "GOTO next\n");

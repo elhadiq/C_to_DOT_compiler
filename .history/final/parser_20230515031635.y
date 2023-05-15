@@ -223,15 +223,7 @@ instruction1:
 init: '=' valeur { $$.nd = $2.nd; strcpy($$.type, $2.type); strcpy($$.nom, $2.nom); }
 ;
 
-selection	:	IF { ajouter('K'); is_for = 0; } '(' condition  ')' 
-{ sprintf(code3v[DOT_index++], "\nLABEL %s:\n", $4.if_corps); }   instruction
-	{struct noeud *iff = faire_noeud($4.nd, $7.nd, $1.nom); 
-	sprintf(code3v[DOT_index++], "GOTO next\n");
-	
-	
-	$$.nd_dot=faire_noeud_lcrs($4.nd_dot,NULL,"label=if shape=diamond");
-	$4.nd_dot->right_sibling=$7.nd_dot;	
-	}|IF { ajouter('K'); is_for = 0; } '(' condition  ')' 
+selection	:	|IF { ajouter('K'); is_for = 0; } '(' condition  ')' 
 { sprintf(code3v[DOT_index++], "\nLABEL %s:\n", $4.if_corps); }   instruction   
 { sprintf(code3v[DOT_index++], "\nLABEL %s:\n", $4.else_corps); } 
 ELSE instruction
