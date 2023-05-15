@@ -87,7 +87,8 @@
 	} 
 %token VOID 
 %token <nd_obj> EXTERN INT CHAR FOR WHILE SWITCH CASE DEFAULT BREAK IF ELSE TRUE FALSE CONSTANTE IDENTIFICATEUR LEQ GEQ EQ NOT GT LT LAND LOR NEQ STR  PLUS MUL DIV MOINS UNARY INCLUDE RETURN 
-%type <nd_obj> externe externs main liste_instructions liste_declarations declaration selection tableu liste_declarateurs declarateur liste_expressions returne appel datatype instruction1 arithmetic relop programme else instruction binary_op
+%type <nd_obj> externe externs main liste_instructions liste_declarations declaration 
+%type <nd_obj> saut selection tableu liste_declarateurs declarateur liste_expressions returne appel datatype instruction1 arithmetic relop programme else instruction binary_op
 %type <nd_obj2> init valeur expression variable 
 %type <nd_obj3> condition
 %start programme
@@ -168,9 +169,9 @@ instruction:
 	$$.nd_dot=faire_noeud_lcrs($4.nd_dot,NULL,"label=for");
 	$4.nd_dot->right_sibling=$6.nd_dot;
 	$6.nd_dot->right_sibling=$8.nd_dot;
-	$8.nd_dot->right_sibling=$10.nd_dot;
 }
 | selection {$$.nd=$1.nd;}
+| saut{$$.nd_dot=$1.nd_dot;}
 | instruction1 ';' { $$.nd = $1.nd; $$.nd_dot=$1.nd_dot;}
 | appel {$$.nd=$1.nd;
 $$.nd_dot=$1.nd_dot;}
@@ -222,7 +223,19 @@ instruction1:
 init: '=' valeur { $$.nd = $2.nd; strcpy($$.type, $2.type); strcpy($$.nom, $2.nom); }
 ;
 
-selection	:	IF { ajouter('K'); is_for = 0; } '(' condition  ')' 
+selection	:IF { ajouter('K'); is_for = 0; } '(' condition  ')' 
+{ sprintf(code3v[DOT_index++], "\nLABEL %s:\n", $4.if_corps); }   instruction   
+// { sprintf(code3v[DOT_index++], "\nLABEL %s:\n", $4.else_corps); } 
+// ELSE instruction
+	{
+		$$.nd = faire_noeud($4.nd, $7.nd, $1.nom); 
+	sprintf(code3v[DOT_index++], "GOTO next\n");
+	$$.nd_dot=faire_noeud_lcrs($4.nd_dot,NULL,"label=if shape=diamond");
+	struct noeud_lcrs* then=faire_noeud_lcrs(NULL,$7.nd_dot,"label=then");
+	$4.nd_dot->right_sibling=then;
+	}	
+|
+IF { ajouter('K'); is_for = 0; } '(' condition  ')' 
 { sprintf(code3v[DOT_index++], "\nLABEL %s:\n", $4.if_corps); }   instruction   
 { sprintf(code3v[DOT_index++], "\nLABEL %s:\n", $4.else_corps); } 
 ELSE instruction
@@ -230,9 +243,8 @@ ELSE instruction
 	$$.nd = faire_noeud(iff, $10.nd, "if-else"); 
 	sprintf(code3v[DOT_index++], "GOTO next\n");
 	$$.nd_dot=faire_noeud_lcrs($4.nd_dot,NULL,"label=if shape=diamond");
-	$4.nd_dot->right_sibling=$7.nd_dot;
-	$7.nd_dot->right_sibling=$10.nd_dot;
-	
+	struct noeud_lcrs* then=faire_noeud_lcrs(NULL,$7.nd_dot,"label=then");
+	$4.nd_dot->right_sibling=then;
 	}	
 	|	SWITCH '(' expression ')' instruction
 	|	CASE CONSTANTE ':' instruction
@@ -366,6 +378,10 @@ strcpy($$.nom, $1.nom);
  }
 | IDENTIFICATEUR { strcpy($$.nom, $1.nom); char *id_type = retrurner_type($1.nom); strcpy($$.type, id_type); verefier_declaration($1.nom); $$.nd = faire_noeud(NULL, NULL, $1.nom); }
 ;
+saut	:	
+		BREAK ';'
+	|	returne{$$.nd=$1.nd;$$.nd_dot=$1.nd_dot;}
+	;
 
 returne: RETURN  expression ';' 
 { verefier_type_de_return($2.nom);

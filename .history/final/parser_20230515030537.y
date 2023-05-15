@@ -230,8 +230,8 @@ ELSE instruction
 	$$.nd = faire_noeud(iff, $10.nd, "if-else"); 
 	sprintf(code3v[DOT_index++], "GOTO next\n");
 	$$.nd_dot=faire_noeud_lcrs($4.nd_dot,NULL,"label=if shape=diamond");
-	$4.nd_dot->right_sibling=$7.nd_dot;
-	$7.nd_dot->right_sibling=$10.nd_dot;
+	struct noeud_lcrs* then=faire_noeud_lcrs(NULL,$7.nd_dot,"label=then");
+	$4.nd_dot->right_sibling=then;
 	
 	}	
 	|	SWITCH '(' expression ')' instruction

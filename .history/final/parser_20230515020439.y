@@ -168,7 +168,6 @@ instruction:
 	$$.nd_dot=faire_noeud_lcrs($4.nd_dot,NULL,"label=for");
 	$4.nd_dot->right_sibling=$6.nd_dot;
 	$6.nd_dot->right_sibling=$8.nd_dot;
-	$8.nd_dot->right_sibling=$10.nd_dot;
 }
 | selection {$$.nd=$1.nd;}
 | instruction1 ';' { $$.nd = $1.nd; $$.nd_dot=$1.nd_dot;}
@@ -230,9 +229,8 @@ ELSE instruction
 	$$.nd = faire_noeud(iff, $10.nd, "if-else"); 
 	sprintf(code3v[DOT_index++], "GOTO next\n");
 	$$.nd_dot=faire_noeud_lcrs($4.nd_dot,NULL,"label=if shape=diamond");
-	$4.nd_dot->right_sibling=$7.nd_dot;
-	$7.nd_dot->right_sibling=$10.nd_dot;
-	
+	struct noeud_lcrs* then=faire_noeud_lcrs(NULL,$7.nd_dot,"label=then");
+	$4.nd_dot->right_sibling=then;
 	}	
 	|	SWITCH '(' expression ')' instruction
 	|	CASE CONSTANTE ':' instruction
@@ -366,6 +364,10 @@ strcpy($$.nom, $1.nom);
  }
 | IDENTIFICATEUR { strcpy($$.nom, $1.nom); char *id_type = retrurner_type($1.nom); strcpy($$.type, id_type); verefier_declaration($1.nom); $$.nd = faire_noeud(NULL, NULL, $1.nom); }
 ;
+saut	:	
+		BREAK ';'
+	|	returne
+	;
 
 returne: RETURN  expression ';' 
 { verefier_type_de_return($2.nom);
