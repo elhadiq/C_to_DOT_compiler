@@ -1,6 +1,6 @@
 output.dot: mycompiler
-	$ cat $A| ./mycompiler>>$A.reslt
-	$ rm -r y.tab.c y.tab.h y.output lex.yy.c
+	$ cat $A| ./mycompiler
+	$ rm -r y.tab.c y.tab.h y.output lex.yy.c result 
 	
 mycompiler: y.tab.c lex.yy.c
 	$ clear;
@@ -12,5 +12,3 @@ lex.yy.c:lexer.l
 y.tab.c: parser.y
 	$ yacc -v -d parser.y 
 	
-clean: lex.yy.c mycompiler y.tab.c y.tab.h y.output
-	$ rm -r lex.yy.c y.tab.c y.tab.h y.output

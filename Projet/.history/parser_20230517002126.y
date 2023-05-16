@@ -443,7 +443,7 @@ int main() {
 	printf("\n\n");
 	system("dot -Tpdf result/ArbreSyntaxique.dot -o result/ArbreSyntaxique.pdf");
 	system("dot -Tpdf result/output.dot -o result/output.pdf");
-	system("evince result/output.pdf");
+	system("firefox result/output.pdf");
 }
 
 int chercher(char *type) {
