@@ -72,13 +72,6 @@
 			struct noeud_lcrs* nd_dot;
 		} nd_obj;
 
-		struct nom_variable2 { 
-			char nom[100]; 
-			struct noeud* nd;
-			struct noeud_lcrs* nd_dot;
-			char type[5];
-		} nd_obj2; 
-
 		struct nom_variable3 {
 			char nom[100];
 			struct noeud* nd;
@@ -90,7 +83,7 @@
 %token VOID 
 %token <nd_obj> EXTERN INT CHAR FOR WHILE SWITCH CASE DEFAULT BREAK THEN IF ELSE TRUE FALSE CONSTANTE IDENTIFICATEUR LEQ GEQ EQ NOT GT LT LAND LOR NEQ STR  PLUS MUL DIV MOINS UNARY INCLUDE RETURN 
 %type <nd_obj> externe externs main liste_fonctions fonction nom_fonction liste_instructions liste_declarations declaration selection tableu liste_declarateurs declarateur liste_expressions returne appel datatype instruction1 arithmetic relop programme1 else instruction binary_op
-%type <nd_obj2> init valeur expression variable 
+%type <nd_obj> init valeur expression variable 
 %type <nd_obj3> condition
 %start programme1
 %%
@@ -116,8 +109,8 @@ liste_fonctions	:
 |               fonction {$$.nd=$1.nd; $$.nd_dot=$1.nd_dot;}
 ;
 fonction: nom_fonction '(' ')' '{' liste_instructions  '}' { 
-$$.nd = $1.nd;
-$1.nd->gauche=$5.nd;
+$1.nd = faire_noeud($5.nd, NULL, "corps");
+$$.nd = faire_noeud($1.nd, NULL, $1.nom);
 
 
 
@@ -132,9 +125,8 @@ $1.nd_dot->left_child=faire_noeud_lcrs($5.nd_dot, NULL, "labelop=BLOC");
 ;
 
 nom_fonction: datatype IDENTIFICATEUR { ajouter('F'); if(!main_function)main_function=concatener("",yytext);} 
-{
-$$.nd=faire_noeud(NULL,NULL,concatener("fonction ",$2.nom));
-sprintf(strTmp,"label=\"%s, %s\" shape=invtrapezium color=blue",$2.nom,$1.nom);
+{sprintf(strTmp,"label=\"%s, %s\" shape=invtrapezium color=blue",$2.nom,$1.nom);
+$$.nd=faire_noeud(NULL,NULL,$2.nom);
 $$.nd_dot=faire_noeud_lcrs(NULL, NULL, strTmp);
 
 }

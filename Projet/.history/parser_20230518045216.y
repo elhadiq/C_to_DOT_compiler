@@ -133,7 +133,7 @@ $1.nd_dot->left_child=faire_noeud_lcrs($5.nd_dot, NULL, "labelop=BLOC");
 
 nom_fonction: datatype IDENTIFICATEUR { ajouter('F'); if(!main_function)main_function=concatener("",yytext);} 
 {
-$$.nd=faire_noeud(NULL,NULL,concatener("fonction ",$2.nom));
+$$.nd=faire_noeud(NULL,NULL,concatener("fonction ",$2.nom);
 sprintf(strTmp,"label=\"%s, %s\" shape=invtrapezium color=blue",$2.nom,$1.nom);
 $$.nd_dot=faire_noeud_lcrs(NULL, NULL, strTmp);
 

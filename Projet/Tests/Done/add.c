@@ -1,6 +1,9 @@
-extern int printd( int i );
 
-int main() {
+
+int koko() {
+
+
+
   int i,j;
   i = 45000;
   j = -123;
@@ -13,5 +16,10 @@ int main() {
   printd((i+0)+(j+0));
   printd((i+0)+123);
   printd(45000+(j+0));
+  return 0;
+}
+int lio() {
+  int i,j;
+  i = 45000;
   return 0;
 }

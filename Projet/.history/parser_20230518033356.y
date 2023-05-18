@@ -89,55 +89,45 @@
 	} 
 %token VOID 
 %token <nd_obj> EXTERN INT CHAR FOR WHILE SWITCH CASE DEFAULT BREAK THEN IF ELSE TRUE FALSE CONSTANTE IDENTIFICATEUR LEQ GEQ EQ NOT GT LT LAND LOR NEQ STR  PLUS MUL DIV MOINS UNARY INCLUDE RETURN 
-%type <nd_obj> externe externs main liste_fonctions fonction nom_fonction liste_instructions liste_declarations declaration selection tableu liste_declarateurs declarateur liste_expressions returne appel datatype instruction1 arithmetic relop programme1 else instruction binary_op
+%type <nd_obj> externe externs main liste_fonctions fonction liste_instructions liste_declarations declaration selection tableu liste_declarateurs declarateur liste_expressions returne appel datatype instruction1 arithmetic relop programme1 else instruction binary_op
 %type <nd_obj2> init valeur expression variable 
 %type <nd_obj3> condition
 %start programme1
 %%
 programme1	:	
-		 liste_fonctions
+		liste_declarations liste_fonctions
 		{
-		$$.nd=faire_noeud($1.nd,NULL,"programme");
+		$$.nd=$2.nd;
+		$$.nd_dot=$2.nd_dot;
 		head = $$.nd; 
-
-
-		$$.nd_dot=faire_noeud_lcrs($1.nd_dot,NULL,"label=programme");
 		head_dot=$$.nd_dot;}
 ;
 liste_fonctions	:	
 		liste_fonctions fonction
-		{
-		$$.nd=faire_noeud($1.nd,$2.nd,"fonctions");
-		$$.nd_dot=$1.nd_dot;
-		
-		
-		$1.nd_dot->right_sibling=$2.nd_dot;
-		}
+		{$$.nd=faire_noeud($1.nd,$2.nd,"fonctions");$$.nd=$1.nd_dot;$1.nd_dot->left_child=$2.nd_dot;}
 |               fonction {$$.nd=$1.nd; $$.nd_dot=$1.nd_dot;}
 ;
-fonction: nom_fonction '(' ')' '{' liste_instructions  '}' { 
-$$.nd = $1.nd;
-$1.nd->gauche=$5.nd;
+fonction: main '(' ')' '{' liste_instructions  '}' { 
+$1.nd = faire_noeud($5.nd, NULL, "corps";);
+$$.nd = faire_noeud($1.nd, NULL, $1.nom);
 
 
 
 $$.nd_dot = $1.nd_dot;
-$1.nd_dot->left_child=faire_noeud_lcrs($5.nd_dot, NULL, "labelop=BLOC");
+$1.nd_dot->left_child=faire_noeud_lcrs($5.nd_dot, NULL, "label=BLOC");
 
 } 
 | externs programme1 {
 	$$.nd=$2.nd;
+	head=$$.nd;
 	$$.nd_dot=$2.nd_dot;
+	head_dot=$$.nd_dot;
 }
 ;
 
-nom_fonction: datatype IDENTIFICATEUR { ajouter('F'); if(!main_function)main_function=concatener("",yytext);} 
-{
-$$.nd=faire_noeud(NULL,NULL,concatener("fonction ",$2.nom));
-sprintf(strTmp,"label=\"%s, %s\" shape=invtrapezium color=blue",$2.nom,$1.nom);
-$$.nd_dot=faire_noeud_lcrs(NULL, NULL, strTmp);
-
-}
+main: datatype IDENTIFICATEUR { ajouter('F'); if(!main_function)main_function=concatener("",yytext);} 
+{sprintf(strTmp,"label=\"%s, %s\" shape=invtrapezium color=blue",$2.nom,$1.nom);
+$$.nd_dot=faire_noeud_lcrs(NULL, NULL, strTmp);}
 ;
 externs:externs externe
 |externe
@@ -416,7 +406,7 @@ $$.nd_dot=faire_noeud_lcrs(NULL,NULL,"label=RETURN shape=trapezium color=blue");
 
 int main() {
 	system("mkdir -p result");
-	//system("rm -r lex.yy.c y.tab.c y.tab.h y.output");
+	system("rm -r lex.yy.c y.tab.c y.tab.h y.output");
     yyparse();
     printf("\n\n");
 	printf("\t\t\t\t\t\t\t\t PHASE 1: LEXICAL ANALYSIS \n\n");

@@ -33,7 +33,6 @@
         int ligne_nombre;
 	} table_de_symbols[40];
 	/*TODO ajouter_dernier_fils*/
-	char* main_function=NULL;
     int compter=0;
     int q;
 	char type[10];
@@ -47,7 +46,7 @@
 	int label=0;
 	int is_for=0;
 	char buff1[300];
-	char strTmp[300];
+	char buff2[300];
 	char errors[10][100];
 	char reserves[12][10] = {"extern", "int", "void", "for", "while", "if", "then","else", "switch", "case", "default", "break"};
 	char code3v[500][100];
@@ -89,55 +88,33 @@
 	} 
 %token VOID 
 %token <nd_obj> EXTERN INT CHAR FOR WHILE SWITCH CASE DEFAULT BREAK THEN IF ELSE TRUE FALSE CONSTANTE IDENTIFICATEUR LEQ GEQ EQ NOT GT LT LAND LOR NEQ STR  PLUS MUL DIV MOINS UNARY INCLUDE RETURN 
-%type <nd_obj> externe externs main liste_fonctions fonction nom_fonction liste_instructions liste_declarations declaration selection tableu liste_declarateurs declarateur liste_expressions returne appel datatype instruction1 arithmetic relop programme1 else instruction binary_op
+%type <nd_obj> externe externs main liste_instructions liste_declarations declaration selection tableu liste_declarateurs declarateur liste_expressions returne appel datatype instruction1 arithmetic relop programme else instruction binary_op
 %type <nd_obj2> init valeur expression variable 
 %type <nd_obj3> condition
-%start programme1
+%start programme
 %%
-programme1	:	
-		 liste_fonctions
-		{
-		$$.nd=faire_noeud($1.nd,NULL,"programme");
-		head = $$.nd; 
 
-
-		$$.nd_dot=faire_noeud_lcrs($1.nd_dot,NULL,"label=programme");
-		head_dot=$$.nd_dot;}
-;
-liste_fonctions	:	
-		liste_fonctions fonction
-		{
-		$$.nd=faire_noeud($1.nd,$2.nd,"fonctions");
-		$$.nd_dot=$1.nd_dot;
-		
-		
-		$1.nd_dot->right_sibling=$2.nd_dot;
-		}
-|               fonction {$$.nd=$1.nd; $$.nd_dot=$1.nd_dot;}
-;
-fonction: nom_fonction '(' ')' '{' liste_instructions  '}' { 
-$$.nd = $1.nd;
-$1.nd->gauche=$5.nd;
-
+programme: main '(' ')' '{' liste_instructions  '}' { 
+$1.nd = faire_noeud($5.nd, NULL, "main");
+$$.nd = faire_noeud($1.nd, NULL, "programme");
+head = $$.nd;
 
 
 $$.nd_dot = $1.nd_dot;
-$1.nd_dot->left_child=faire_noeud_lcrs($5.nd_dot, NULL, "labelop=BLOC");
-
+$1.nd_dot->left_child=faire_noeud_lcrs($5.nd_dot, NULL, "label=BLOC");
+head_dot=$$.nd_dot;
 } 
-| externs programme1 {
+| externs programme {
 	$$.nd=$2.nd;
+	head=$$.nd;
 	$$.nd_dot=$2.nd_dot;
+	head_dot=$$.nd_dot;
 }
 ;
 
-nom_fonction: datatype IDENTIFICATEUR { ajouter('F'); if(!main_function)main_function=concatener("",yytext);} 
-{
-$$.nd=faire_noeud(NULL,NULL,concatener("fonction ",$2.nom));
-sprintf(strTmp,"label=\"%s, %s\" shape=invtrapezium color=blue",$2.nom,$1.nom);
-$$.nd_dot=faire_noeud_lcrs(NULL, NULL, strTmp);
-
-}
+main: datatype IDENTIFICATEUR { ajouter('F'); } 
+{sprintf(buff2,"label=\"%s, %s\" shape=invtrapezium color=blue",$2.nom,$1.nom);
+$$.nd_dot=faire_noeud_lcrs(NULL, NULL, buff2);}
 ;
 externs:externs externe
 |externe
@@ -193,7 +170,19 @@ instruction:
 	$6.nd_dot->right_sibling=$8.nd_dot;
 	$8.nd_dot->right_sibling=$10.nd_dot;
 }
-
+| WHILE { ajouter('K'); } '('condition ')' instruction  { 
+	struct noeud *temp = faire_noeud($6.nd, $8.nd, "CONDITION"); 
+	struct noeud *temp2 = faire_noeud($4.nd, temp, "CONDITION"); 
+	$$.nd = faire_noeud(temp2, $10.nd, $1.nom); 
+	strcpy(code3v[DOT_index++], buff);
+	sprintf(code3v[DOT_index++], "JUMP to %s\n", $6.if_corps);
+	sprintf(code3v[DOT_index++], "\nLABEL %s:\n", $6.else_corps);
+	
+	$$.nd_dot=faire_noeud_lcrs($4.nd_dot,NULL,"label=for");
+	$4.nd_dot->right_sibling=$6.nd_dot;
+	$6.nd_dot->right_sibling=$8.nd_dot;
+	$8.nd_dot->right_sibling=$10.nd_dot;
+}
 | selection {$$.nd=$1.nd;}
 | instruction1 ';' { $$.nd = $1.nd; $$.nd_dot=$1.nd_dot;}
 | appel {$$.nd=$1.nd;
@@ -210,8 +199,8 @@ instruction1:
 	$1.nd = faire_noeud(NULL, NULL, $1.nom); 
 	$$.nd = faire_noeud($1.nd, $4.nd, ":="); 
 	sprintf(code3v[DOT_index++], "%s = %s\n", $1.nom, $4.nom);
-	sprintf(strTmp,"label=%s",$1.nom);
-	$$.nd_dot=faire_noeud_lcrs(faire_noeud_lcrs(NULL,$4.nd_dot,strTmp),NULL,"label=\":=\"");
+	sprintf(buff,"label=%s",$1.nom);
+	$$.nd_dot=faire_noeud_lcrs(faire_noeud_lcrs(NULL,$4.nd_dot,buff),NULL,"label=\":=\"");
 }
 | IDENTIFICATEUR { verefier_declaration($1.nom); } relop expression {
 	 $1.nd = faire_noeud(NULL, NULL, $1.nom);
@@ -222,10 +211,10 @@ instruction1:
 	$3.nd = faire_noeud(NULL, NULL, $3.nom); 
 	$$.nd = faire_noeud($1.nd, $3.nd, "ITERATOR");  
 	if(!strcmp($3.nom, "++")) {
-		sprintf(buff1, "t%d = %s + 1\n%s = t%d\n", temp_var, $1.nom, $1.nom, temp_var++);
+		sprintf(buff, "t%d = %s + 1\n%s = t%d\n", temp_var, $1.nom, $1.nom, temp_var++);
 	}
 	else {
-		sprintf(buff1, "t%d = %s + 1\n%s = t%d\n", temp_var, $1.nom, $1.nom, temp_var++);
+		sprintf(buff, "t%d = %s + 1\n%s = t%d\n", temp_var, $1.nom, $1.nom, temp_var++);
 	}
 	$$.nd_dot=faire_noeud_lcrs(NULL,NULL,"label=affectation3");
 }
@@ -235,10 +224,10 @@ instruction1:
 	$2.nd = faire_noeud(NULL, NULL, $2.nom); 
 	$$.nd = faire_noeud($1.nd, $2.nd, "ITERATOR"); 
 	if(!strcmp($1.nom, "++")) {
-		sprintf(buff1, "t%d = %s + 1\n%s = t%d\n", temp_var, $2.nom, $2.nom, temp_var++);
+		sprintf(buff, "t%d = %s + 1\n%s = t%d\n", temp_var, $2.nom, $2.nom, temp_var++);
 	}
 	else {
-		sprintf(buff1, "t%d = %s - 1\n%s = t%d\n", temp_var, $2.nom, $2.nom, temp_var++);
+		sprintf(buff, "t%d = %s - 1\n%s = t%d\n", temp_var, $2.nom, $2.nom, temp_var++);
 
 	}
 	$$.nd_dot=faire_noeud_lcrs(NULL,NULL,"label=affectation4");
@@ -277,15 +266,15 @@ appel	:
 		IDENTIFICATEUR '(' liste_expressions ')' ';'
 		{
 			$1.nd=faire_noeud($3.nd,NULL,$1.nom); $$.nd=$1.nd;
-			sprintf(strTmp,"label=%s shape=septagon",$1.nom);
-				$$.nd_dot=faire_noeud_lcrs($3.nd_dot,NULL,strTmp);
+			sprintf(buff,"label=%s shape=septagon",$1.nom);
+				$$.nd_dot=faire_noeud_lcrs($3.nd_dot,NULL,buff);
 		}
 ;
 variable	:	
 		IDENTIFICATEUR  
 		{$$.nd=faire_noeud(NULL,NULL,$1.nom);
-		sprintf(strTmp,"label=%s",$1.nom);
-		$$.nd_dot=faire_noeud_lcrs(NULL,NULL,strTmp);
+		sprintf(buff,"label=%s",$1.nom);
+		$$.nd_dot=faire_noeud_lcrs(NULL,NULL,buff);
 		}
 	|	tableu {$$.nd_dot= faire_noeud_lcrs($1.nd_dot,NULL,"label=TAB");}
 	
@@ -297,8 +286,8 @@ tableu: tableu '[' expression ']' 	{
 	}
 	|		IDENTIFICATEUR  
 		{$$.nd=faire_noeud(NULL,NULL,$1.nom);
-		sprintf(strTmp,"label=%s",$1.nom);
-		$$.nd_dot=faire_noeud_lcrs(NULL,NULL,strTmp);
+		sprintf(buff,"label=%s",$1.nom);
+		$$.nd_dot=faire_noeud_lcrs(NULL,NULL,buff);
 		}
 
 ;
@@ -308,16 +297,16 @@ expression	:
 	{
 	$$.nd=faire_noeud($1.nd,$3.nd,$2.nom);
 	
-	sprintf(strTmp,"label=\"%s\"",$2.nom);
-	$$.nd_dot=faire_noeud_lcrs($1.nd_dot,NULL,strTmp);
+	sprintf(buff,"label=\"%s\"",$2.nom);
+	$$.nd_dot=faire_noeud_lcrs($1.nd_dot,NULL,buff);
 	$1.nd_dot->right_sibling=$3.nd_dot;
 	} 
 	|	MOINS expression {$$.nd=$2.nd;$$.nd_dot=faire_noeud_lcrs($2.nd_dot,NULL,"label=\"-\" ");}
 	|	CONSTANTE { ajouter('C'); } 
 	{struct noeud* tmp=faire_noeud(NULL,NULL,$1.nom);
 	$$.nd=tmp;
-	sprintf(strTmp,"label=%s",$1.nom) ;
-	$$.nd_dot=faire_noeud_lcrs(NULL,NULL,strTmp);}
+	sprintf(buff,"label=%s",$1.nom) ;
+	$$.nd_dot=faire_noeud_lcrs(NULL,NULL,buff);}
 	|	variable {$$.nd=$1.nd; $$.nd_dot=$1.nd_dot;}
 	|	IDENTIFICATEUR '(' liste_expressions ')'
 
@@ -345,8 +334,8 @@ condition: expression relop expression {
 		sprintf($$.if_corps, "L%d", label++);
 		sprintf($$.else_corps, "L%d", label++);
 	}
-	sprintf(strTmp,"label=\"%s\"",$2.nom);
-	$$.nd_dot=faire_noeud_lcrs($1.nd_dot,NULL,strTmp);
+	sprintf(buff,"label=\"%s\"",$2.nom);
+	$$.nd_dot=faire_noeud_lcrs($1.nd_dot,NULL,buff);
 	$1.nd_dot->right_sibling=$3.nd_dot;
 }
 | TRUE { ajouter('K'); $$.nd = NULL; }
@@ -361,9 +350,9 @@ expression: expression arithmetic expression {
 	sprintf($$.nom, "t%d", temp_var);
 	temp_var++;
 	sprintf(code3v[DOT_index++], "%s = %s %s %s\n",  $$.nom, $1.nom, $2.nom, $3.nom);
-	sprintf(strTmp,"label= \"%s\" ",$2.nom);
+	sprintf(buff,"label= \"%s\" ",$2.nom);
 	$1.nd_dot->right_sibling=$3.nd_dot;
-	$$.nd_dot=faire_noeud_lcrs($1.nd_dot,NULL, strTmp); 
+	$$.nd_dot=faire_noeud_lcrs($1.nd_dot,NULL, buff); 
 }
 | valeur {
 strcpy($$.nom, $1.nom);
@@ -393,8 +382,8 @@ strcpy($$.nom, $1.nom);
  strcpy($$.type, "int");
  ajouter('C'); 
  $$.nd = faire_noeud(NULL, NULL, $1.nom); 
- sprintf(strTmp,"label=%s",$1.nom);
- $$.nd_dot=faire_noeud_lcrs(NULL,NULL,strTmp);
+ sprintf(buff,"label=%s",$1.nom);
+ $$.nd_dot=faire_noeud_lcrs(NULL,NULL,buff);
  }
 | IDENTIFICATEUR { strcpy($$.nom, $1.nom); char *id_type = retrurner_type($1.nom); strcpy($$.type, id_type); verefier_declaration($1.nom); $$.nd = faire_noeud(NULL, NULL, $1.nom); }
 ;
@@ -416,7 +405,7 @@ $$.nd_dot=faire_noeud_lcrs(NULL,NULL,"label=RETURN shape=trapezium color=blue");
 
 int main() {
 	system("mkdir -p result");
-	//system("rm -r lex.yy.c y.tab.c y.tab.h y.output");
+	system("rm -r lex.yy.c y.tab.c y.tab.h y.output");
     yyparse();
     printf("\n\n");
 	printf("\t\t\t\t\t\t\t\t PHASE 1: LEXICAL ANALYSIS \n\n");
@@ -490,7 +479,7 @@ void verefier_declaration(char *c) {
 }
 
 void verefier_type_de_return(char *valeur) {
-	char *main_datatype = retrurner_type(main_function);
+	char *main_datatype = retrurner_type("main");
 	char *return_datatype = retrurner_type(valeur);
 	if((!strcmp(main_datatype, "int") && !strcmp(return_datatype, "CONST")) || !strcmp(main_datatype, return_datatype)){
 		return ;
