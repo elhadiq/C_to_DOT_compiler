@@ -40,7 +40,6 @@ unary "++"|"--"
 "+"                         { strcpy(yylval.nd_obj.nom,(yytext)); return PLUS; }
 "*"                         { strcpy(yylval.nd_obj.nom,(yytext)); return MUL; }
 "/"                         { strcpy(yylval.nd_obj.nom,(yytext)); return DIV; }
-
 \/\/.*                      { ; }
 \/\*(.*\n)*.*\*\/           { ; } 
 [ \t]*                      { ; }

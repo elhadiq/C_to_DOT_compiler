@@ -71,19 +71,24 @@ extern int yydebug;
     EQ = 277,
     NOT = 278,
     GT = 279,
-    LT = 280,
-    LAND = 281,
-    LOR = 282,
-    NEQ = 283,
-    STR = 284,
-    PLUS = 285,
-    MUL = 286,
-    DIV = 287,
-    MOINS = 288,
-    UNARY = 289,
-    INCLUDE = 290,
-    RETURN = 291,
-    OP = 292
+    BAND = 280,
+    BOR = 281,
+    LSHIFT = 282,
+    RSHIFT = 283,
+    LT = 284,
+    LAND = 285,
+    LOR = 286,
+    NEQ = 287,
+    STR = 288,
+    PLUS = 289,
+    MUL = 290,
+    DIV = 291,
+    MOINS = 292,
+    UNARY = 293,
+    INCLUDE = 294,
+    RETURN = 295,
+    OP = 296,
+    REL = 297
   };
 #endif
 /* Tokens.  */
@@ -109,25 +114,30 @@ extern int yydebug;
 #define EQ 277
 #define NOT 278
 #define GT 279
-#define LT 280
-#define LAND 281
-#define LOR 282
-#define NEQ 283
-#define STR 284
-#define PLUS 285
-#define MUL 286
-#define DIV 287
-#define MOINS 288
-#define UNARY 289
-#define INCLUDE 290
-#define RETURN 291
-#define OP 292
+#define BAND 280
+#define BOR 281
+#define LSHIFT 282
+#define RSHIFT 283
+#define LT 284
+#define LAND 285
+#define LOR 286
+#define NEQ 287
+#define STR 288
+#define PLUS 289
+#define MUL 290
+#define DIV 291
+#define MOINS 292
+#define UNARY 293
+#define INCLUDE 294
+#define RETURN 295
+#define OP 296
+#define REL 297
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 69 "parser.y"
+#line 84 "parser.y"
  struct nom_variable { 
 			char nom[100]; 
 			struct noeud* nd;
@@ -150,7 +160,7 @@ union YYSTYPE
 		} nd_obj3;
 	
 
-#line 154 "y.tab.h"
+#line 164 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

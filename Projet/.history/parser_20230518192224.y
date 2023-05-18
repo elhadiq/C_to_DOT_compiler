@@ -55,17 +55,17 @@
 	struct noeud *head;
 	struct noeud_lcrs *head_dot;
 
-	int sem_errors=0;//Nombre des erreurs sémantique
-	int _3var_index=0;// nombre des instruction en 3 var code
+	int sem_errors=0;
+	int _3var_index=0;
 
-	int temp_var=0;//Compteur pour les registres en 3 var code
+	int temp_var=0;
 	int label_count=0;//the number of labels in the 3 variable code 
-	int is_for=0;// pour code 3 var pour destiguer l'utilisation d'une condition 
-	char buff_3var[300];//variable temporaire pour enregistrer les chaines 3 var
-	char strTmp[300];//variable temporaire pour enregistrer les chaines des description des fichier DOT
-	char errors[10][100];// Un tableu des erreurs sémantiques
+	int is_for=0;
+	char buff_3var[300];
+	char strTmp[300];
+	char errors[10][100];
 	char reserves[12][10] = {"extern", "int", "void", "for", "while", "if", "then","else", "switch", "case", "default", "break"};
-	char code3v[500][100];//Tableu pour stocker le code 3 var
+	char code3v[500][100];
 
 	struct noeud { 
 		struct noeud *gauche; 
@@ -112,6 +112,7 @@
 %left LSHIFT RSHIFT
 %left BOR BAND
 %left LAND LOR
+
 %nonassoc THEN
 %nonassoc ELSE
 %left OP

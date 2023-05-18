@@ -4,68 +4,58 @@
     #include<stdlib.h>
     #include"lex.yy.c"
 
-//Analyse yacc fonctions
     void yyerror(const char *s);
     int yylex();
-// Table de symbole fonctions
+
     void ajouter(char);
+    void inserer_type();
     int chercher(char *);
 
-
-// Affichage d'arbre syntaxique
 	void afficher_arbre(struct noeud*);
 	void afficher_arbre_to_file(FILE* f,struct noeud*);
 	void afficher_dans_lorder(struct noeud *);
 	void affichage_prifixe_de_larbre_syntaxique(FILE* f,struct noeud *,int* j);
-	struct noeud* faire_noeud(struct noeud *gauche, struct noeud *droite, char *lexeme);
-	void afficher_les_dependances_dot(FILE* f,struct noeud *tree,int* j);
 
-
-// Analyse semantique
     void verefier_declaration(char *);
 	void verefier_type_de_return(char *);
 	char *retrurner_type(char *);
 
+	struct noeud* faire_noeud(struct noeud *gauche, struct noeud *droite, char *lexeme);
 	struct noeud_lcrs* faire_noeud_lcrs(struct noeud_lcrs *left_child, struct noeud_lcrs *right_sibling, char *description);
-   // Fonctions pour dessiner l'arbre de l'output
+   
     void afficher_les_dependances_dot_lcrs(FILE* f,struct noeud_lcrs *tree);
+	void afficher_les_dependances_dot(FILE* f,struct noeud *tree,int* j);
 	void affichage_prifixe_de_larbre_syntaxique_dot_lcrs(FILE* f,struct noeud_lcrs *tree,int* j);
 	void afficher_arbre_dot_lcrs(FILE* f,struct noeud_lcrs* tree);
 	void  ajouter_dernier_fils(struct noeud_lcrs* pere,struct noeud_lcrs* fils);
 	struct noeud_lcrs* get_last_sibling(struct noeud_lcrs* tree);
-	// Concatenation avec creation d'un nouveau chaine
 	char* concatener(char*a,char*b);
-	//insertion du lexeme rencontré dans la variable type
-	void inserer_type();
-	//Un table de symbole statique de longeur 100
+	
 	struct dataType {
         char * nom_id;
         char * type_data;
         char * type;
         int ligne_nombre;
-	} table_de_symbols[100];
-//une variable pour garder le nom de la fonction principale 'la premiere fonction rencontrée'
-	char* main_function=NULL;
-//Un nombre qui compte le nombre des symboles dans la table de symbole
-    int compter_symbole=0;
+	} table_de_symbols[40];
 
-    int requete;//variable temporaire
-	char type[10];//variable temporaire qui garde le type d'un lexeme 
+	char* main_function=NULL;
+    int compter=0;
+    int q;
+	char type[10];
+	char debug[100];
 	extern int yylineno; 
 	struct noeud *head;
 	struct noeud_lcrs *head_dot;
-
-	int sem_errors=0;//Nombre des erreurs sémantique
-	int _3var_index=0;// nombre des instruction en 3 var code
-
-	int temp_var=0;//Compteur pour les registres en 3 var code
-	int label_count=0;//the number of labels in the 3 variable code 
-	int is_for=0;// pour code 3 var pour destiguer l'utilisation d'une condition 
-	char buff_3var[300];//variable temporaire pour enregistrer les chaines 3 var
-	char strTmp[300];//variable temporaire pour enregistrer les chaines des description des fichier DOT
-	char errors[10][100];// Un tableu des erreurs sémantiques
+	int sem_errors=0;
+	int DOT_index=0;
+	int temp_var=0;
+	int label=0;
+	int is_for=0;
+	char buff1[300];
+	char strTmp[300];
+	char errors[10][100];
 	char reserves[12][10] = {"extern", "int", "void", "for", "while", "if", "then","else", "switch", "case", "default", "break"};
-	char code3v[500][100];//Tableu pour stocker le code 3 var
+	char code3v[500][100];
 
 	struct noeud { 
 		struct noeud *gauche; 
@@ -103,19 +93,10 @@
 		} nd_obj3;
 	} 
 %token VOID 
-%token <nd_obj> EXTERN INT CHAR FOR WHILE SWITCH CASE DEFAULT BREAK THEN IF ELSE TRUE FALSE CONSTANTE IDENTIFICATEUR LEQ GEQ EQ NOT GT BAND BOR LSHIFT RSHIFT LT LAND LOR NEQ STR  PLUS MUL DIV MOINS UNARY INCLUDE RETURN 
-%type <nd_obj> externe externs main liste_fonctions fonction nom_fonction liste_instructions liste_declarations declaration selection tableu liste_declarateurs declarateur liste_expressions returne appel datatype instruction1 arithmetic binary_comp programme1 else instruction binary_op
+%token <nd_obj> EXTERN INT CHAR FOR WHILE SWITCH CASE DEFAULT BREAK THEN IF ELSE TRUE FALSE CONSTANTE IDENTIFICATEUR LEQ GEQ EQ NOT GT LT LAND LOR NEQ STR  PLUS MUL DIV MOINS UNARY INCLUDE RETURN 
+%type <nd_obj> externe externs main liste_fonctions fonction nom_fonction liste_instructions liste_declarations declaration selection tableu liste_declarateurs declarateur liste_expressions returne appel datatype instruction1 arithmetic relop programme1 else instruction binary_op
 %type <nd_obj2> init valeur expression variable 
 %type <nd_obj3> condition
-%left PLUS MOINS
-%left MUL DIV
-%left LSHIFT RSHIFT
-%left BOR BAND
-%left LAND LOR
-%nonassoc THEN
-%nonassoc ELSE
-%left OP
-%left REL
 %start programme1
 %%
 programme1	:	
@@ -207,9 +188,9 @@ instruction:
 	struct noeud *temp = faire_noeud($6.nd, $8.nd, "CONDITION"); 
 	struct noeud *temp2 = faire_noeud($4.nd, temp, "CONDITION"); 
 	$$.nd = faire_noeud(temp2, $10.nd, $1.nom); 
-	strcpy(code3v[_3var_index++], buff_3var);
-	sprintf(code3v[_3var_index++], "JUMP to %s\n", $6.if_corps);
-	sprintf(code3v[_3var_index++], "\nLABEL %s:\n", $6.else_corps);
+	strcpy(code3v[DOT_index++], buff1);
+	sprintf(code3v[DOT_index++], "JUMP to %s\n", $6.if_corps);
+	sprintf(code3v[DOT_index++], "\nLABEL %s:\n", $6.else_corps);
 	$$.nd_dot=faire_noeud_lcrs($4.nd_dot,NULL,"label=for");
 	$4.nd_dot->right_sibling=$6.nd_dot;
 	$6.nd_dot->right_sibling=$8.nd_dot;
@@ -231,11 +212,11 @@ instruction1:
 | IDENTIFICATEUR { verefier_declaration($1.nom); } '=' expression {
 	$1.nd = faire_noeud(NULL, NULL, $1.nom); 
 	$$.nd = faire_noeud($1.nd, $4.nd, ":="); 
-	sprintf(code3v[_3var_index++], "%s = %s\n", $1.nom, $4.nom);
+	sprintf(code3v[DOT_index++], "%s = %s\n", $1.nom, $4.nom);
 	sprintf(strTmp,"label=%s",$1.nom);
 	$$.nd_dot=faire_noeud_lcrs(faire_noeud_lcrs(NULL,$4.nd_dot,strTmp),NULL,"label=\":=\"");
 }
-| IDENTIFICATEUR { verefier_declaration($1.nom); } binary_comp expression {
+| IDENTIFICATEUR { verefier_declaration($1.nom); } relop expression {
 	 $1.nd = faire_noeud(NULL, NULL, $1.nom);
 	  $$.nd = faire_noeud($1.nd, $4.nd, $3.nom); 
 	  $$.nd_dot=faire_noeud_lcrs(NULL,NULL,"label=affectation2");}
@@ -244,10 +225,10 @@ instruction1:
 	$3.nd = faire_noeud(NULL, NULL, $3.nom); 
 	$$.nd = faire_noeud($1.nd, $3.nd, "ITERATOR");  
 	if(!strcmp($3.nom, "++")) {
-		sprintf(buff_3var, "t%d = %s + 1\n%s = t%d\n", temp_var, $1.nom, $1.nom, temp_var++);
+		sprintf(buff1, "t%d = %s + 1\n%s = t%d\n", temp_var, $1.nom, $1.nom, temp_var++);
 	}
 	else {
-		sprintf(buff_3var, "t%d = %s + 1\n%s = t%d\n", temp_var, $1.nom, $1.nom, temp_var++);
+		sprintf(buff1, "t%d = %s + 1\n%s = t%d\n", temp_var, $1.nom, $1.nom, temp_var++);
 	}
 	$$.nd_dot=faire_noeud_lcrs(NULL,NULL,"label=affectation3");
 }
@@ -257,10 +238,10 @@ instruction1:
 	$2.nd = faire_noeud(NULL, NULL, $2.nom); 
 	$$.nd = faire_noeud($1.nd, $2.nd, "ITERATOR"); 
 	if(!strcmp($1.nom, "++")) {
-		sprintf(buff_3var, "t%d = %s + 1\n%s = t%d\n", temp_var, $2.nom, $2.nom, temp_var++);
+		sprintf(buff1, "t%d = %s + 1\n%s = t%d\n", temp_var, $2.nom, $2.nom, temp_var++);
 	}
 	else {
-		sprintf(buff_3var, "t%d = %s - 1\n%s = t%d\n", temp_var, $2.nom, $2.nom, temp_var++);
+		sprintf(buff1, "t%d = %s - 1\n%s = t%d\n", temp_var, $2.nom, $2.nom, temp_var++);
 
 	}
 	$$.nd_dot=faire_noeud_lcrs(NULL,NULL,"label=affectation4");
@@ -271,19 +252,19 @@ init: '=' valeur { $$.nd = $2.nd; strcpy($$.type, $2.type); strcpy($$.nom, $2.no
 ;
 
 selection	:		IF { ajouter('K'); is_for = 0; } '(' condition  ')' 
-{ sprintf(code3v[_3var_index++], "\nLABEL %s:\n", $4.if_corps); }   instruction %prec THEN
+{ sprintf(code3v[DOT_index++], "\nLABEL %s:\n", $4.if_corps); }   instruction %prec THEN
 	{struct noeud *iff = faire_noeud($4.nd, $7.nd, $1.nom); 
-	sprintf(code3v[_3var_index++], "GOTO next\n");
+	sprintf(code3v[DOT_index++], "GOTO next\n");
 	$$.nd_dot=faire_noeud_lcrs($4.nd_dot,NULL,"label=if shape=diamond");
 	$4.nd_dot->right_sibling=$7.nd_dot;	
 	}
 	|IF { ajouter('K'); is_for = 0; } '(' condition  ')' 
-{ sprintf(code3v[_3var_index++], "\nLABEL %s:\n", $4.if_corps); }   instruction   
-{ sprintf(code3v[_3var_index++], "\nLABEL %s:\n", $4.else_corps); } 
+{ sprintf(code3v[DOT_index++], "\nLABEL %s:\n", $4.if_corps); }   instruction   
+{ sprintf(code3v[DOT_index++], "\nLABEL %s:\n", $4.else_corps); } 
 ELSE instruction
 	{struct noeud *iff = faire_noeud($4.nd, $7.nd, $1.nom); 
 	$$.nd = faire_noeud(iff, $10.nd, "if-else"); 
-	sprintf(code3v[_3var_index++], "GOTO next\n");
+	sprintf(code3v[DOT_index++], "GOTO next\n");
 	$$.nd_dot=faire_noeud_lcrs($4.nd_dot,NULL,"label=if shape=diamond");
 	$4.nd_dot->right_sibling=$7.nd_dot;
 	$7.nd_dot->right_sibling=$10.nd_dot;
@@ -350,34 +331,27 @@ liste_expressions	:liste_expressions ',' expression {$$.nd=faire_noeud($1.nd,$3.
 else: ELSE { ajouter('K'); } '{' liste_instructions '}' { $$.nd = faire_noeud(NULL, $4.nd, $1.nom); }
 | { $$.nd = NULL; }
 ;
-binary_op	:	
-		PLUS
-	|       MOINS
+binary_op	:PLUS 
+	|   MOINS
 	|	MUL
 	|	DIV
-	|       LSHIFT
-	|       RSHIFT
-	|	BAND
-	|	BOR
 ;
-
-condition: expression binary_comp expression { 
+condition: expression relop expression { 
 	$$.nd = faire_noeud($1.nd, $3.nd, $2.nom); 
 	if(is_for) {
-		sprintf($$.if_corps, "L%d", label_count++);
-		sprintf(code3v[_3var_index++], "\nLABEL %s:\n", $$.if_corps);
-		sprintf(code3v[_3var_index++], "\nif NOT (%s %s %s) GOTO L%d\n", $1.nom, $2.nom, $3.nom, label_count);
-		sprintf($$.else_corps, "L%d", label_count++);
+		sprintf($$.if_corps, "L%d", label++);
+		sprintf(code3v[DOT_index++], "\nLABEL %s:\n", $$.if_corps);
+		sprintf(code3v[DOT_index++], "\nif NOT (%s %s %s) GOTO L%d\n", $1.nom, $2.nom, $3.nom, label);
+		sprintf($$.else_corps, "L%d", label++);
 	} else {
-		sprintf(code3v[_3var_index++], "\nif (%s %s %s) GOTO L%d else GOTO L%d\n", $1.nom, $2.nom, $3.nom, label_count, label_count+1);
-		sprintf($$.if_corps, "L%d", label_count++);
-		sprintf($$.else_corps, "L%d", label_count++);
+		sprintf(code3v[DOT_index++], "\nif (%s %s %s) GOTO L%d else GOTO L%d\n", $1.nom, $2.nom, $3.nom, label, label+1);
+		sprintf($$.if_corps, "L%d", label++);
+		sprintf($$.else_corps, "L%d", label++);
 	}
 	sprintf(strTmp,"label=\"%s\"",$2.nom);
 	$$.nd_dot=faire_noeud_lcrs($1.nd_dot,NULL,strTmp);
 	$1.nd_dot->right_sibling=$3.nd_dot;
 }
-|NOT '(' condition ')' {$$.nd=faire_noeud($1.nd,NULL,"not");$$.nd_dot=faire_noeud_lcrs($1.nd_dot,NULL,"label=not");}
 | TRUE { ajouter('K'); $$.nd = NULL; }
 | FALSE { ajouter('K'); $$.nd = NULL; }
 | { $$.nd = NULL; }
@@ -389,7 +363,7 @@ expression: expression arithmetic expression {
 	$$.nd = faire_noeud($1.nd, $3.nd, $2.nom); 
 	sprintf($$.nom, "t%d", temp_var);
 	temp_var++;
-	sprintf(code3v[_3var_index++], "%s = %s %s %s\n",  $$.nom, $1.nom, $2.nom, $3.nom);
+	sprintf(code3v[DOT_index++], "%s = %s %s %s\n",  $$.nom, $1.nom, $2.nom, $3.nom);
 	sprintf(strTmp,"label= \"%s\" ",$2.nom);
 	$1.nd_dot->right_sibling=$3.nd_dot;
 	$$.nd_dot=faire_noeud_lcrs($1.nd_dot,NULL, strTmp); 
@@ -408,7 +382,7 @@ arithmetic: PLUS
 | DIV
 ;
 
-binary_comp: LT
+relop: LT
 | GT
 | LEQ
 | GEQ
@@ -452,10 +426,10 @@ int main() {
 	printf("\nSYMBOL   DATATYPE   TYPE   LINE NUMBER \n");
 	printf("_______________________________________\n\n");
 	int i=0;
-	for(i=0; i<compter_symbole; i++) {
+	for(i=0; i<compter; i++) {
 		printf("%s\t%s\t%s\t%d\t\n", table_de_symbols[i].nom_id, table_de_symbols[i].type_data, table_de_symbols[i].type, table_de_symbols[i].ligne_nombre);
 	}
-	for(i=0;i<compter_symbole;i++) {
+	for(i=0;i<compter;i++) {
 		free(table_de_symbols[i].nom_id);
 		free(table_de_symbols[i].type);
 	}
@@ -490,18 +464,19 @@ int main() {
 	FILE *f3;
 	f3 = fopen("result/3var.txt", "w"); // create or open the file for writing
 
-	for(int i=0; i<_3var_index; i++){
+	for(int i=0; i<DOT_index; i++){
 		fprintf(f3,"%s", code3v[i]);
 	}
 	fclose(fp); // close the file
 	printf("\n\n");
 	system("dot -Tpdf result/ArbreSyntaxique.dot -o result/ArbreSyntaxique.pdf");
 	system("dot -Tpdf result/output.dot -o result/output.pdf");
+	system("nohup firefox result/output.pdf");
 }
 
 int chercher(char *type) {
 	int i;
-	for(i=compter_symbole-1; i>=0; i--) {
+	for(i=compter-1; i>=0; i--) {
 		if(strcmp(table_de_symbols[i].nom_id, type)==0) {
 			return -1;
 		}
@@ -510,8 +485,8 @@ int chercher(char *type) {
 }
 
 void verefier_declaration(char *c) {
-    requete = chercher(c);
-    if(!requete) {
+    q = chercher(c);
+    if(!q) {
         sprintf(errors[sem_errors], "Ligne %d: La Variable \"%s\" n'est pas declaré avant l'utilisation!\n", yylineno+1, c);
 		sem_errors++;
     }
@@ -530,7 +505,7 @@ void verefier_type_de_return(char *valeur) {
 }
 
 char *retrurner_type(char *var){
-	for(int i=0; i<compter_symbole; i++) {
+	for(int i=0; i<compter; i++) {
 		// Handle case of use before declaration
 		if(!strcmp(table_de_symbols[i].nom_id, var)) {
 			return table_de_symbols[i].type_data;
@@ -548,38 +523,38 @@ void ajouter(char c) {
 			}
 		}
 	}
-    requete=chercher(yytext);
-	if(!requete) {
+    q=chercher(yytext);
+	if(!q) {
 		if(c == 'K') {
-			table_de_symbols[compter_symbole].nom_id=strdup(yytext);
-			table_de_symbols[compter_symbole].type_data=strdup("N/A");
-			table_de_symbols[compter_symbole].ligne_nombre=yylineno;
-			table_de_symbols[compter_symbole].type=strdup("Keyword\t");
-			compter_symbole++;
+			table_de_symbols[compter].nom_id=strdup(yytext);
+			table_de_symbols[compter].type_data=strdup("N/A");
+			table_de_symbols[compter].ligne_nombre=yylineno;
+			table_de_symbols[compter].type=strdup("Keyword\t");
+			compter++;
 		}
 		else if(c == 'V') {
-			table_de_symbols[compter_symbole].nom_id=strdup(yytext);
-			table_de_symbols[compter_symbole].type_data=strdup(type);
-			table_de_symbols[compter_symbole].ligne_nombre=yylineno;
-			table_de_symbols[compter_symbole].type=strdup("Variable");
-			compter_symbole++;
+			table_de_symbols[compter].nom_id=strdup(yytext);
+			table_de_symbols[compter].type_data=strdup(type);
+			table_de_symbols[compter].ligne_nombre=yylineno;
+			table_de_symbols[compter].type=strdup("Variable");
+			compter++;
 		}
 		else if(c == 'C') {
-			table_de_symbols[compter_symbole].nom_id=strdup(yytext);
-			table_de_symbols[compter_symbole].type_data=strdup("CONST");
-			table_de_symbols[compter_symbole].ligne_nombre=yylineno;
-			table_de_symbols[compter_symbole].type=strdup("Constant");
-			compter_symbole++;
+			table_de_symbols[compter].nom_id=strdup(yytext);
+			table_de_symbols[compter].type_data=strdup("CONST");
+			table_de_symbols[compter].ligne_nombre=yylineno;
+			table_de_symbols[compter].type=strdup("Constant");
+			compter++;
 		}
 		else if(c == 'F') {
-			table_de_symbols[compter_symbole].nom_id=strdup(yytext);
-			table_de_symbols[compter_symbole].type_data=strdup(type);
-			table_de_symbols[compter_symbole].ligne_nombre=yylineno;
-			table_de_symbols[compter_symbole].type=strdup("Function");
-			compter_symbole++;
+			table_de_symbols[compter].nom_id=strdup(yytext);
+			table_de_symbols[compter].type_data=strdup(type);
+			table_de_symbols[compter].ligne_nombre=yylineno;
+			table_de_symbols[compter].type=strdup("Function");
+			compter++;
 		}
     }
-    else if(c == 'V' && requete) {
+    else if(c == 'V' && q) {
         sprintf(errors[sem_errors], "Line %d: Plusiers declaration de  \"%s\" n'est pas autorisé!\n", yylineno+1, yytext);
 		sem_errors++;
     }
@@ -716,4 +691,5 @@ void yyerror(const char *msg) {
     fprintf(stderr, "Erreur de Syntax: %s\n", msg);
     fprintf(stderr, "Le dernier lexème lue est '%s'\n", yytext);
     fprintf(stderr, "L'erreur est apparue dans la ligne %d, column \n", yylineno+1 );
+    fprintf(stderr, "last rule %s\n", debug);
 }

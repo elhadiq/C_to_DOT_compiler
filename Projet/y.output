@@ -10,34 +10,34 @@ Terminals unused in grammar
 
     CHAR
     WHILE
-    NOT
     LAND
     LOR
     STR
     INCLUDE
+    REL
 
 
 Rules useless in grammar
 
-   96 liste_declarations: liste_declarations declaration
-   97                   | declaration
+  101 liste_declarations: liste_declarations declaration
+  102                   | declaration
 
-   98 $@15: %empty
+  103 $@15: %empty
 
-   99 else: ELSE $@15 '{' liste_instructions '}'
-  100     | %empty
+  104 else: ELSE $@15 '{' liste_instructions '}'
+  105     | %empty
 
 
 Rules useless in parser due to conflicts
 
    50 $@11: %empty
 
-   81 arithmetic: PLUS
-   82           | MOINS
-   83           | MUL
-   84           | DIV
+   86 arithmetic: PLUS
+   87           | MOINS
+   88           | MUL
+   89           | DIV
 
-   95 returne: %empty
+  100 returne: %empty
 
 
 State 8 conflicts: 1 shift/reduce
@@ -45,21 +45,19 @@ State 21 conflicts: 11 shift/reduce, 15 reduce/reduce
 State 28 conflicts: 1 reduce/reduce
 State 35 conflicts: 11 shift/reduce, 16 reduce/reduce
 State 46 conflicts: 11 shift/reduce, 15 reduce/reduce
-State 55 conflicts: 14 reduce/reduce
-State 56 conflicts: 28 reduce/reduce
+State 55 conflicts: 18 reduce/reduce
+State 56 conflicts: 36 reduce/reduce
 State 75 conflicts: 11 shift/reduce, 15 reduce/reduce
-State 92 conflicts: 4 shift/reduce
-State 95 conflicts: 4 reduce/reduce
-State 96 conflicts: 4 reduce/reduce
-State 97 conflicts: 4 reduce/reduce
-State 98 conflicts: 4 reduce/reduce
-State 112 conflicts: 11 shift/reduce, 15 reduce/reduce
-State 126 conflicts: 4 shift/reduce
-State 127 conflicts: 4 shift/reduce
-State 145 conflicts: 11 shift/reduce, 15 reduce/reduce
-State 146 conflicts: 1 reduce/reduce
-State 153 conflicts: 11 shift/reduce, 15 reduce/reduce
-State 154 conflicts: 11 shift/reduce, 15 reduce/reduce
+State 99 conflicts: 4 reduce/reduce
+State 100 conflicts: 4 reduce/reduce
+State 101 conflicts: 4 reduce/reduce
+State 102 conflicts: 4 reduce/reduce
+State 116 conflicts: 11 shift/reduce, 15 reduce/reduce
+State 132 conflicts: 8 shift/reduce
+State 152 conflicts: 11 shift/reduce, 15 reduce/reduce
+State 153 conflicts: 1 reduce/reduce
+State 161 conflicts: 11 shift/reduce, 15 reduce/reduce
+State 162 conflicts: 11 shift/reduce, 15 reduce/reduce
 
 
 Grammar
@@ -132,7 +130,7 @@ Grammar
 
    41 $@7: %empty
 
-   42 instruction1: IDENTIFICATEUR $@7 relop expression
+   42 instruction1: IDENTIFICATEUR $@7 binary_comp expression
 
    43 $@8: %empty
 
@@ -183,43 +181,48 @@ Grammar
    72          | MOINS
    73          | MUL
    74          | DIV
+   75          | LSHIFT
+   76          | RSHIFT
+   77          | BAND
+   78          | BOR
 
-   75 condition: expression relop expression
-   76          | TRUE
-   77          | FALSE
-   78          | %empty
+   79 condition: expression binary_comp expression
+   80          | NOT '(' condition ')'
+   81          | TRUE
+   82          | FALSE
+   83          | %empty
 
-   79 expression: expression arithmetic expression
-   80           | valeur
+   84 expression: expression arithmetic expression
+   85           | valeur
 
-   81 arithmetic: PLUS
-   82           | MOINS
-   83           | MUL
-   84           | DIV
+   86 arithmetic: PLUS
+   87           | MOINS
+   88           | MUL
+   89           | DIV
 
-   85 relop: LT
-   86      | GT
-   87      | LEQ
-   88      | GEQ
-   89      | EQ
-   90      | NEQ
+   90 binary_comp: LT
+   91            | GT
+   92            | LEQ
+   93            | GEQ
+   94            | EQ
+   95            | NEQ
 
-   91 valeur: CONSTANTE
-   92       | IDENTIFICATEUR
+   96 valeur: CONSTANTE
+   97       | IDENTIFICATEUR
 
-   93 returne: RETURN expression ';'
-   94        | RETURN ';'
-   95        | %empty
+   98 returne: RETURN expression ';'
+   99        | RETURN ';'
+  100        | %empty
 
 
 Terminals, with rules where they appear
 
     $end (0) 0
-    '(' (40) 4 11 31 49 53 54 57 62 68
-    ')' (41) 4 11 31 49 53 54 57 62 68
+    '(' (40) 4 11 31 49 53 54 57 62 68 80
+    ')' (41) 4 11 31 49 53 54 57 62 68 80
     ',' (44) 12 17 69
     ':' (58) 55 56
-    ';' (59) 11 23 31 33 37 57 93 94
+    ';' (59) 11 23 31 33 37 57 98 99
     '=' (61) 40 46
     '[' (91) 22 60
     ']' (93) 22 60
@@ -239,159 +242,164 @@ Terminals, with rules where they appear
     THEN <nd_obj> (268)
     IF <nd_obj> (269) 49 53
     ELSE <nd_obj> (270) 53
-    TRUE <nd_obj> (271) 76
-    FALSE <nd_obj> (272) 77
-    CONSTANTE <nd_obj> (273) 22 55 66 91
-    IDENTIFICATEUR <nd_obj> (274) 7 11 16 20 40 42 44 45 57 58 61 68 92
-    LEQ <nd_obj> (275) 87
-    GEQ <nd_obj> (276) 88
-    EQ <nd_obj> (277) 89
-    NOT <nd_obj> (278)
-    GT <nd_obj> (279) 86
-    LT <nd_obj> (280) 85
-    LAND <nd_obj> (281)
-    LOR <nd_obj> (282)
-    NEQ <nd_obj> (283) 90
-    STR <nd_obj> (284)
-    PLUS <nd_obj> (285) 71 81
-    MUL <nd_obj> (286) 73 83
-    DIV <nd_obj> (287) 74 84
-    MOINS <nd_obj> (288) 64 72 82
-    UNARY <nd_obj> (289) 44 45
-    INCLUDE <nd_obj> (290)
-    RETURN <nd_obj> (291) 93 94
-    OP (292)
+    TRUE <nd_obj> (271) 81
+    FALSE <nd_obj> (272) 82
+    CONSTANTE <nd_obj> (273) 22 55 66 96
+    IDENTIFICATEUR <nd_obj> (274) 7 11 16 20 40 42 44 45 57 58 61 68 97
+    LEQ <nd_obj> (275) 92
+    GEQ <nd_obj> (276) 93
+    EQ <nd_obj> (277) 94
+    NOT <nd_obj> (278) 80
+    GT <nd_obj> (279) 91
+    BAND <nd_obj> (280) 77
+    BOR <nd_obj> (281) 78
+    LSHIFT <nd_obj> (282) 75
+    RSHIFT <nd_obj> (283) 76
+    LT <nd_obj> (284) 90
+    LAND <nd_obj> (285)
+    LOR <nd_obj> (286)
+    NEQ <nd_obj> (287) 95
+    STR <nd_obj> (288)
+    PLUS <nd_obj> (289) 71 86
+    MUL <nd_obj> (290) 73 88
+    DIV <nd_obj> (291) 74 89
+    MOINS <nd_obj> (292) 64 72 87
+    UNARY <nd_obj> (293) 44 45
+    INCLUDE <nd_obj> (294)
+    RETURN <nd_obj> (295) 98 99
+    OP (296)
+    REL (297)
 
 
 Nonterminals, with rules where they appear
 
-    $accept (48)
+    $accept (53)
         on left: 0
-    programme1 <nd_obj> (49)
+    programme1 <nd_obj> (54)
         on left: 1
         on right: 0
-    liste_fonctions <nd_obj> (50)
+    liste_fonctions <nd_obj> (55)
         on left: 2 3
         on right: 1 2
-    fonction <nd_obj> (51)
+    fonction <nd_obj> (56)
         on left: 4 5
         on right: 2 3
-    nom_fonction <nd_obj> (52)
+    nom_fonction <nd_obj> (57)
         on left: 7
         on right: 4
-    $@1 (53)
+    $@1 (58)
         on left: 6
         on right: 7
-    externs <nd_obj> (54)
+    externs <nd_obj> (59)
         on left: 8 9
         on right: 5 8
-    externe <nd_obj> (55)
+    externe <nd_obj> (60)
         on left: 11
         on right: 8 9
-    $@2 (56)
+    $@2 (61)
         on left: 10
         on right: 11
-    liste_parms (57)
+    liste_parms (62)
         on left: 12 13 14
         on right: 11 12
-    parm (58)
+    parm (63)
         on left: 16
         on right: 12 13
-    $@3 (59)
+    $@3 (64)
         on left: 15
         on right: 16
-    liste_declarateurs <nd_obj> (60)
+    liste_declarateurs <nd_obj> (65)
         on left: 17 18 19
         on right: 17 23
-    declarateur <nd_obj> (61)
+    declarateur <nd_obj> (66)
         on left: 20 22
         on right: 17 18 19 22
-    $@4 (62)
+    $@4 (67)
         on left: 21
         on right: 22
-    declaration <nd_obj> (63)
+    declaration <nd_obj> (68)
         on left: 23
         on right: 35
-    datatype <nd_obj> (64)
+    datatype <nd_obj> (69)
         on left: 24 25
         on right: 7 11 23
-    liste_instructions <nd_obj> (65)
+    liste_instructions <nd_obj> (70)
         on left: 26 27 28
         on right: 4 26
-    instruction <nd_obj> (66)
+    instruction <nd_obj> (71)
         on left: 29 31 32 33 34 35 36 37
         on right: 26 27 31 49 53 54 55 56
-    $@5 (67)
+    $@5 (72)
         on left: 30
         on right: 31
-    instruction1 <nd_obj> (68)
+    instruction1 <nd_obj> (73)
         on left: 38 40 42 44 45
         on right: 31 33
-    $@6 (69)
+    $@6 (74)
         on left: 39
         on right: 40
-    $@7 (70)
+    $@7 (75)
         on left: 41
         on right: 42
-    $@8 (71)
+    $@8 (76)
         on left: 43
         on right: 44
-    init <nd_obj2> (72)
+    init <nd_obj2> (77)
         on left: 46
         on right: 19
-    selection <nd_obj> (73)
+    selection <nd_obj> (78)
         on left: 49 53 54 55 56
         on right: 32
-    $@9 (74)
+    $@9 (79)
         on left: 47
         on right: 49
-    $@10 (75)
+    $@10 (80)
         on left: 48
         on right: 49
-    $@11 (76)
+    $@11 (81)
         on left: 50
         on right: 53
-    $@12 (77)
+    $@12 (82)
         on left: 51
         on right: 53
-    $@13 (78)
+    $@13 (83)
         on left: 52
         on right: 53
-    appel <nd_obj> (79)
+    appel <nd_obj> (84)
         on left: 57
         on right: 34
-    variable <nd_obj2> (80)
+    variable <nd_obj2> (85)
         on left: 58 59
         on right: 67
-    tableu <nd_obj> (81)
+    tableu <nd_obj> (86)
         on left: 60 61
         on right: 59 60
-    expression <nd_obj2> (82)
-        on left: 62 63 64 66 67 68 79 80
-        on right: 40 42 54 60 62 63 64 69 70 75 79 93
-    $@14 (83)
+    expression <nd_obj2> (87)
+        on left: 62 63 64 66 67 68 84 85
+        on right: 40 42 54 60 62 63 64 69 70 79 84 98
+    $@14 (88)
         on left: 65
         on right: 66
-    liste_expressions <nd_obj> (84)
+    liste_expressions <nd_obj> (89)
         on left: 69 70
         on right: 57 68 69
-    binary_op <nd_obj> (85)
-        on left: 71 72 73 74
+    binary_op <nd_obj> (90)
+        on left: 71 72 73 74 75 76 77 78
         on right: 63
-    condition <nd_obj3> (86)
-        on left: 75 76 77 78
-        on right: 31 49 53
-    arithmetic <nd_obj> (87)
-        on left: 81 82 83 84
-        on right: 79
-    relop <nd_obj> (88)
-        on left: 85 86 87 88 89 90
-        on right: 42 75
-    valeur <nd_obj2> (89)
-        on left: 91 92
-        on right: 46 80
-    returne <nd_obj> (90)
-        on left: 93 94 95
+    condition <nd_obj3> (91)
+        on left: 79 80 81 82 83
+        on right: 31 49 53 80
+    arithmetic <nd_obj> (92)
+        on left: 86 87 88 89
+        on right: 84
+    binary_comp <nd_obj> (93)
+        on left: 90 91 92 93 94 95
+        on right: 42 79
+    valeur <nd_obj2> (94)
+        on left: 96 97
+        on right: 46 85
+    returne <nd_obj> (95)
+        on left: 98 99 100
         on right: 36
 
 
@@ -593,33 +601,33 @@ State 21
     RETURN          shift, and go to state 31
 
     VOID            [reduce using rule 29 (instruction)]
-    VOID            [reduce using rule 95 (returne)]
+    VOID            [reduce using rule 100 (returne)]
     INT             [reduce using rule 29 (instruction)]
-    INT             [reduce using rule 95 (returne)]
+    INT             [reduce using rule 100 (returne)]
     FOR             [reduce using rule 29 (instruction)]
-    FOR             [reduce using rule 95 (returne)]
+    FOR             [reduce using rule 100 (returne)]
     SWITCH          [reduce using rule 29 (instruction)]
-    SWITCH          [reduce using rule 95 (returne)]
+    SWITCH          [reduce using rule 100 (returne)]
     CASE            [reduce using rule 29 (instruction)]
-    CASE            [reduce using rule 95 (returne)]
+    CASE            [reduce using rule 100 (returne)]
     DEFAULT         [reduce using rule 29 (instruction)]
-    DEFAULT         [reduce using rule 95 (returne)]
+    DEFAULT         [reduce using rule 100 (returne)]
     BREAK           [reduce using rule 29 (instruction)]
-    BREAK           [reduce using rule 95 (returne)]
+    BREAK           [reduce using rule 100 (returne)]
     IF              [reduce using rule 29 (instruction)]
-    IF              [reduce using rule 95 (returne)]
+    IF              [reduce using rule 100 (returne)]
     IDENTIFICATEUR  [reduce using rule 29 (instruction)]
-    IDENTIFICATEUR  [reduce using rule 95 (returne)]
+    IDENTIFICATEUR  [reduce using rule 100 (returne)]
     UNARY           [reduce using rule 29 (instruction)]
-    UNARY           [reduce using rule 95 (returne)]
+    UNARY           [reduce using rule 100 (returne)]
     RETURN          [reduce using rule 29 (instruction)]
-    RETURN          [reduce using rule 95 (returne)]
+    RETURN          [reduce using rule 100 (returne)]
     '}'             reduce using rule 28 (liste_instructions)
     '}'             [reduce using rule 29 (instruction)]
-    '}'             [reduce using rule 95 (returne)]
+    '}'             [reduce using rule 100 (returne)]
     ';'             reduce using rule 29 (instruction)
     ';'             [reduce using rule 38 (instruction1)]
-    ';'             [reduce using rule 95 (returne)]
+    ';'             [reduce using rule 100 (returne)]
     $default        reduce using rule 28 (liste_instructions)
 
     declaration         go to state 32
@@ -697,7 +705,7 @@ State 28
 State 29
 
    40 instruction1: IDENTIFICATEUR . $@6 '=' expression
-   42             | IDENTIFICATEUR . $@7 relop expression
+   42             | IDENTIFICATEUR . $@7 binary_comp expression
    44             | IDENTIFICATEUR . $@8 UNARY
    57 appel: IDENTIFICATEUR . '(' liste_expressions ')' ';'
 
@@ -721,8 +729,8 @@ State 30
 
 State 31
 
-   93 returne: RETURN . expression ';'
-   94        | RETURN . ';'
+   98 returne: RETURN . expression ';'
+   99        | RETURN . ';'
 
     CONSTANTE       shift, and go to state 55
     IDENTIFICATEUR  shift, and go to state 56
@@ -778,34 +786,34 @@ State 35
     RETURN          shift, and go to state 31
 
     VOID            [reduce using rule 29 (instruction)]
-    VOID            [reduce using rule 95 (returne)]
+    VOID            [reduce using rule 100 (returne)]
     INT             [reduce using rule 29 (instruction)]
-    INT             [reduce using rule 95 (returne)]
+    INT             [reduce using rule 100 (returne)]
     FOR             [reduce using rule 29 (instruction)]
-    FOR             [reduce using rule 95 (returne)]
+    FOR             [reduce using rule 100 (returne)]
     SWITCH          [reduce using rule 29 (instruction)]
-    SWITCH          [reduce using rule 95 (returne)]
+    SWITCH          [reduce using rule 100 (returne)]
     CASE            [reduce using rule 29 (instruction)]
-    CASE            [reduce using rule 95 (returne)]
+    CASE            [reduce using rule 100 (returne)]
     DEFAULT         [reduce using rule 29 (instruction)]
-    DEFAULT         [reduce using rule 95 (returne)]
+    DEFAULT         [reduce using rule 100 (returne)]
     BREAK           [reduce using rule 29 (instruction)]
-    BREAK           [reduce using rule 95 (returne)]
+    BREAK           [reduce using rule 100 (returne)]
     IF              [reduce using rule 29 (instruction)]
-    IF              [reduce using rule 95 (returne)]
+    IF              [reduce using rule 100 (returne)]
     IDENTIFICATEUR  [reduce using rule 29 (instruction)]
-    IDENTIFICATEUR  [reduce using rule 95 (returne)]
+    IDENTIFICATEUR  [reduce using rule 100 (returne)]
     UNARY           [reduce using rule 29 (instruction)]
-    UNARY           [reduce using rule 95 (returne)]
+    UNARY           [reduce using rule 100 (returne)]
     RETURN          [reduce using rule 29 (instruction)]
-    RETURN          [reduce using rule 95 (returne)]
+    RETURN          [reduce using rule 100 (returne)]
     '}'             reduce using rule 27 (liste_instructions)
     '}'             [reduce using rule 28 (liste_instructions)]
     '}'             [reduce using rule 29 (instruction)]
-    '}'             [reduce using rule 95 (returne)]
+    '}'             [reduce using rule 100 (returne)]
     ';'             reduce using rule 29 (instruction)
     ';'             [reduce using rule 38 (instruction1)]
-    ';'             [reduce using rule 95 (returne)]
+    ';'             [reduce using rule 100 (returne)]
     $default        reduce using rule 27 (liste_instructions)
 
     declaration         go to state 32
@@ -917,34 +925,34 @@ State 46
     RETURN          shift, and go to state 31
 
     VOID            [reduce using rule 29 (instruction)]
-    VOID            [reduce using rule 95 (returne)]
+    VOID            [reduce using rule 100 (returne)]
     INT             [reduce using rule 29 (instruction)]
-    INT             [reduce using rule 95 (returne)]
+    INT             [reduce using rule 100 (returne)]
     FOR             [reduce using rule 29 (instruction)]
-    FOR             [reduce using rule 95 (returne)]
+    FOR             [reduce using rule 100 (returne)]
     SWITCH          [reduce using rule 29 (instruction)]
-    SWITCH          [reduce using rule 95 (returne)]
+    SWITCH          [reduce using rule 100 (returne)]
     CASE            [reduce using rule 29 (instruction)]
-    CASE            [reduce using rule 95 (returne)]
+    CASE            [reduce using rule 100 (returne)]
     DEFAULT         [reduce using rule 29 (instruction)]
-    DEFAULT         [reduce using rule 95 (returne)]
+    DEFAULT         [reduce using rule 100 (returne)]
     BREAK           [reduce using rule 29 (instruction)]
-    BREAK           [reduce using rule 95 (returne)]
+    BREAK           [reduce using rule 100 (returne)]
     IF              [reduce using rule 29 (instruction)]
-    IF              [reduce using rule 95 (returne)]
+    IF              [reduce using rule 100 (returne)]
     ELSE            reduce using rule 29 (instruction)
-    ELSE            [reduce using rule 95 (returne)]
+    ELSE            [reduce using rule 100 (returne)]
     IDENTIFICATEUR  [reduce using rule 29 (instruction)]
-    IDENTIFICATEUR  [reduce using rule 95 (returne)]
+    IDENTIFICATEUR  [reduce using rule 100 (returne)]
     UNARY           [reduce using rule 29 (instruction)]
-    UNARY           [reduce using rule 95 (returne)]
+    UNARY           [reduce using rule 100 (returne)]
     RETURN          [reduce using rule 29 (instruction)]
-    RETURN          [reduce using rule 95 (returne)]
+    RETURN          [reduce using rule 100 (returne)]
     '}'             reduce using rule 29 (instruction)
-    '}'             [reduce using rule 95 (returne)]
+    '}'             [reduce using rule 100 (returne)]
     ';'             reduce using rule 29 (instruction)
     ';'             [reduce using rule 38 (instruction1)]
-    ';'             [reduce using rule 95 (returne)]
+    ';'             [reduce using rule 100 (returne)]
     $default        reduce using rule 29 (instruction)
 
     declaration   go to state 32
@@ -1002,7 +1010,7 @@ State 51
 
 State 52
 
-   42 instruction1: IDENTIFICATEUR $@7 . relop expression
+   42 instruction1: IDENTIFICATEUR $@7 . binary_comp expression
 
     LEQ  shift, and go to state 82
     GEQ  shift, and go to state 83
@@ -1011,7 +1019,7 @@ State 52
     LT   shift, and go to state 86
     NEQ  shift, and go to state 87
 
-    relop  go to state 88
+    binary_comp  go to state 88
 
 
 State 53
@@ -1031,36 +1039,44 @@ State 54
 State 55
 
    66 expression: CONSTANTE . $@14
-   91 valeur: CONSTANTE .
+   96 valeur: CONSTANTE .
 
     LEQ       reduce using rule 65 ($@14)
-    LEQ       [reduce using rule 91 (valeur)]
+    LEQ       [reduce using rule 96 (valeur)]
     GEQ       reduce using rule 65 ($@14)
-    GEQ       [reduce using rule 91 (valeur)]
+    GEQ       [reduce using rule 96 (valeur)]
     EQ        reduce using rule 65 ($@14)
-    EQ        [reduce using rule 91 (valeur)]
+    EQ        [reduce using rule 96 (valeur)]
     GT        reduce using rule 65 ($@14)
-    GT        [reduce using rule 91 (valeur)]
+    GT        [reduce using rule 96 (valeur)]
+    BAND      reduce using rule 65 ($@14)
+    BAND      [reduce using rule 96 (valeur)]
+    BOR       reduce using rule 65 ($@14)
+    BOR       [reduce using rule 96 (valeur)]
+    LSHIFT    reduce using rule 65 ($@14)
+    LSHIFT    [reduce using rule 96 (valeur)]
+    RSHIFT    reduce using rule 65 ($@14)
+    RSHIFT    [reduce using rule 96 (valeur)]
     LT        reduce using rule 65 ($@14)
-    LT        [reduce using rule 91 (valeur)]
+    LT        [reduce using rule 96 (valeur)]
     NEQ       reduce using rule 65 ($@14)
-    NEQ       [reduce using rule 91 (valeur)]
+    NEQ       [reduce using rule 96 (valeur)]
     PLUS      reduce using rule 65 ($@14)
-    PLUS      [reduce using rule 91 (valeur)]
+    PLUS      [reduce using rule 96 (valeur)]
     MUL       reduce using rule 65 ($@14)
-    MUL       [reduce using rule 91 (valeur)]
+    MUL       [reduce using rule 96 (valeur)]
     DIV       reduce using rule 65 ($@14)
-    DIV       [reduce using rule 91 (valeur)]
+    DIV       [reduce using rule 96 (valeur)]
     MOINS     reduce using rule 65 ($@14)
-    MOINS     [reduce using rule 91 (valeur)]
+    MOINS     [reduce using rule 96 (valeur)]
     ')'       reduce using rule 65 ($@14)
-    ')'       [reduce using rule 91 (valeur)]
+    ')'       [reduce using rule 96 (valeur)]
     ';'       reduce using rule 65 ($@14)
-    ';'       [reduce using rule 91 (valeur)]
+    ';'       [reduce using rule 96 (valeur)]
     ','       reduce using rule 65 ($@14)
-    ','       [reduce using rule 91 (valeur)]
+    ','       [reduce using rule 96 (valeur)]
     ']'       reduce using rule 65 ($@14)
-    ']'       [reduce using rule 91 (valeur)]
+    ']'       [reduce using rule 96 (valeur)]
     $default  reduce using rule 65 ($@14)
 
     $@14  go to state 90
@@ -1071,53 +1087,65 @@ State 56
    58 variable: IDENTIFICATEUR .
    61 tableu: IDENTIFICATEUR .
    68 expression: IDENTIFICATEUR . '(' liste_expressions ')'
-   92 valeur: IDENTIFICATEUR .
+   97 valeur: IDENTIFICATEUR .
 
     '('  shift, and go to state 91
 
     LEQ       reduce using rule 58 (variable)
     LEQ       [reduce using rule 61 (tableu)]
-    LEQ       [reduce using rule 92 (valeur)]
+    LEQ       [reduce using rule 97 (valeur)]
     GEQ       reduce using rule 58 (variable)
     GEQ       [reduce using rule 61 (tableu)]
-    GEQ       [reduce using rule 92 (valeur)]
+    GEQ       [reduce using rule 97 (valeur)]
     EQ        reduce using rule 58 (variable)
     EQ        [reduce using rule 61 (tableu)]
-    EQ        [reduce using rule 92 (valeur)]
+    EQ        [reduce using rule 97 (valeur)]
     GT        reduce using rule 58 (variable)
     GT        [reduce using rule 61 (tableu)]
-    GT        [reduce using rule 92 (valeur)]
+    GT        [reduce using rule 97 (valeur)]
+    BAND      reduce using rule 58 (variable)
+    BAND      [reduce using rule 61 (tableu)]
+    BAND      [reduce using rule 97 (valeur)]
+    BOR       reduce using rule 58 (variable)
+    BOR       [reduce using rule 61 (tableu)]
+    BOR       [reduce using rule 97 (valeur)]
+    LSHIFT    reduce using rule 58 (variable)
+    LSHIFT    [reduce using rule 61 (tableu)]
+    LSHIFT    [reduce using rule 97 (valeur)]
+    RSHIFT    reduce using rule 58 (variable)
+    RSHIFT    [reduce using rule 61 (tableu)]
+    RSHIFT    [reduce using rule 97 (valeur)]
     LT        reduce using rule 58 (variable)
     LT        [reduce using rule 61 (tableu)]
-    LT        [reduce using rule 92 (valeur)]
+    LT        [reduce using rule 97 (valeur)]
     NEQ       reduce using rule 58 (variable)
     NEQ       [reduce using rule 61 (tableu)]
-    NEQ       [reduce using rule 92 (valeur)]
+    NEQ       [reduce using rule 97 (valeur)]
     PLUS      reduce using rule 58 (variable)
     PLUS      [reduce using rule 61 (tableu)]
-    PLUS      [reduce using rule 92 (valeur)]
+    PLUS      [reduce using rule 97 (valeur)]
     MUL       reduce using rule 58 (variable)
     MUL       [reduce using rule 61 (tableu)]
-    MUL       [reduce using rule 92 (valeur)]
+    MUL       [reduce using rule 97 (valeur)]
     DIV       reduce using rule 58 (variable)
     DIV       [reduce using rule 61 (tableu)]
-    DIV       [reduce using rule 92 (valeur)]
+    DIV       [reduce using rule 97 (valeur)]
     MOINS     reduce using rule 58 (variable)
     MOINS     [reduce using rule 61 (tableu)]
-    MOINS     [reduce using rule 92 (valeur)]
+    MOINS     [reduce using rule 97 (valeur)]
     ')'       reduce using rule 58 (variable)
     ')'       [reduce using rule 61 (tableu)]
-    ')'       [reduce using rule 92 (valeur)]
+    ')'       [reduce using rule 97 (valeur)]
     ';'       reduce using rule 58 (variable)
     ';'       [reduce using rule 61 (tableu)]
-    ';'       [reduce using rule 92 (valeur)]
+    ';'       [reduce using rule 97 (valeur)]
     ','       reduce using rule 58 (variable)
     ','       [reduce using rule 61 (tableu)]
-    ','       [reduce using rule 92 (valeur)]
+    ','       [reduce using rule 97 (valeur)]
     '['       reduce using rule 61 (tableu)
     ']'       reduce using rule 58 (variable)
     ']'       [reduce using rule 61 (tableu)]
-    ']'       [reduce using rule 92 (valeur)]
+    ']'       [reduce using rule 97 (valeur)]
     $default  reduce using rule 58 (variable)
 
 
@@ -1153,9 +1181,9 @@ State 58
 
 State 59
 
-   94 returne: RETURN ';' .
+   99 returne: RETURN ';' .
 
-    $default  reduce using rule 94 (returne)
+    $default  reduce using rule 99 (returne)
 
 
 State 60
@@ -1178,24 +1206,28 @@ State 61
 State 62
 
    63 expression: expression . binary_op expression
-   79           | expression . arithmetic expression
-   93 returne: RETURN expression . ';'
+   84           | expression . arithmetic expression
+   98 returne: RETURN expression . ';'
 
-    PLUS   shift, and go to state 95
-    MUL    shift, and go to state 96
-    DIV    shift, and go to state 97
-    MOINS  shift, and go to state 98
-    ';'    shift, and go to state 99
+    BAND    shift, and go to state 95
+    BOR     shift, and go to state 96
+    LSHIFT  shift, and go to state 97
+    RSHIFT  shift, and go to state 98
+    PLUS    shift, and go to state 99
+    MUL     shift, and go to state 100
+    DIV     shift, and go to state 101
+    MOINS   shift, and go to state 102
+    ';'     shift, and go to state 103
 
-    binary_op   go to state 100
-    arithmetic  go to state 101
+    binary_op   go to state 104
+    arithmetic  go to state 105
 
 
 State 63
 
-   80 expression: valeur .
+   85 expression: valeur .
 
-    $default  reduce using rule 80 (expression)
+    $default  reduce using rule 85 (expression)
 
 
 State 64
@@ -1209,7 +1241,7 @@ State 65
 
    23 declaration: datatype liste_declarateurs . ';'
 
-    ';'  shift, and go to state 102
+    ';'  shift, and go to state 106
 
 
 State 66
@@ -1219,13 +1251,13 @@ State 66
    19                   | declarateur . init
    22 declarateur: declarateur . '[' CONSTANTE $@4 ']'
 
-    ','  shift, and go to state 103
-    '['  shift, and go to state 104
-    '='  shift, and go to state 105
+    ','  shift, and go to state 107
+    '['  shift, and go to state 108
+    '='  shift, and go to state 109
 
     $default  reduce using rule 18 (liste_declarateurs)
 
-    init  go to state 106
+    init  go to state 110
 
 
 State 67
@@ -1253,14 +1285,14 @@ State 70
 
    16 parm: INT $@3 . IDENTIFICATEUR
 
-    IDENTIFICATEUR  shift, and go to state 107
+    IDENTIFICATEUR  shift, and go to state 111
 
 
 State 71
 
    11 externe: EXTERN datatype IDENTIFICATEUR $@2 '(' liste_parms ')' . ';'
 
-    ';'  shift, and go to state 108
+    ';'  shift, and go to state 112
 
 
 State 72
@@ -1269,35 +1301,39 @@ State 72
 
     INT  shift, and go to state 40
 
-    parm  go to state 109
+    parm  go to state 113
 
 
 State 73
 
    31 instruction: FOR $@5 '(' . instruction1 ';' condition ';' instruction1 ')' instruction
 
-    IDENTIFICATEUR  shift, and go to state 110
+    IDENTIFICATEUR  shift, and go to state 114
     UNARY           shift, and go to state 30
 
     $default  reduce using rule 38 (instruction1)
 
-    instruction1  go to state 111
+    instruction1  go to state 115
 
 
 State 74
 
    54 selection: SWITCH '(' expression . ')' instruction
    63 expression: expression . binary_op expression
-   79           | expression . arithmetic expression
+   84           | expression . arithmetic expression
 
-    PLUS   shift, and go to state 95
-    MUL    shift, and go to state 96
-    DIV    shift, and go to state 97
-    MOINS  shift, and go to state 98
-    ')'    shift, and go to state 112
+    BAND    shift, and go to state 95
+    BOR     shift, and go to state 96
+    LSHIFT  shift, and go to state 97
+    RSHIFT  shift, and go to state 98
+    PLUS    shift, and go to state 99
+    MUL     shift, and go to state 100
+    DIV     shift, and go to state 101
+    MOINS   shift, and go to state 102
+    ')'     shift, and go to state 116
 
-    binary_op   go to state 100
-    arithmetic  go to state 101
+    binary_op   go to state 104
+    arithmetic  go to state 105
 
 
 State 75
@@ -1317,39 +1353,39 @@ State 75
     RETURN          shift, and go to state 31
 
     VOID            [reduce using rule 29 (instruction)]
-    VOID            [reduce using rule 95 (returne)]
+    VOID            [reduce using rule 100 (returne)]
     INT             [reduce using rule 29 (instruction)]
-    INT             [reduce using rule 95 (returne)]
+    INT             [reduce using rule 100 (returne)]
     FOR             [reduce using rule 29 (instruction)]
-    FOR             [reduce using rule 95 (returne)]
+    FOR             [reduce using rule 100 (returne)]
     SWITCH          [reduce using rule 29 (instruction)]
-    SWITCH          [reduce using rule 95 (returne)]
+    SWITCH          [reduce using rule 100 (returne)]
     CASE            [reduce using rule 29 (instruction)]
-    CASE            [reduce using rule 95 (returne)]
+    CASE            [reduce using rule 100 (returne)]
     DEFAULT         [reduce using rule 29 (instruction)]
-    DEFAULT         [reduce using rule 95 (returne)]
+    DEFAULT         [reduce using rule 100 (returne)]
     BREAK           [reduce using rule 29 (instruction)]
-    BREAK           [reduce using rule 95 (returne)]
+    BREAK           [reduce using rule 100 (returne)]
     IF              [reduce using rule 29 (instruction)]
-    IF              [reduce using rule 95 (returne)]
+    IF              [reduce using rule 100 (returne)]
     ELSE            reduce using rule 29 (instruction)
-    ELSE            [reduce using rule 95 (returne)]
+    ELSE            [reduce using rule 100 (returne)]
     IDENTIFICATEUR  [reduce using rule 29 (instruction)]
-    IDENTIFICATEUR  [reduce using rule 95 (returne)]
+    IDENTIFICATEUR  [reduce using rule 100 (returne)]
     UNARY           [reduce using rule 29 (instruction)]
-    UNARY           [reduce using rule 95 (returne)]
+    UNARY           [reduce using rule 100 (returne)]
     RETURN          [reduce using rule 29 (instruction)]
-    RETURN          [reduce using rule 95 (returne)]
+    RETURN          [reduce using rule 100 (returne)]
     '}'             reduce using rule 29 (instruction)
-    '}'             [reduce using rule 95 (returne)]
+    '}'             [reduce using rule 100 (returne)]
     ';'             reduce using rule 29 (instruction)
     ';'             [reduce using rule 38 (instruction1)]
-    ';'             [reduce using rule 95 (returne)]
+    ';'             [reduce using rule 100 (returne)]
     $default        reduce using rule 29 (instruction)
 
     declaration   go to state 32
     datatype      go to state 33
-    instruction   go to state 113
+    instruction   go to state 117
     instruction1  go to state 36
     selection     go to state 37
     appel         go to state 38
@@ -1367,19 +1403,20 @@ State 77
 
    49 selection: IF $@9 '(' . condition ')' $@10 instruction
 
-    TRUE            shift, and go to state 114
-    FALSE           shift, and go to state 115
+    TRUE            shift, and go to state 118
+    FALSE           shift, and go to state 119
     CONSTANTE       shift, and go to state 55
     IDENTIFICATEUR  shift, and go to state 56
+    NOT             shift, and go to state 120
     MOINS           shift, and go to state 57
     '('             shift, and go to state 58
 
-    $default  reduce using rule 78 (condition)
+    $default  reduce using rule 83 (condition)
 
     variable    go to state 60
     tableu      go to state 61
-    expression  go to state 116
-    condition   go to state 117
+    expression  go to state 121
+    condition   go to state 122
     valeur      go to state 63
 
 
@@ -1387,19 +1424,20 @@ State 78
 
    53 selection: IF $@11 '(' . condition ')' $@12 instruction $@13 ELSE instruction
 
-    TRUE            shift, and go to state 114
-    FALSE           shift, and go to state 115
+    TRUE            shift, and go to state 118
+    FALSE           shift, and go to state 119
     CONSTANTE       shift, and go to state 55
     IDENTIFICATEUR  shift, and go to state 56
+    NOT             shift, and go to state 120
     MOINS           shift, and go to state 57
     '('             shift, and go to state 58
 
-    $default  reduce using rule 78 (condition)
+    $default  reduce using rule 83 (condition)
 
     variable    go to state 60
     tableu      go to state 61
-    expression  go to state 116
-    condition   go to state 118
+    expression  go to state 121
+    condition   go to state 123
     valeur      go to state 63
 
 
@@ -1407,17 +1445,21 @@ State 79
 
    63 expression: expression . binary_op expression
    70 liste_expressions: expression .
-   79 expression: expression . arithmetic expression
+   84 expression: expression . arithmetic expression
 
-    PLUS   shift, and go to state 95
-    MUL    shift, and go to state 96
-    DIV    shift, and go to state 97
-    MOINS  shift, and go to state 98
+    BAND    shift, and go to state 95
+    BOR     shift, and go to state 96
+    LSHIFT  shift, and go to state 97
+    RSHIFT  shift, and go to state 98
+    PLUS    shift, and go to state 99
+    MUL     shift, and go to state 100
+    DIV     shift, and go to state 101
+    MOINS   shift, and go to state 102
 
     $default  reduce using rule 70 (liste_expressions)
 
-    binary_op   go to state 100
-    arithmetic  go to state 101
+    binary_op   go to state 104
+    arithmetic  go to state 105
 
 
 State 80
@@ -1425,8 +1467,8 @@ State 80
    57 appel: IDENTIFICATEUR '(' liste_expressions . ')' ';'
    69 liste_expressions: liste_expressions . ',' expression
 
-    ')'  shift, and go to state 119
-    ','  shift, and go to state 120
+    ')'  shift, and go to state 124
+    ','  shift, and go to state 125
 
 
 State 81
@@ -1440,55 +1482,55 @@ State 81
 
     variable    go to state 60
     tableu      go to state 61
-    expression  go to state 121
+    expression  go to state 126
     valeur      go to state 63
 
 
 State 82
 
-   87 relop: LEQ .
+   92 binary_comp: LEQ .
 
-    $default  reduce using rule 87 (relop)
+    $default  reduce using rule 92 (binary_comp)
 
 
 State 83
 
-   88 relop: GEQ .
+   93 binary_comp: GEQ .
 
-    $default  reduce using rule 88 (relop)
+    $default  reduce using rule 93 (binary_comp)
 
 
 State 84
 
-   89 relop: EQ .
+   94 binary_comp: EQ .
 
-    $default  reduce using rule 89 (relop)
+    $default  reduce using rule 94 (binary_comp)
 
 
 State 85
 
-   86 relop: GT .
+   91 binary_comp: GT .
 
-    $default  reduce using rule 86 (relop)
+    $default  reduce using rule 91 (binary_comp)
 
 
 State 86
 
-   85 relop: LT .
+   90 binary_comp: LT .
 
-    $default  reduce using rule 85 (relop)
+    $default  reduce using rule 90 (binary_comp)
 
 
 State 87
 
-   90 relop: NEQ .
+   95 binary_comp: NEQ .
 
-    $default  reduce using rule 90 (relop)
+    $default  reduce using rule 95 (binary_comp)
 
 
 State 88
 
-   42 instruction1: IDENTIFICATEUR $@7 relop . expression
+   42 instruction1: IDENTIFICATEUR $@7 binary_comp . expression
 
     CONSTANTE       shift, and go to state 55
     IDENTIFICATEUR  shift, and go to state 56
@@ -1497,7 +1539,7 @@ State 88
 
     variable    go to state 60
     tableu      go to state 61
-    expression  go to state 122
+    expression  go to state 127
     valeur      go to state 63
 
 
@@ -1527,7 +1569,7 @@ State 91
     variable           go to state 60
     tableu             go to state 61
     expression         go to state 79
-    liste_expressions  go to state 123
+    liste_expressions  go to state 128
     valeur             go to state 63
 
 
@@ -1535,37 +1577,39 @@ State 92
 
    63 expression: expression . binary_op expression
    64           | MOINS expression .
-   79           | expression . arithmetic expression
+   84           | expression . arithmetic expression
 
-    PLUS   shift, and go to state 95
-    MUL    shift, and go to state 96
-    DIV    shift, and go to state 97
-    MOINS  shift, and go to state 98
+    BAND    shift, and go to state 95
+    BOR     shift, and go to state 96
+    LSHIFT  shift, and go to state 97
+    RSHIFT  shift, and go to state 98
+    MUL     shift, and go to state 100
+    DIV     shift, and go to state 101
 
-    PLUS      [reduce using rule 64 (expression)]
-    MUL       [reduce using rule 64 (expression)]
-    DIV       [reduce using rule 64 (expression)]
-    MOINS     [reduce using rule 64 (expression)]
     $default  reduce using rule 64 (expression)
 
-    binary_op   go to state 100
-    arithmetic  go to state 101
+    binary_op   go to state 104
+    arithmetic  go to state 105
 
 
 State 93
 
    62 expression: '(' expression . ')'
    63           | expression . binary_op expression
-   79           | expression . arithmetic expression
+   84           | expression . arithmetic expression
 
-    PLUS   shift, and go to state 95
-    MUL    shift, and go to state 96
-    DIV    shift, and go to state 97
-    MOINS  shift, and go to state 98
-    ')'    shift, and go to state 124
+    BAND    shift, and go to state 95
+    BOR     shift, and go to state 96
+    LSHIFT  shift, and go to state 97
+    RSHIFT  shift, and go to state 98
+    PLUS    shift, and go to state 99
+    MUL     shift, and go to state 100
+    DIV     shift, and go to state 101
+    MOINS   shift, and go to state 102
+    ')'     shift, and go to state 129
 
-    binary_op   go to state 100
-    arithmetic  go to state 101
+    binary_op   go to state 104
+    arithmetic  go to state 105
 
 
 State 94
@@ -1579,82 +1623,110 @@ State 94
 
     variable    go to state 60
     tableu      go to state 61
-    expression  go to state 125
+    expression  go to state 130
     valeur      go to state 63
 
 
 State 95
 
-   71 binary_op: PLUS .
-   81 arithmetic: PLUS .
+   77 binary_op: BAND .
 
-    CONSTANTE       reduce using rule 71 (binary_op)
-    CONSTANTE       [reduce using rule 81 (arithmetic)]
-    IDENTIFICATEUR  reduce using rule 71 (binary_op)
-    IDENTIFICATEUR  [reduce using rule 81 (arithmetic)]
-    MOINS           reduce using rule 71 (binary_op)
-    MOINS           [reduce using rule 81 (arithmetic)]
-    '('             reduce using rule 71 (binary_op)
-    '('             [reduce using rule 81 (arithmetic)]
-    $default        reduce using rule 71 (binary_op)
+    $default  reduce using rule 77 (binary_op)
 
 
 State 96
 
-   73 binary_op: MUL .
-   83 arithmetic: MUL .
+   78 binary_op: BOR .
 
-    CONSTANTE       reduce using rule 73 (binary_op)
-    CONSTANTE       [reduce using rule 83 (arithmetic)]
-    IDENTIFICATEUR  reduce using rule 73 (binary_op)
-    IDENTIFICATEUR  [reduce using rule 83 (arithmetic)]
-    MOINS           reduce using rule 73 (binary_op)
-    MOINS           [reduce using rule 83 (arithmetic)]
-    '('             reduce using rule 73 (binary_op)
-    '('             [reduce using rule 83 (arithmetic)]
-    $default        reduce using rule 73 (binary_op)
+    $default  reduce using rule 78 (binary_op)
 
 
 State 97
 
-   74 binary_op: DIV .
-   84 arithmetic: DIV .
+   75 binary_op: LSHIFT .
 
-    CONSTANTE       reduce using rule 74 (binary_op)
-    CONSTANTE       [reduce using rule 84 (arithmetic)]
-    IDENTIFICATEUR  reduce using rule 74 (binary_op)
-    IDENTIFICATEUR  [reduce using rule 84 (arithmetic)]
-    MOINS           reduce using rule 74 (binary_op)
-    MOINS           [reduce using rule 84 (arithmetic)]
-    '('             reduce using rule 74 (binary_op)
-    '('             [reduce using rule 84 (arithmetic)]
-    $default        reduce using rule 74 (binary_op)
+    $default  reduce using rule 75 (binary_op)
 
 
 State 98
 
-   72 binary_op: MOINS .
-   82 arithmetic: MOINS .
+   76 binary_op: RSHIFT .
 
-    CONSTANTE       reduce using rule 72 (binary_op)
-    CONSTANTE       [reduce using rule 82 (arithmetic)]
-    IDENTIFICATEUR  reduce using rule 72 (binary_op)
-    IDENTIFICATEUR  [reduce using rule 82 (arithmetic)]
-    MOINS           reduce using rule 72 (binary_op)
-    MOINS           [reduce using rule 82 (arithmetic)]
-    '('             reduce using rule 72 (binary_op)
-    '('             [reduce using rule 82 (arithmetic)]
-    $default        reduce using rule 72 (binary_op)
+    $default  reduce using rule 76 (binary_op)
 
 
 State 99
 
-   93 returne: RETURN expression ';' .
+   71 binary_op: PLUS .
+   86 arithmetic: PLUS .
 
-    $default  reduce using rule 93 (returne)
+    CONSTANTE       reduce using rule 71 (binary_op)
+    CONSTANTE       [reduce using rule 86 (arithmetic)]
+    IDENTIFICATEUR  reduce using rule 71 (binary_op)
+    IDENTIFICATEUR  [reduce using rule 86 (arithmetic)]
+    MOINS           reduce using rule 71 (binary_op)
+    MOINS           [reduce using rule 86 (arithmetic)]
+    '('             reduce using rule 71 (binary_op)
+    '('             [reduce using rule 86 (arithmetic)]
+    $default        reduce using rule 71 (binary_op)
 
 
 State 100
+
+   73 binary_op: MUL .
+   88 arithmetic: MUL .
+
+    CONSTANTE       reduce using rule 73 (binary_op)
+    CONSTANTE       [reduce using rule 88 (arithmetic)]
+    IDENTIFICATEUR  reduce using rule 73 (binary_op)
+    IDENTIFICATEUR  [reduce using rule 88 (arithmetic)]
+    MOINS           reduce using rule 73 (binary_op)
+    MOINS           [reduce using rule 88 (arithmetic)]
+    '('             reduce using rule 73 (binary_op)
+    '('             [reduce using rule 88 (arithmetic)]
+    $default        reduce using rule 73 (binary_op)
+
+
+State 101
+
+   74 binary_op: DIV .
+   89 arithmetic: DIV .
+
+    CONSTANTE       reduce using rule 74 (binary_op)
+    CONSTANTE       [reduce using rule 89 (arithmetic)]
+    IDENTIFICATEUR  reduce using rule 74 (binary_op)
+    IDENTIFICATEUR  [reduce using rule 89 (arithmetic)]
+    MOINS           reduce using rule 74 (binary_op)
+    MOINS           [reduce using rule 89 (arithmetic)]
+    '('             reduce using rule 74 (binary_op)
+    '('             [reduce using rule 89 (arithmetic)]
+    $default        reduce using rule 74 (binary_op)
+
+
+State 102
+
+   72 binary_op: MOINS .
+   87 arithmetic: MOINS .
+
+    CONSTANTE       reduce using rule 72 (binary_op)
+    CONSTANTE       [reduce using rule 87 (arithmetic)]
+    IDENTIFICATEUR  reduce using rule 72 (binary_op)
+    IDENTIFICATEUR  [reduce using rule 87 (arithmetic)]
+    MOINS           reduce using rule 72 (binary_op)
+    MOINS           [reduce using rule 87 (arithmetic)]
+    '('             reduce using rule 72 (binary_op)
+    '('             [reduce using rule 87 (arithmetic)]
+    $default        reduce using rule 72 (binary_op)
+
+
+State 103
+
+   98 returne: RETURN expression ';' .
+
+    $default  reduce using rule 98 (returne)
+
+
+State 104
 
    63 expression: expression binary_op . expression
 
@@ -1665,13 +1737,13 @@ State 100
 
     variable    go to state 60
     tableu      go to state 61
-    expression  go to state 126
+    expression  go to state 131
     valeur      go to state 63
 
 
-State 101
+State 105
 
-   79 expression: expression arithmetic . expression
+   84 expression: expression arithmetic . expression
 
     CONSTANTE       shift, and go to state 55
     IDENTIFICATEUR  shift, and go to state 56
@@ -1680,76 +1752,76 @@ State 101
 
     variable    go to state 60
     tableu      go to state 61
-    expression  go to state 127
+    expression  go to state 132
     valeur      go to state 63
 
 
-State 102
+State 106
 
    23 declaration: datatype liste_declarateurs ';' .
 
     $default  reduce using rule 23 (declaration)
 
 
-State 103
+State 107
 
    17 liste_declarateurs: declarateur ',' . liste_declarateurs
 
     IDENTIFICATEUR  shift, and go to state 64
 
-    liste_declarateurs  go to state 128
+    liste_declarateurs  go to state 133
     declarateur         go to state 66
 
 
-State 104
+State 108
 
    22 declarateur: declarateur '[' . CONSTANTE $@4 ']'
 
-    CONSTANTE  shift, and go to state 129
+    CONSTANTE  shift, and go to state 134
 
 
-State 105
+State 109
 
    46 init: '=' . valeur
 
-    CONSTANTE       shift, and go to state 130
-    IDENTIFICATEUR  shift, and go to state 131
+    CONSTANTE       shift, and go to state 135
+    IDENTIFICATEUR  shift, and go to state 136
 
-    valeur  go to state 132
+    valeur  go to state 137
 
 
-State 106
+State 110
 
    19 liste_declarateurs: declarateur init .
 
     $default  reduce using rule 19 (liste_declarateurs)
 
 
-State 107
+State 111
 
    16 parm: INT $@3 IDENTIFICATEUR .
 
     $default  reduce using rule 16 (parm)
 
 
-State 108
+State 112
 
    11 externe: EXTERN datatype IDENTIFICATEUR $@2 '(' liste_parms ')' ';' .
 
     $default  reduce using rule 11 (externe)
 
 
-State 109
+State 113
 
    12 liste_parms: liste_parms ',' parm .
 
     $default  reduce using rule 12 (liste_parms)
 
 
-State 110
+State 114
 
    40 instruction1: IDENTIFICATEUR . $@6 '=' expression
-   42             | IDENTIFICATEUR . $@7 relop expression
+   42             | IDENTIFICATEUR . $@7 binary_comp expression
    44             | IDENTIFICATEUR . $@8 UNARY
 
     UNARY     reduce using rule 43 ($@8)
@@ -1761,14 +1833,14 @@ State 110
     $@8  go to state 53
 
 
-State 111
+State 115
 
    31 instruction: FOR $@5 '(' instruction1 . ';' condition ';' instruction1 ')' instruction
 
-    ';'  shift, and go to state 133
+    ';'  shift, and go to state 138
 
 
-State 112
+State 116
 
    54 selection: SWITCH '(' expression ')' . instruction
 
@@ -1785,110 +1857,121 @@ State 112
     RETURN          shift, and go to state 31
 
     VOID            [reduce using rule 29 (instruction)]
-    VOID            [reduce using rule 95 (returne)]
+    VOID            [reduce using rule 100 (returne)]
     INT             [reduce using rule 29 (instruction)]
-    INT             [reduce using rule 95 (returne)]
+    INT             [reduce using rule 100 (returne)]
     FOR             [reduce using rule 29 (instruction)]
-    FOR             [reduce using rule 95 (returne)]
+    FOR             [reduce using rule 100 (returne)]
     SWITCH          [reduce using rule 29 (instruction)]
-    SWITCH          [reduce using rule 95 (returne)]
+    SWITCH          [reduce using rule 100 (returne)]
     CASE            [reduce using rule 29 (instruction)]
-    CASE            [reduce using rule 95 (returne)]
+    CASE            [reduce using rule 100 (returne)]
     DEFAULT         [reduce using rule 29 (instruction)]
-    DEFAULT         [reduce using rule 95 (returne)]
+    DEFAULT         [reduce using rule 100 (returne)]
     BREAK           [reduce using rule 29 (instruction)]
-    BREAK           [reduce using rule 95 (returne)]
+    BREAK           [reduce using rule 100 (returne)]
     IF              [reduce using rule 29 (instruction)]
-    IF              [reduce using rule 95 (returne)]
+    IF              [reduce using rule 100 (returne)]
     ELSE            reduce using rule 29 (instruction)
-    ELSE            [reduce using rule 95 (returne)]
+    ELSE            [reduce using rule 100 (returne)]
     IDENTIFICATEUR  [reduce using rule 29 (instruction)]
-    IDENTIFICATEUR  [reduce using rule 95 (returne)]
+    IDENTIFICATEUR  [reduce using rule 100 (returne)]
     UNARY           [reduce using rule 29 (instruction)]
-    UNARY           [reduce using rule 95 (returne)]
+    UNARY           [reduce using rule 100 (returne)]
     RETURN          [reduce using rule 29 (instruction)]
-    RETURN          [reduce using rule 95 (returne)]
+    RETURN          [reduce using rule 100 (returne)]
     '}'             reduce using rule 29 (instruction)
-    '}'             [reduce using rule 95 (returne)]
+    '}'             [reduce using rule 100 (returne)]
     ';'             reduce using rule 29 (instruction)
     ';'             [reduce using rule 38 (instruction1)]
-    ';'             [reduce using rule 95 (returne)]
+    ';'             [reduce using rule 100 (returne)]
     $default        reduce using rule 29 (instruction)
 
     declaration   go to state 32
     datatype      go to state 33
-    instruction   go to state 134
+    instruction   go to state 139
     instruction1  go to state 36
     selection     go to state 37
     appel         go to state 38
     returne       go to state 39
 
 
-State 113
+State 117
 
    55 selection: CASE CONSTANTE ':' instruction .
 
     $default  reduce using rule 55 (selection)
 
 
-State 114
-
-   76 condition: TRUE .
-
-    $default  reduce using rule 76 (condition)
-
-
-State 115
-
-   77 condition: FALSE .
-
-    $default  reduce using rule 77 (condition)
-
-
-State 116
-
-   63 expression: expression . binary_op expression
-   75 condition: expression . relop expression
-   79 expression: expression . arithmetic expression
-
-    LEQ    shift, and go to state 82
-    GEQ    shift, and go to state 83
-    EQ     shift, and go to state 84
-    GT     shift, and go to state 85
-    LT     shift, and go to state 86
-    NEQ    shift, and go to state 87
-    PLUS   shift, and go to state 95
-    MUL    shift, and go to state 96
-    DIV    shift, and go to state 97
-    MOINS  shift, and go to state 98
-
-    binary_op   go to state 100
-    arithmetic  go to state 101
-    relop       go to state 135
-
-
-State 117
-
-   49 selection: IF $@9 '(' condition . ')' $@10 instruction
-
-    ')'  shift, and go to state 136
-
-
 State 118
 
-   53 selection: IF $@11 '(' condition . ')' $@12 instruction $@13 ELSE instruction
+   81 condition: TRUE .
 
-    ')'  shift, and go to state 137
+    $default  reduce using rule 81 (condition)
 
 
 State 119
 
-   57 appel: IDENTIFICATEUR '(' liste_expressions ')' . ';'
+   82 condition: FALSE .
 
-    ';'  shift, and go to state 138
+    $default  reduce using rule 82 (condition)
 
 
 State 120
+
+   80 condition: NOT . '(' condition ')'
+
+    '('  shift, and go to state 140
+
+
+State 121
+
+   63 expression: expression . binary_op expression
+   79 condition: expression . binary_comp expression
+   84 expression: expression . arithmetic expression
+
+    LEQ     shift, and go to state 82
+    GEQ     shift, and go to state 83
+    EQ      shift, and go to state 84
+    GT      shift, and go to state 85
+    BAND    shift, and go to state 95
+    BOR     shift, and go to state 96
+    LSHIFT  shift, and go to state 97
+    RSHIFT  shift, and go to state 98
+    LT      shift, and go to state 86
+    NEQ     shift, and go to state 87
+    PLUS    shift, and go to state 99
+    MUL     shift, and go to state 100
+    DIV     shift, and go to state 101
+    MOINS   shift, and go to state 102
+
+    binary_op    go to state 104
+    arithmetic   go to state 105
+    binary_comp  go to state 141
+
+
+State 122
+
+   49 selection: IF $@9 '(' condition . ')' $@10 instruction
+
+    ')'  shift, and go to state 142
+
+
+State 123
+
+   53 selection: IF $@11 '(' condition . ')' $@12 instruction $@13 ELSE instruction
+
+    ')'  shift, and go to state 143
+
+
+State 124
+
+   57 appel: IDENTIFICATEUR '(' liste_expressions ')' . ';'
+
+    ';'  shift, and go to state 144
+
+
+State 125
 
    69 liste_expressions: liste_expressions ',' . expression
 
@@ -1899,185 +1982,218 @@ State 120
 
     variable    go to state 60
     tableu      go to state 61
-    expression  go to state 139
+    expression  go to state 145
     valeur      go to state 63
 
 
-State 121
+State 126
 
    40 instruction1: IDENTIFICATEUR $@6 '=' expression .
    63 expression: expression . binary_op expression
-   79           | expression . arithmetic expression
+   84           | expression . arithmetic expression
 
-    PLUS   shift, and go to state 95
-    MUL    shift, and go to state 96
-    DIV    shift, and go to state 97
-    MOINS  shift, and go to state 98
+    BAND    shift, and go to state 95
+    BOR     shift, and go to state 96
+    LSHIFT  shift, and go to state 97
+    RSHIFT  shift, and go to state 98
+    PLUS    shift, and go to state 99
+    MUL     shift, and go to state 100
+    DIV     shift, and go to state 101
+    MOINS   shift, and go to state 102
 
     $default  reduce using rule 40 (instruction1)
 
-    binary_op   go to state 100
-    arithmetic  go to state 101
+    binary_op   go to state 104
+    arithmetic  go to state 105
 
 
-State 122
+State 127
 
-   42 instruction1: IDENTIFICATEUR $@7 relop expression .
+   42 instruction1: IDENTIFICATEUR $@7 binary_comp expression .
    63 expression: expression . binary_op expression
-   79           | expression . arithmetic expression
+   84           | expression . arithmetic expression
 
-    PLUS   shift, and go to state 95
-    MUL    shift, and go to state 96
-    DIV    shift, and go to state 97
-    MOINS  shift, and go to state 98
+    BAND    shift, and go to state 95
+    BOR     shift, and go to state 96
+    LSHIFT  shift, and go to state 97
+    RSHIFT  shift, and go to state 98
+    PLUS    shift, and go to state 99
+    MUL     shift, and go to state 100
+    DIV     shift, and go to state 101
+    MOINS   shift, and go to state 102
 
     $default  reduce using rule 42 (instruction1)
 
-    binary_op   go to state 100
-    arithmetic  go to state 101
+    binary_op   go to state 104
+    arithmetic  go to state 105
 
 
-State 123
+State 128
 
    68 expression: IDENTIFICATEUR '(' liste_expressions . ')'
    69 liste_expressions: liste_expressions . ',' expression
 
-    ')'  shift, and go to state 140
-    ','  shift, and go to state 120
+    ')'  shift, and go to state 146
+    ','  shift, and go to state 125
 
 
-State 124
+State 129
 
    62 expression: '(' expression ')' .
 
     $default  reduce using rule 62 (expression)
 
 
-State 125
+State 130
 
    60 tableu: tableu '[' expression . ']'
    63 expression: expression . binary_op expression
-   79           | expression . arithmetic expression
+   84           | expression . arithmetic expression
 
-    PLUS   shift, and go to state 95
-    MUL    shift, and go to state 96
-    DIV    shift, and go to state 97
-    MOINS  shift, and go to state 98
-    ']'    shift, and go to state 141
+    BAND    shift, and go to state 95
+    BOR     shift, and go to state 96
+    LSHIFT  shift, and go to state 97
+    RSHIFT  shift, and go to state 98
+    PLUS    shift, and go to state 99
+    MUL     shift, and go to state 100
+    DIV     shift, and go to state 101
+    MOINS   shift, and go to state 102
+    ']'     shift, and go to state 147
 
-    binary_op   go to state 100
-    arithmetic  go to state 101
+    binary_op   go to state 104
+    arithmetic  go to state 105
 
 
-State 126
+State 131
 
    63 expression: expression . binary_op expression
    63           | expression binary_op expression .
-   79           | expression . arithmetic expression
+   84           | expression . arithmetic expression
 
-    PLUS   shift, and go to state 95
-    MUL    shift, and go to state 96
-    DIV    shift, and go to state 97
-    MOINS  shift, and go to state 98
-
-    PLUS      [reduce using rule 63 (expression)]
-    MUL       [reduce using rule 63 (expression)]
-    DIV       [reduce using rule 63 (expression)]
-    MOINS     [reduce using rule 63 (expression)]
     $default  reduce using rule 63 (expression)
 
-    binary_op   go to state 100
-    arithmetic  go to state 101
+    binary_op   go to state 104
+    arithmetic  go to state 105
 
 
-State 127
+State 132
 
    63 expression: expression . binary_op expression
-   79           | expression . arithmetic expression
-   79           | expression arithmetic expression .
+   84           | expression . arithmetic expression
+   84           | expression arithmetic expression .
 
-    PLUS   shift, and go to state 95
-    MUL    shift, and go to state 96
-    DIV    shift, and go to state 97
-    MOINS  shift, and go to state 98
+    BAND    shift, and go to state 95
+    BOR     shift, and go to state 96
+    LSHIFT  shift, and go to state 97
+    RSHIFT  shift, and go to state 98
+    PLUS    shift, and go to state 99
+    MUL     shift, and go to state 100
+    DIV     shift, and go to state 101
+    MOINS   shift, and go to state 102
 
-    PLUS      [reduce using rule 79 (expression)]
-    MUL       [reduce using rule 79 (expression)]
-    DIV       [reduce using rule 79 (expression)]
-    MOINS     [reduce using rule 79 (expression)]
-    $default  reduce using rule 79 (expression)
+    BAND      [reduce using rule 84 (expression)]
+    BOR       [reduce using rule 84 (expression)]
+    LSHIFT    [reduce using rule 84 (expression)]
+    RSHIFT    [reduce using rule 84 (expression)]
+    PLUS      [reduce using rule 84 (expression)]
+    MUL       [reduce using rule 84 (expression)]
+    DIV       [reduce using rule 84 (expression)]
+    MOINS     [reduce using rule 84 (expression)]
+    $default  reduce using rule 84 (expression)
 
-    binary_op   go to state 100
-    arithmetic  go to state 101
+    binary_op   go to state 104
+    arithmetic  go to state 105
 
 
-State 128
+State 133
 
    17 liste_declarateurs: declarateur ',' liste_declarateurs .
 
     $default  reduce using rule 17 (liste_declarateurs)
 
 
-State 129
+State 134
 
    22 declarateur: declarateur '[' CONSTANTE . $@4 ']'
 
     $default  reduce using rule 21 ($@4)
 
-    $@4  go to state 142
+    $@4  go to state 148
 
 
-State 130
+State 135
 
-   91 valeur: CONSTANTE .
+   96 valeur: CONSTANTE .
 
-    $default  reduce using rule 91 (valeur)
-
-
-State 131
-
-   92 valeur: IDENTIFICATEUR .
-
-    $default  reduce using rule 92 (valeur)
+    $default  reduce using rule 96 (valeur)
 
 
-State 132
+State 136
+
+   97 valeur: IDENTIFICATEUR .
+
+    $default  reduce using rule 97 (valeur)
+
+
+State 137
 
    46 init: '=' valeur .
 
     $default  reduce using rule 46 (init)
 
 
-State 133
+State 138
 
    31 instruction: FOR $@5 '(' instruction1 ';' . condition ';' instruction1 ')' instruction
 
-    TRUE            shift, and go to state 114
-    FALSE           shift, and go to state 115
+    TRUE            shift, and go to state 118
+    FALSE           shift, and go to state 119
     CONSTANTE       shift, and go to state 55
     IDENTIFICATEUR  shift, and go to state 56
+    NOT             shift, and go to state 120
     MOINS           shift, and go to state 57
     '('             shift, and go to state 58
 
-    $default  reduce using rule 78 (condition)
+    $default  reduce using rule 83 (condition)
 
     variable    go to state 60
     tableu      go to state 61
-    expression  go to state 116
-    condition   go to state 143
+    expression  go to state 121
+    condition   go to state 149
     valeur      go to state 63
 
 
-State 134
+State 139
 
    54 selection: SWITCH '(' expression ')' instruction .
 
     $default  reduce using rule 54 (selection)
 
 
-State 135
+State 140
 
-   75 condition: expression relop . expression
+   80 condition: NOT '(' . condition ')'
+
+    TRUE            shift, and go to state 118
+    FALSE           shift, and go to state 119
+    CONSTANTE       shift, and go to state 55
+    IDENTIFICATEUR  shift, and go to state 56
+    NOT             shift, and go to state 120
+    MOINS           shift, and go to state 57
+    '('             shift, and go to state 58
+
+    $default  reduce using rule 83 (condition)
+
+    variable    go to state 60
+    tableu      go to state 61
+    expression  go to state 121
+    condition   go to state 150
+    valeur      go to state 63
+
+
+State 141
+
+   79 condition: expression binary_comp . expression
 
     CONSTANTE       shift, and go to state 55
     IDENTIFICATEUR  shift, and go to state 56
@@ -2086,98 +2202,113 @@ State 135
 
     variable    go to state 60
     tableu      go to state 61
-    expression  go to state 144
+    expression  go to state 151
     valeur      go to state 63
 
 
-State 136
+State 142
 
    49 selection: IF $@9 '(' condition ')' . $@10 instruction
 
     $default  reduce using rule 48 ($@10)
 
-    $@10  go to state 145
+    $@10  go to state 152
 
 
-State 137
+State 143
 
    53 selection: IF $@11 '(' condition ')' . $@12 instruction $@13 ELSE instruction
 
     $default  reduce using rule 51 ($@12)
 
-    $@12  go to state 146
+    $@12  go to state 153
 
 
-State 138
+State 144
 
    57 appel: IDENTIFICATEUR '(' liste_expressions ')' ';' .
 
     $default  reduce using rule 57 (appel)
 
 
-State 139
+State 145
 
    63 expression: expression . binary_op expression
    69 liste_expressions: liste_expressions ',' expression .
-   79 expression: expression . arithmetic expression
+   84 expression: expression . arithmetic expression
 
-    PLUS   shift, and go to state 95
-    MUL    shift, and go to state 96
-    DIV    shift, and go to state 97
-    MOINS  shift, and go to state 98
+    BAND    shift, and go to state 95
+    BOR     shift, and go to state 96
+    LSHIFT  shift, and go to state 97
+    RSHIFT  shift, and go to state 98
+    PLUS    shift, and go to state 99
+    MUL     shift, and go to state 100
+    DIV     shift, and go to state 101
+    MOINS   shift, and go to state 102
 
     $default  reduce using rule 69 (liste_expressions)
 
-    binary_op   go to state 100
-    arithmetic  go to state 101
+    binary_op   go to state 104
+    arithmetic  go to state 105
 
 
-State 140
+State 146
 
    68 expression: IDENTIFICATEUR '(' liste_expressions ')' .
 
     $default  reduce using rule 68 (expression)
 
 
-State 141
+State 147
 
    60 tableu: tableu '[' expression ']' .
 
     $default  reduce using rule 60 (tableu)
 
 
-State 142
+State 148
 
    22 declarateur: declarateur '[' CONSTANTE $@4 . ']'
 
-    ']'  shift, and go to state 147
+    ']'  shift, and go to state 154
 
 
-State 143
+State 149
 
    31 instruction: FOR $@5 '(' instruction1 ';' condition . ';' instruction1 ')' instruction
 
-    ';'  shift, and go to state 148
+    ';'  shift, and go to state 155
 
 
-State 144
+State 150
+
+   80 condition: NOT '(' condition . ')'
+
+    ')'  shift, and go to state 156
+
+
+State 151
 
    63 expression: expression . binary_op expression
-   75 condition: expression relop expression .
-   79 expression: expression . arithmetic expression
+   79 condition: expression binary_comp expression .
+   84 expression: expression . arithmetic expression
 
-    PLUS   shift, and go to state 95
-    MUL    shift, and go to state 96
-    DIV    shift, and go to state 97
-    MOINS  shift, and go to state 98
+    BAND    shift, and go to state 95
+    BOR     shift, and go to state 96
+    LSHIFT  shift, and go to state 97
+    RSHIFT  shift, and go to state 98
+    PLUS    shift, and go to state 99
+    MUL     shift, and go to state 100
+    DIV     shift, and go to state 101
+    MOINS   shift, and go to state 102
 
-    $default  reduce using rule 75 (condition)
+    $default  reduce using rule 79 (condition)
 
-    binary_op   go to state 100
-    arithmetic  go to state 101
+    binary_op   go to state 104
+    arithmetic  go to state 105
 
 
-State 145
+State 152
 
    49 selection: IF $@9 '(' condition ')' $@10 . instruction
 
@@ -2194,46 +2325,46 @@ State 145
     RETURN          shift, and go to state 31
 
     VOID            [reduce using rule 29 (instruction)]
-    VOID            [reduce using rule 95 (returne)]
+    VOID            [reduce using rule 100 (returne)]
     INT             [reduce using rule 29 (instruction)]
-    INT             [reduce using rule 95 (returne)]
+    INT             [reduce using rule 100 (returne)]
     FOR             [reduce using rule 29 (instruction)]
-    FOR             [reduce using rule 95 (returne)]
+    FOR             [reduce using rule 100 (returne)]
     SWITCH          [reduce using rule 29 (instruction)]
-    SWITCH          [reduce using rule 95 (returne)]
+    SWITCH          [reduce using rule 100 (returne)]
     CASE            [reduce using rule 29 (instruction)]
-    CASE            [reduce using rule 95 (returne)]
+    CASE            [reduce using rule 100 (returne)]
     DEFAULT         [reduce using rule 29 (instruction)]
-    DEFAULT         [reduce using rule 95 (returne)]
+    DEFAULT         [reduce using rule 100 (returne)]
     BREAK           [reduce using rule 29 (instruction)]
-    BREAK           [reduce using rule 95 (returne)]
+    BREAK           [reduce using rule 100 (returne)]
     IF              [reduce using rule 29 (instruction)]
-    IF              [reduce using rule 95 (returne)]
+    IF              [reduce using rule 100 (returne)]
     ELSE            reduce using rule 29 (instruction)
-    ELSE            [reduce using rule 95 (returne)]
+    ELSE            [reduce using rule 100 (returne)]
     IDENTIFICATEUR  [reduce using rule 29 (instruction)]
-    IDENTIFICATEUR  [reduce using rule 95 (returne)]
+    IDENTIFICATEUR  [reduce using rule 100 (returne)]
     UNARY           [reduce using rule 29 (instruction)]
-    UNARY           [reduce using rule 95 (returne)]
+    UNARY           [reduce using rule 100 (returne)]
     RETURN          [reduce using rule 29 (instruction)]
-    RETURN          [reduce using rule 95 (returne)]
+    RETURN          [reduce using rule 100 (returne)]
     '}'             reduce using rule 29 (instruction)
-    '}'             [reduce using rule 95 (returne)]
+    '}'             [reduce using rule 100 (returne)]
     ';'             reduce using rule 29 (instruction)
     ';'             [reduce using rule 38 (instruction1)]
-    ';'             [reduce using rule 95 (returne)]
+    ';'             [reduce using rule 100 (returne)]
     $default        reduce using rule 29 (instruction)
 
     declaration   go to state 32
     datatype      go to state 33
-    instruction   go to state 149
+    instruction   go to state 157
     instruction1  go to state 36
     selection     go to state 37
     appel         go to state 38
     returne       go to state 39
 
 
-State 146
+State 153
 
    53 selection: IF $@11 '(' condition ')' $@12 . instruction $@13 ELSE instruction
 
@@ -2250,69 +2381,76 @@ State 146
     RETURN          shift, and go to state 31
 
     ELSE      reduce using rule 29 (instruction)
-    ELSE      [reduce using rule 95 (returne)]
+    ELSE      [reduce using rule 100 (returne)]
     ';'       reduce using rule 38 (instruction1)
     $default  reduce using rule 29 (instruction)
 
     declaration   go to state 32
     datatype      go to state 33
-    instruction   go to state 150
+    instruction   go to state 158
     instruction1  go to state 36
     selection     go to state 37
     appel         go to state 38
     returne       go to state 39
 
 
-State 147
+State 154
 
    22 declarateur: declarateur '[' CONSTANTE $@4 ']' .
 
     $default  reduce using rule 22 (declarateur)
 
 
-State 148
+State 155
 
    31 instruction: FOR $@5 '(' instruction1 ';' condition ';' . instruction1 ')' instruction
 
-    IDENTIFICATEUR  shift, and go to state 110
+    IDENTIFICATEUR  shift, and go to state 114
     UNARY           shift, and go to state 30
 
     $default  reduce using rule 38 (instruction1)
 
-    instruction1  go to state 151
+    instruction1  go to state 159
 
 
-State 149
+State 156
+
+   80 condition: NOT '(' condition ')' .
+
+    $default  reduce using rule 80 (condition)
+
+
+State 157
 
    49 selection: IF $@9 '(' condition ')' $@10 instruction .
 
     $default  reduce using rule 49 (selection)
 
 
-State 150
+State 158
 
    53 selection: IF $@11 '(' condition ')' $@12 instruction . $@13 ELSE instruction
 
     $default  reduce using rule 52 ($@13)
 
-    $@13  go to state 152
+    $@13  go to state 160
 
 
-State 151
+State 159
 
    31 instruction: FOR $@5 '(' instruction1 ';' condition ';' instruction1 . ')' instruction
 
-    ')'  shift, and go to state 153
+    ')'  shift, and go to state 161
 
 
-State 152
+State 160
 
    53 selection: IF $@11 '(' condition ')' $@12 instruction $@13 . ELSE instruction
 
-    ELSE  shift, and go to state 154
+    ELSE  shift, and go to state 162
 
 
-State 153
+State 161
 
    31 instruction: FOR $@5 '(' instruction1 ';' condition ';' instruction1 ')' . instruction
 
@@ -2329,46 +2467,46 @@ State 153
     RETURN          shift, and go to state 31
 
     VOID            [reduce using rule 29 (instruction)]
-    VOID            [reduce using rule 95 (returne)]
+    VOID            [reduce using rule 100 (returne)]
     INT             [reduce using rule 29 (instruction)]
-    INT             [reduce using rule 95 (returne)]
+    INT             [reduce using rule 100 (returne)]
     FOR             [reduce using rule 29 (instruction)]
-    FOR             [reduce using rule 95 (returne)]
+    FOR             [reduce using rule 100 (returne)]
     SWITCH          [reduce using rule 29 (instruction)]
-    SWITCH          [reduce using rule 95 (returne)]
+    SWITCH          [reduce using rule 100 (returne)]
     CASE            [reduce using rule 29 (instruction)]
-    CASE            [reduce using rule 95 (returne)]
+    CASE            [reduce using rule 100 (returne)]
     DEFAULT         [reduce using rule 29 (instruction)]
-    DEFAULT         [reduce using rule 95 (returne)]
+    DEFAULT         [reduce using rule 100 (returne)]
     BREAK           [reduce using rule 29 (instruction)]
-    BREAK           [reduce using rule 95 (returne)]
+    BREAK           [reduce using rule 100 (returne)]
     IF              [reduce using rule 29 (instruction)]
-    IF              [reduce using rule 95 (returne)]
+    IF              [reduce using rule 100 (returne)]
     ELSE            reduce using rule 29 (instruction)
-    ELSE            [reduce using rule 95 (returne)]
+    ELSE            [reduce using rule 100 (returne)]
     IDENTIFICATEUR  [reduce using rule 29 (instruction)]
-    IDENTIFICATEUR  [reduce using rule 95 (returne)]
+    IDENTIFICATEUR  [reduce using rule 100 (returne)]
     UNARY           [reduce using rule 29 (instruction)]
-    UNARY           [reduce using rule 95 (returne)]
+    UNARY           [reduce using rule 100 (returne)]
     RETURN          [reduce using rule 29 (instruction)]
-    RETURN          [reduce using rule 95 (returne)]
+    RETURN          [reduce using rule 100 (returne)]
     '}'             reduce using rule 29 (instruction)
-    '}'             [reduce using rule 95 (returne)]
+    '}'             [reduce using rule 100 (returne)]
     ';'             reduce using rule 29 (instruction)
     ';'             [reduce using rule 38 (instruction1)]
-    ';'             [reduce using rule 95 (returne)]
+    ';'             [reduce using rule 100 (returne)]
     $default        reduce using rule 29 (instruction)
 
     declaration   go to state 32
     datatype      go to state 33
-    instruction   go to state 155
+    instruction   go to state 163
     instruction1  go to state 36
     selection     go to state 37
     appel         go to state 38
     returne       go to state 39
 
 
-State 154
+State 162
 
    53 selection: IF $@11 '(' condition ')' $@12 instruction $@13 ELSE . instruction
 
@@ -2385,53 +2523,53 @@ State 154
     RETURN          shift, and go to state 31
 
     VOID            [reduce using rule 29 (instruction)]
-    VOID            [reduce using rule 95 (returne)]
+    VOID            [reduce using rule 100 (returne)]
     INT             [reduce using rule 29 (instruction)]
-    INT             [reduce using rule 95 (returne)]
+    INT             [reduce using rule 100 (returne)]
     FOR             [reduce using rule 29 (instruction)]
-    FOR             [reduce using rule 95 (returne)]
+    FOR             [reduce using rule 100 (returne)]
     SWITCH          [reduce using rule 29 (instruction)]
-    SWITCH          [reduce using rule 95 (returne)]
+    SWITCH          [reduce using rule 100 (returne)]
     CASE            [reduce using rule 29 (instruction)]
-    CASE            [reduce using rule 95 (returne)]
+    CASE            [reduce using rule 100 (returne)]
     DEFAULT         [reduce using rule 29 (instruction)]
-    DEFAULT         [reduce using rule 95 (returne)]
+    DEFAULT         [reduce using rule 100 (returne)]
     BREAK           [reduce using rule 29 (instruction)]
-    BREAK           [reduce using rule 95 (returne)]
+    BREAK           [reduce using rule 100 (returne)]
     IF              [reduce using rule 29 (instruction)]
-    IF              [reduce using rule 95 (returne)]
+    IF              [reduce using rule 100 (returne)]
     ELSE            reduce using rule 29 (instruction)
-    ELSE            [reduce using rule 95 (returne)]
+    ELSE            [reduce using rule 100 (returne)]
     IDENTIFICATEUR  [reduce using rule 29 (instruction)]
-    IDENTIFICATEUR  [reduce using rule 95 (returne)]
+    IDENTIFICATEUR  [reduce using rule 100 (returne)]
     UNARY           [reduce using rule 29 (instruction)]
-    UNARY           [reduce using rule 95 (returne)]
+    UNARY           [reduce using rule 100 (returne)]
     RETURN          [reduce using rule 29 (instruction)]
-    RETURN          [reduce using rule 95 (returne)]
+    RETURN          [reduce using rule 100 (returne)]
     '}'             reduce using rule 29 (instruction)
-    '}'             [reduce using rule 95 (returne)]
+    '}'             [reduce using rule 100 (returne)]
     ';'             reduce using rule 29 (instruction)
     ';'             [reduce using rule 38 (instruction1)]
-    ';'             [reduce using rule 95 (returne)]
+    ';'             [reduce using rule 100 (returne)]
     $default        reduce using rule 29 (instruction)
 
     declaration   go to state 32
     datatype      go to state 33
-    instruction   go to state 156
+    instruction   go to state 164
     instruction1  go to state 36
     selection     go to state 37
     appel         go to state 38
     returne       go to state 39
 
 
-State 155
+State 163
 
    31 instruction: FOR $@5 '(' instruction1 ';' condition ';' instruction1 ')' instruction .
 
     $default  reduce using rule 31 (instruction)
 
 
-State 156
+State 164
 
    53 selection: IF $@11 '(' condition ')' $@12 instruction $@13 ELSE instruction .
 
