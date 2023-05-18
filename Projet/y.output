@@ -61,9 +61,9 @@ State 160 conflicts: 11 shift/reduce, 15 reduce/reduce
 
 Grammar
 
-    0 $accept: programme1 $end
+    0 $accept: programme $end
 
-    1 programme1: liste_fonctions
+    1 programme: liste_fonctions
 
     2 liste_fonctions: liste_fonctions fonction
     3                | fonction
@@ -271,7 +271,7 @@ Nonterminals, with rules where they appear
 
     $accept (53)
         on left: 0
-    programme1 <nd_obj> (54)
+    programme <nd_obj> (54)
         on left: 1
         on right: 0
     liste_fonctions <nd_obj> (55)
@@ -398,13 +398,13 @@ Nonterminals, with rules where they appear
 
 State 0
 
-    0 $accept: . programme1 $end
+    0 $accept: . programme $end
 
     VOID    shift, and go to state 1
     EXTERN  shift, and go to state 2
     INT     shift, and go to state 3
 
-    programme1       go to state 4
+    programme        go to state 4
     liste_fonctions  go to state 5
     fonction         go to state 6
     nom_fonction     go to state 7
@@ -438,21 +438,21 @@ State 3
 
 State 4
 
-    0 $accept: programme1 . $end
+    0 $accept: programme . $end
 
     $end  shift, and go to state 11
 
 
 State 5
 
-    1 programme1: liste_fonctions .
+    1 programme: liste_fonctions .
     2 liste_fonctions: liste_fonctions . fonction
 
     VOID    shift, and go to state 1
     EXTERN  shift, and go to state 2
     INT     shift, and go to state 3
 
-    $default  reduce using rule 1 (programme1)
+    $default  reduce using rule 1 (programme)
 
     fonction      go to state 12
     nom_fonction  go to state 7
@@ -497,7 +497,7 @@ State 10
 
 State 11
 
-    0 $accept: programme1 $end .
+    0 $accept: programme $end .
 
     $default  accept
 

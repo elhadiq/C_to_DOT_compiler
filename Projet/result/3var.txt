@@ -1,3 +1,14 @@
-i = 45000
-j = -
-i = 45000
+i = 0
+
+LABEL L0:
+
+if NOT (i < 10) GOTO L1
+i = i
+
+if (i == 5) GOTO L2 else GOTO L3
+
+LABEL L2:
+GOTO next
+JUMP to L0
+
+LABEL L1:

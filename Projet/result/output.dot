@@ -1,4 +1,46 @@
 digraph mon_programme {
 
 node1 [label=programme]
+node2 [label="main, int" shape=invtrapezium color=blue]
+node3 [label=BLOC]
+node4 [label=for]
+node5 [label=":="]
+node6 [label=i]
+node7 [label=0]
+node8 [label="<"]
+node9 [label=i]
+node10 [label=10]
+node11 [label=":="]
+node12 [label=i]
+node13 [label="+"]
+node14 [label=i]
+node15 [label=1]
+node16 [label=if shape=diamond]
+node17 [label="=="]
+node18 [label=i]
+node19 [label=5]
+node20 [label=break]
+node21 [label=printd shape=septagon]
+node22 [label=i]
+node1->node2;
+node2->node3;
+node3->node4;
+node4->node5;
+node5->node6;
+node5->node7;
+node4->node8;
+node8->node9;
+node8->node10;
+node4->node11;
+node11->node12;
+node11->node13;
+node13->node14;
+node13->node15;
+node4->node16;
+node16->node17;
+node17->node18;
+node17->node19;
+node16->node20;
+node3->node21;
+node21->node22;
 }

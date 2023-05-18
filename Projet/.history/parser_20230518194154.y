@@ -136,8 +136,7 @@ liste_fonctions	:
 		$$.nd_dot=$1.nd_dot;
 		
 		
-		if($1.nd_dot!=NULL)$1.nd_dot->right_sibling=$2.nd_dot;
-		else $$.nd_dot=$1.nd_dot=$2.nd_dot;
+		if($1.nd_dot)$1.nd_dot->right_sibling=$2.nd_dot;
 		}
 |               fonction {$$.nd=$1.nd; $$.nd_dot=$1.nd_dot;}
 ;
@@ -375,7 +374,7 @@ condition: expression binary_comp expression {
 	$$.nd_dot=faire_noeud_lcrs($1.nd_dot,NULL,strTmp);
 	$1.nd_dot->right_sibling=$3.nd_dot;
 }
-
+| 
 |NOT '(' condition ')' {$$.nd=faire_noeud($1.nd,NULL,"not");$$.nd_dot=faire_noeud_lcrs($1.nd_dot,NULL,"label=not");}
 | TRUE { ajouter('K'); $$.nd = NULL; }
 | FALSE { ajouter('K'); $$.nd = NULL; }

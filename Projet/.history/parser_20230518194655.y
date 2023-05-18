@@ -137,7 +137,7 @@ liste_fonctions	:
 		
 		
 		if($1.nd_dot!=NULL)$1.nd_dot->right_sibling=$2.nd_dot;
-		else $$.nd_dot=$1.nd_dot=$2.nd_dot;
+		
 		}
 |               fonction {$$.nd=$1.nd; $$.nd_dot=$1.nd_dot;}
 ;
