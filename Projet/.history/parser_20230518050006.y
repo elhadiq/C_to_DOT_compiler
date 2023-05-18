@@ -103,7 +103,6 @@ programme1	:
 
 		$$.nd_dot=faire_noeud_lcrs($1.nd_dot,NULL,"label=programme");
 		head_dot=$$.nd_dot;}
-		
 ;
 liste_fonctions	:	
 		liste_fonctions fonction
@@ -466,7 +465,7 @@ int main() {
 	printf("\n\n");
 	system("dot -Tpdf result/ArbreSyntaxique.dot -o result/ArbreSyntaxique.pdf");
 	system("dot -Tpdf result/output.dot -o result/output.pdf");
-	system("firefox result/output.pdf");
+	system("evince result/output.pdf");
 }
 
 int chercher(char *type) {

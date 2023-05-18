@@ -456,14 +456,11 @@ int main() {
 	}
 	printf("\n\n");
 	printf("\t\t\t\t\t\t\t   PHASE 4: GENERATION DU CODE 3 variable\n\n");
-	FILE *f3;
-	f3 = fopen("result/3var.txt", "w"); // create or open the file for writing
-
 	for(int i=0; i<DOT_index; i++){
-		fprintf(f3,"%s", code3v[i]);
+		printf("%s", code3v[i]);
 	}
 	fclose(fp); // close the file
-	printf("\n\n");
+
 	system("dot -Tpdf result/ArbreSyntaxique.dot -o result/ArbreSyntaxique.pdf");
 	system("dot -Tpdf result/output.dot -o result/output.pdf");
 	system("firefox result/output.pdf");

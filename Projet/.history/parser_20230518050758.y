@@ -103,6 +103,14 @@ programme1	:
 
 		$$.nd_dot=faire_noeud_lcrs($1.nd_dot,NULL,"label=programme");
 		head_dot=$$.nd_dot;}
+		|liste_declarations liste_fonctions
+			{
+		$$.nd=faire_noeud($1.nd,NULL,"programme");
+		head = $$.nd; 
+
+
+		$$.nd_dot=faire_noeud_lcrs($1.nd_dot,NULL,"label=programme");
+		head_dot=$$.nd_dot;}
 		
 ;
 liste_fonctions	:	

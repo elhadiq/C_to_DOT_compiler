@@ -460,7 +460,7 @@ int main() {
 	f3 = fopen("result/3var.txt", "w"); // create or open the file for writing
 
 	for(int i=0; i<DOT_index; i++){
-		fprintf(f3,"%s", code3v[i]);
+		printf(f3,"%s", code3v[i]);
 	}
 	fclose(fp); // close the file
 	printf("\n\n");

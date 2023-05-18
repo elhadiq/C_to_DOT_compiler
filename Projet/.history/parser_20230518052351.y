@@ -7,9 +7,7 @@
     void yyerror(const char *s);
     int yylex();
     int yywrap();
-    void ajouter(char);
-    void inserer_type();
-    int chercher(char *);
+    
 	void afficher_arbre(struct noeud*);
 	void afficher_arbre_to_file(FILE* f,struct noeud*);
 	void afficher_dans_lorder(struct noeud *);

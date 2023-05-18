@@ -103,6 +103,15 @@ programme1	:
 
 		$$.nd_dot=faire_noeud_lcrs($1.nd_dot,NULL,"label=programme");
 		head_dot=$$.nd_dot;}
+		|liste_declarations liste_fonctions
+			{
+		$$.nd=faire_noeud($2.nd,NULL,"programme");
+		head = $$.nd; 
+
+
+		$$.nd_dot=faire_noeud_lcrs($2.nd_dot,NULL,"label=programme");
+		head_dot=$$.nd_dot;
+		}
 		
 ;
 liste_fonctions	:	
@@ -129,7 +138,7 @@ $1.nd_dot->left_child=faire_noeud_lcrs($5.nd_dot, NULL, "label=BLOC");
 | externs 
 ;
 
-nom_fonction: datatype IDENTIFICATEUR { ajouter('F'); if(!main_function)main_function=concatener("",yytext);} 
+nom_fonction: datatype IDENTIFICATEUR { ajouter('F');}{ if(!main_function)main_function=concatener("",yytext);} 
 {
 $$.nd=faire_noeud(NULL,NULL,concatener("fonction ",$2.nom));
 sprintf(strTmp,"label=\"%s, %s\" shape=invtrapezium color=blue",$2.nom,$1.nom);
