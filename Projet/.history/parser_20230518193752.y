@@ -104,7 +104,7 @@
 	} 
 %token VOID 
 %token <nd_obj> EXTERN INT CHAR FOR WHILE SWITCH CASE DEFAULT BREAK THEN IF ELSE TRUE FALSE CONSTANTE IDENTIFICATEUR LEQ GEQ EQ NOT GT BAND BOR LSHIFT RSHIFT LT LAND LOR NEQ STR  PLUS MUL DIV MOINS UNARY INCLUDE RETURN 
-%type <nd_obj> externe main liste_fonctions fonction nom_fonction liste_instructions liste_declarations declaration selection tableu liste_declarateurs declarateur liste_expressions returne appel datatype instruction1 arithmetic binary_comp programme1 else instruction binary_op
+%type <nd_obj> externe externs main liste_fonctions fonction nom_fonction liste_instructions liste_declarations declaration selection tableu liste_declarateurs declarateur liste_expressions returne appel datatype instruction1 arithmetic binary_comp programme1 else instruction binary_op
 %type <nd_obj2> init valeur expression variable 
 %type <nd_obj3> condition
 %left PLUS MOINS
@@ -136,7 +136,7 @@ liste_fonctions	:
 		$$.nd_dot=$1.nd_dot;
 		
 		
-		if($1.nd_dot)$1.nd_dot->right_sibling=$2.nd_dot;
+		$1.nd_dot->right_sibling=$2.nd_dot;
 		}
 |               fonction {$$.nd=$1.nd; $$.nd_dot=$1.nd_dot;}
 ;
