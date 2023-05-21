@@ -324,7 +324,7 @@ Nonterminals, with rules where they appear
     binary_rel (87)
         on left: 79 80
         on right: 68
-    binary_comp (88)
+    binary_comp <nd_obj> (88)
         on left: 81 82 83 84 85 86
         on right: 70
 

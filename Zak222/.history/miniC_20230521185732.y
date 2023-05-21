@@ -220,12 +220,6 @@ iteration	:
 ;
 selection	:	
 		IF  {ajouter('K');} '(' condition ')' instruction %prec THEN
-			{
-	$$.nd = faire_noeud($4.nd, $6.nd, $1.nom); 
-
-	$$.nd_dot=faire_noeud_lcrs($4.nd_dot,NULL,"label=if shape=diamond");
-	$4.nd_dot->right_sibling=$6.nd_dot;	
-	}
 	|	IF  {ajouter('K');} '(' condition ')' instruction ELSE instruction
 	|	SWITCH  {ajouter('K');} '(' expression ')' instruction
 	|	CASE {ajouter('K');}  CONSTANTE {ajouter('K');} ':' instruction

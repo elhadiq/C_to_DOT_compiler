@@ -108,7 +108,7 @@
 %token  <nd_obj> GEQ LEQ EQ NEQ NOT 
 %type <nd_obj> programme liste_fonctions fonction affectation  
 %type <nd_obj> type liste_instructions instruction iteration selection saut appel binary_op
-%type <nd_obj> tableu bloc liste_declarations liste_expressions binary_comp
+%type <nd_obj> tableu bloc liste_declarations liste_expressions
 %type <nd_obj2>  expression variable 
 %type <nd_obj3> condition
 %left  PLUS MOINS
@@ -138,11 +138,12 @@ liste_fonctions	:
 		{
 		$$.nd=faire_noeud($1.nd,$2.nd,"fonctions");
 		$$.nd_dot=$1.nd_dot;
-
+		
+		
 		if($1.nd_dot!=NULL)$1.nd_dot->right_sibling=$2.nd_dot;
 		else $$.nd_dot=$1.nd_dot=$2.nd_dot;
 		}
-|  	 
+|  		 
 ;
 declaration	:	
 		type liste_declarateurs ';'
@@ -204,28 +205,11 @@ instruction	:	 affectation ';'{ $$.nd = $1.nd; $$.nd_dot=$1.nd_dot;}
 ;
 iteration	:	
 		FOR {ajouter('K');} '(' affectation ';' condition ';' affectation ')' instruction
-	{ 
-	struct noeud *temp = faire_noeud($6.nd, $8.nd, "CONDITION"); 
-	struct noeud *temp2 = faire_noeud($4.nd, temp, "CONDITION"); 
-	$$.nd = faire_noeud(temp2, $10.nd, $1.nom); 
-
-
-
-	$$.nd_dot=faire_noeud_lcrs($4.nd_dot,NULL,"label=for");
-	$4.nd_dot->right_sibling=$6.nd_dot;
-	$6.nd_dot->right_sibling=$8.nd_dot;
-	$8.nd_dot->right_sibling=$10.nd_dot;
-}
+		
 	|	WHILE {ajouter('K');} '(' condition ')' instruction
 ;
 selection	:	
 		IF  {ajouter('K');} '(' condition ')' instruction %prec THEN
-			{
-	$$.nd = faire_noeud($4.nd, $6.nd, $1.nom); 
-
-	$$.nd_dot=faire_noeud_lcrs($4.nd_dot,NULL,"label=if shape=diamond");
-	$4.nd_dot->right_sibling=$6.nd_dot;	
-	}
 	|	IF  {ajouter('K');} '(' condition ')' instruction ELSE instruction
 	|	SWITCH  {ajouter('K');} '(' expression ')' instruction
 	|	CASE {ajouter('K');}  CONSTANTE {ajouter('K');} ':' instruction
@@ -233,8 +217,6 @@ selection	:
 ;
 saut	:	
 		BREAK {ajouter('K');}  ';'
-		{$$.nd=faire_noeud(NULL,NULL,"break");
-		$$.nd_dot=faire_noeud_lcrs(NULL,NULL,"label=break shape=box");}
 	|	RETURN  {ajouter('K');}';'
 	{
 	$$.nd = faire_noeud(NULL, NULL, "return");
@@ -267,7 +249,7 @@ bloc	:
 appel	:	
 		IDENTIFICATEUR  '(' liste_expressions ')' ';'
 			{
-			printf("\n%s\n",$1.nom);
+				printf("\n%s\n",$1.nom);
 			$$.nd=faire_noeud($3.nd,NULL,$1.nom); 
 			sprintf(strTmp,"label=%s shape=septagon",$1.nom);
 			$$.nd_dot=faire_noeud_lcrs($3.nd_dot,NULL,strTmp);
@@ -327,19 +309,10 @@ liste_expressions	:
 		$$.nd_dot=$1.nd_dot;}
 ;
 condition	:	
-		NOT '(' condition ')' 
-{
-$$.nd=faire_noeud($3.nd,NULL,"not");
-$$.nd_dot=faire_noeud_lcrs($3.nd_dot,NULL,"label=not");}
+		NOT '(' condition ')'
 	|	condition binary_rel condition %prec REL
-	|	'(' condition ')' {$$.nd=$2.nd;$$.nd_dot=$2.nd_dot;}
+	|	'(' condition ')'
 	|	expression binary_comp expression
-	{ 
-	$$.nd = faire_noeud($1.nd, $3.nd, $2.nom); 
-	sprintf(strTmp,"label=\"%s\"",$2.nom);
-	$$.nd_dot=faire_noeud_lcrs($1.nd_dot,NULL,strTmp);
-	$1.nd_dot->right_sibling=$3.nd_dot;
-}
 ;
 binary_op	:	
 		PLUS

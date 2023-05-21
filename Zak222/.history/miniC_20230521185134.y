@@ -220,12 +220,6 @@ iteration	:
 ;
 selection	:	
 		IF  {ajouter('K');} '(' condition ')' instruction %prec THEN
-			{
-	$$.nd = faire_noeud($4.nd, $6.nd, $1.nom); 
-
-	$$.nd_dot=faire_noeud_lcrs($4.nd_dot,NULL,"label=if shape=diamond");
-	$4.nd_dot->right_sibling=$6.nd_dot;	
-	}
 	|	IF  {ajouter('K');} '(' condition ')' instruction ELSE instruction
 	|	SWITCH  {ajouter('K');} '(' expression ')' instruction
 	|	CASE {ajouter('K');}  CONSTANTE {ajouter('K');} ':' instruction
@@ -328,9 +322,9 @@ liste_expressions	:
 ;
 condition	:	
 		NOT '(' condition ')' 
-{
-$$.nd=faire_noeud($3.nd,NULL,"not");
-$$.nd_dot=faire_noeud_lcrs($3.nd_dot,NULL,"label=not");}
+		{
+			$$.nd=faire_noeud($1.nd,NULL,"not");
+			$$.nd_dot=faire_noeud_lcrs($1.nd_dot,NULL,"label=not");}
 	|	condition binary_rel condition %prec REL
 	|	'(' condition ')' {$$.nd=$2.nd;$$.nd_dot=$2.nd_dot;}
 	|	expression binary_comp expression
