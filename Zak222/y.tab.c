@@ -1650,7 +1650,7 @@ yyreduce:
 #line 162 "miniC.y"
                  {
 		//$$.nd=faire_noeud($9.nd,NULL,concatener("fonction ",$2.nom));
-		(yyval.nd_obj).nd=faire_noeud(NULL,NULL,concatener("fonction ",(yyvsp[-8].nd_obj).nom));
+		(yyval.nd_obj).nd=faire_noeud((yyvsp[-1].nd_obj).nd,NULL,concatener("fonction ",(yyvsp[-8].nd_obj).nom));
 
 
 		sprintf(strTmp,"label=\"%s, %s\" shape=invtrapezium color=blue",(yyvsp[-8].nd_obj).nom,(yyvsp[-9].nd_obj).nom);
