@@ -828,92 +828,92 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 YY_RULE_SETUP
 #line 17 "ANSI-C.l"
-{ return BREAK;}
+{ strcpy(yylval.nd_obj.nom,(yytext)); return BREAK;}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
 #line 18 "ANSI-C.l"
-{ return CASE;}
+{ strcpy(yylval.nd_obj.nom,(yytext)); return CASE;}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
 #line 19 "ANSI-C.l"
-{ return DEFAULT;}
+{ strcpy(yylval.nd_obj.nom,(yytext)); return DEFAULT;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
 #line 20 "ANSI-C.l"
-{ return ELSE;}
+{ strcpy(yylval.nd_obj.nom,(yytext)); return ELSE;}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
 #line 21 "ANSI-C.l"
-{ return EXTERN;}
+{ strcpy(yylval.nd_obj.nom,(yytext)); return EXTERN;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
 #line 22 "ANSI-C.l"
-{ return FOR;}
+{ strcpy(yylval.nd_obj.nom,(yytext)); return FOR;}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
 #line 23 "ANSI-C.l"
-{ return IF; }
+{ strcpy(yylval.nd_obj.nom,(yytext)); return IF; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
 #line 24 "ANSI-C.l"
-{ return INT ;}
+{ strcpy(yylval.nd_obj.nom,(yytext)); return INT ;}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
 #line 25 "ANSI-C.l"
-{return RETURN; }
+{strcpy(yylval.nd_obj.nom,(yytext)); return RETURN; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
 #line 26 "ANSI-C.l"
-{ return SWITCH; }
+{ strcpy(yylval.nd_obj.nom,(yytext)); return SWITCH; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
 #line 27 "ANSI-C.l"
-{return VOID; }
+{strcpy(yylval.nd_obj.nom,(yytext)); return VOID; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
 #line 28 "ANSI-C.l"
-{ return WHILE; }
+{ strcpy(yylval.nd_obj.nom,(yytext)); return WHILE; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
 #line 29 "ANSI-C.l"
-{ return MOINS; }
+{ strcpy(yylval.nd_obj.nom,(yytext)); return MOINS; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
 #line 30 "ANSI-C.l"
-{ return PLUS; }
+{ strcpy(yylval.nd_obj.nom,(yytext)); return PLUS; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
 #line 31 "ANSI-C.l"
-{ return MUL; }
+{ strcpy(yylval.nd_obj.nom,(yytext)); return MUL; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
 #line 32 "ANSI-C.l"
-{ return DIV; }
+{ strcpy(yylval.nd_obj.nom,(yytext)); return DIV; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
 #line 33 "ANSI-C.l"
-{return CONSTANTE; }
+{strcpy(yylval.nd_obj.nom,(yytext)); return CONSTANTE; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
 #line 35 "ANSI-C.l"
-{ return IDENTIFICATEUR ; }
+{ strcpy(yylval.nd_obj.nom,(yytext)); return IDENTIFICATEUR ; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
@@ -958,7 +958,7 @@ YY_RULE_SETUP
 case 27:
 YY_RULE_SETUP
 #line 45 "ANSI-C.l"
-{ return LAND;}
+{ strcpy(yylval.nd_obj.nom,(yytext)); return LAND;}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
@@ -973,12 +973,12 @@ YY_RULE_SETUP
 case 30:
 YY_RULE_SETUP
 #line 48 "ANSI-C.l"
-{ return RSHIFT; }
+{ strcpy(yylval.nd_obj.nom,(yytext)); return RSHIFT; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
 #line 49 "ANSI-C.l"
-{ return LSHIFT;}
+{ strcpy(yylval.nd_obj.nom,(yytext)); return LSHIFT;}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
@@ -1003,42 +1003,42 @@ YY_RULE_SETUP
 case 36:
 YY_RULE_SETUP
 #line 54 "ANSI-C.l"
-{return LOR;}
+{strcpy(yylval.nd_obj.nom,(yytext)); return LOR;}
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
 #line 55 "ANSI-C.l"
-{ return LEQ; }
+{ strcpy(yylval.nd_obj.nom,(yytext)); return LEQ; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
 #line 56 "ANSI-C.l"
-{ return LT; }
+{ strcpy(yylval.nd_obj.nom,(yytext)); return LT; }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
 #line 57 "ANSI-C.l"
-{ return GEQ; }
+{ strcpy(yylval.nd_obj.nom,(yytext)); return GEQ; }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
 #line 58 "ANSI-C.l"
-{ return GT; }
+{ strcpy(yylval.nd_obj.nom,(yytext)); return GT; }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
 #line 59 "ANSI-C.l"
-{return EQ; }
+{strcpy(yylval.nd_obj.nom,(yytext)); return EQ; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
 #line 60 "ANSI-C.l"
-{return NOT;}
+{strcpy(yylval.nd_obj.nom,(yytext)); return NOT;}
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
 #line 61 "ANSI-C.l"
-{ return NEQ;}
+{ strcpy(yylval.nd_obj.nom,(yytext)); return NEQ;}
 	YY_BREAK
 case 44:
 /* rule 44 can match eol */
@@ -1071,7 +1071,7 @@ YY_RULE_SETUP
 case 49:
 YY_RULE_SETUP
 #line 68 "ANSI-C.l"
-{ return yytext[0]; }
+{ strcpy(yylval.nd_obj.nom,(yytext)); return yytext[0]; }
 	YY_BREAK
 case 50:
 YY_RULE_SETUP

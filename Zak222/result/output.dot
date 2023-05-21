@@ -1,0 +1,8 @@
+digraph mon_programme {
+
+node1 [label=programme]
+node2 [label=fonction]
+node3 [label=fonction]
+node1->node2;
+node1->node3;
+}

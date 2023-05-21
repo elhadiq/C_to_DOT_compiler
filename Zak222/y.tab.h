@@ -123,7 +123,38 @@ extern int yydebug;
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+union YYSTYPE
+{
+#line 82 "miniC.y"
+ struct nom_variable { 
+			char nom[100]; 
+			char _3ad_label[100]; 
+			struct noeud* nd;
+			struct noeud_lcrs* nd_dot;
+		} nd_obj;
+
+		struct nom_variable2 { 
+			char nom[100]; 
+			char _3ad_label[100]; 
+			struct noeud* nd;
+			struct noeud_lcrs* nd_dot;
+			char type[5];
+		} nd_obj2; 
+
+		struct nom_variable3 {
+			char nom[100];
+			char _3ad_label[100]; 
+			struct noeud* nd;
+			struct noeud_lcrs* nd_dot;
+			char if_corps[5];
+			char else_corps[5];
+		} nd_obj3;
+	
+
+#line 155 "y.tab.h"
+
+};
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif
