@@ -1,0 +1,21 @@
+i := 1
+
+j := 2
+
+i = 45000
+
+j = -
+
+j = j
+
+call printd (i)
+call printd (45000)
+call printd (i)
+call printd (45000)
+call printd (i)
+call printd (printd)
+call printd (printd)
+call printd (printd)
+call printd (45000)
+i = 45000
+

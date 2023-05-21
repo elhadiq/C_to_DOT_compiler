@@ -1,46 +1,146 @@
 digraph mon_programme {
 
 node1 [label=programme]
-node2 [label="main, int" shape=invtrapezium color=blue]
+node2 [label="koko, int" shape=invtrapezium color=blue]
 node3 [label=BLOC]
-node4 [label=for]
-node5 [label=":="]
-node6 [label=i]
-node7 [label=0]
-node8 [label="<"]
-node9 [label=i]
-node10 [label=10]
+node4 [label=":="]
+node5 [label=i]
+node6 [label=45000]
+node7 [label=":="]
+node8 [label=j]
+node9 [label="-" ]
+node10 [label=123]
 node11 [label=":="]
-node12 [label=i]
+node12 [label=j]
 node13 [label="+"]
 node14 [label=i]
-node15 [label=1]
-node16 [label=if shape=diamond]
-node17 [label="=="]
+node15 [label=j]
+node16 [label=printd shape=septagon]
+node17 [label="+"]
 node18 [label=i]
-node19 [label=5]
-node20 [label=break]
-node21 [label=printd shape=septagon]
-node22 [label=i]
+node19 [label=j]
+node20 [label=printd shape=septagon]
+node21 [label="+"]
+node22 [label=45000]
+node23 [label=j]
+node24 [label=printd shape=septagon]
+node25 [label="+"]
+node26 [label=i]
+node27 [label=123]
+node28 [label=printd shape=septagon]
+node29 [label="+"]
+node30 [label=45000]
+node31 [label=123]
+node32 [label=printd shape=septagon]
+node33 [label="+"]
+node34 [label=i]
+node35 [label="+"]
+node36 [label=j]
+node37 [label=0]
+node38 [label=printd shape=septagon]
+node39 [label="+"]
+node40 [label="+"]
+node41 [label=i]
+node42 [label=0]
+node43 [label=j]
+node44 [label=printd shape=septagon]
+node45 [label="+"]
+node46 [label="+"]
+node47 [label=i]
+node48 [label=0]
+node49 [label="+"]
+node50 [label=j]
+node51 [label=0]
+node52 [label=printd shape=septagon]
+node53 [label="+"]
+node54 [label="+"]
+node55 [label=i]
+node56 [label=0]
+node57 [label=123]
+node58 [label=printd shape=septagon]
+node59 [label="+"]
+node60 [label=45000]
+node61 [label="+"]
+node62 [label=j]
+node63 [label=0]
+node64 [label=RETURN shape=trapezium color=blue]
+node65 [label=0]
+node66 [label="lio, int" shape=invtrapezium color=blue]
+node67 [label=BLOC]
+node68 [label=":="]
+node69 [label=i]
+node70 [label=45000]
+node71 [label=RETURN shape=trapezium color=blue]
+node72 [label=0]
 node1->node2;
 node2->node3;
 node3->node4;
 node4->node5;
-node5->node6;
-node5->node7;
-node4->node8;
-node8->node9;
-node8->node10;
-node4->node11;
+node4->node6;
+node3->node7;
+node7->node8;
+node7->node9;
+node9->node10;
+node3->node11;
 node11->node12;
 node11->node13;
 node13->node14;
 node13->node15;
-node4->node16;
+node3->node16;
 node16->node17;
 node17->node18;
 node17->node19;
-node16->node20;
-node3->node21;
+node3->node20;
+node20->node21;
 node21->node22;
+node21->node23;
+node3->node24;
+node24->node25;
+node25->node26;
+node25->node27;
+node3->node28;
+node28->node29;
+node29->node30;
+node29->node31;
+node3->node32;
+node32->node33;
+node33->node34;
+node33->node35;
+node35->node36;
+node35->node37;
+node3->node38;
+node38->node39;
+node39->node40;
+node40->node41;
+node40->node42;
+node39->node43;
+node3->node44;
+node44->node45;
+node45->node46;
+node46->node47;
+node46->node48;
+node45->node49;
+node49->node50;
+node49->node51;
+node3->node52;
+node52->node53;
+node53->node54;
+node54->node55;
+node54->node56;
+node53->node57;
+node3->node58;
+node58->node59;
+node59->node60;
+node59->node61;
+node61->node62;
+node61->node63;
+node3->node64;
+node64->node65;
+node1->node66;
+node66->node67;
+node67->node68;
+node68->node69;
+node68->node70;
+node67->node71;
+node71->node72;
 }

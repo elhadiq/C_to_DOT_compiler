@@ -1,11 +1,12 @@
 extern int abo();
 int koko() {
 
-
-
-  int i,j;
+  int i=1;
+  
+  int j=2;
   i = 45000;
   j = -123;
+  j=(i)+(j);
   printd(i+j);
   printd(45000+j);
   printd(i+123);
