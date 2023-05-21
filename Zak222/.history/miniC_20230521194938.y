@@ -246,7 +246,7 @@ selection	:
 	|	DEFAULT  {ajouter('K');} ':' instruction
 		{
 	$$.nd=faire_noeud($4.nd,NULL,"Default");
-	$$.nd_dot=faire_noeud_lcrs($4.nd_dot,NULL,"label=Default");
+	$$.nd_dot=faire_noeud_lcrs($4.nd_dot,NULL,"label=CASE");
 
 	}
 ;

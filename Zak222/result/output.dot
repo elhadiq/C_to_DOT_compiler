@@ -3,46 +3,72 @@ digraph mon_programme {
 node1 [label=programme]
 node2 [label="main, int" shape=invtrapezium color=blue]
 node3 [label=BLOC]
-node4 [label=for]
-node5 [label=":="]
-node6 [label=i]
-node7 [label=0]
-node8 [label="<"]
-node9 [label=i]
-node10 [label=10]
-node11 [label=":="]
-node12 [label=i]
-node13 [label= "+" ]
-node14 [label=i]
-node15 [label=1]
-node16 [label=BLOC]
-node17 [label=if shape=diamond]
-node18 [label="=="]
-node19 [label=i]
-node20 [label=5]
-node21 [label=break shape=box]
+node4 [label=":="]
+node5 [label=i]
+node6 [label=3]
+node7 [label =Switch]
+node8 [label=i]
+node9 [label=BLOC]
+node10 [label=CASE]
+node11 [label=0]
+node12 [label=printd shape=septagon]
+node13 [label=0]
+node14 [label=break shape=box]
+node15 [label=CASE]
+node16 [label=1]
+node17 [label=printd shape=septagon]
+node18 [label=1]
+node19 [label=break shape=box]
+node20 [label=CASE]
+node21 [label=2]
 node22 [label=printd shape=septagon]
-node23 [label=i]
+node23 [label=2]
+node24 [label=break shape=box]
+node25 [label=CASE]
+node26 [label=3]
+node27 [label=printd shape=septagon]
+node28 [label=3]
+node29 [label=CASE]
+node30 [label=4]
+node31 [label=printd shape=septagon]
+node32 [label=4]
+node33 [label=Default]
+node34 [label=printd shape=septagon]
+node35 [label="-" ]
+node36 [label=1]
 node1->node2;
 node2->node3;
 node3->node4;
 node4->node5;
-node5->node6;
-node5->node7;
-node4->node8;
-node8->node9;
-node8->node10;
-node4->node11;
-node11->node12;
-node11->node13;
-node13->node14;
-node13->node15;
-node4->node16;
-node16->node17;
+node4->node6;
+node3->node7;
+node7->node8;
+node7->node9;
+node9->node10;
+node10->node11;
+node10->node12;
+node12->node13;
+node9->node14;
+node9->node15;
+node15->node16;
+node15->node17;
 node17->node18;
-node18->node19;
-node18->node20;
-node17->node21;
-node3->node22;
+node9->node19;
+node9->node20;
+node20->node21;
+node20->node22;
 node22->node23;
+node9->node24;
+node9->node25;
+node25->node26;
+node25->node27;
+node27->node28;
+node9->node29;
+node29->node30;
+node29->node31;
+node31->node32;
+node9->node33;
+node33->node34;
+node34->node35;
+node35->node36;
 }

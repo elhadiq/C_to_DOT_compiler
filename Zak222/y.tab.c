@@ -680,12 +680,12 @@ static const yytype_int16 yyrline[] =
        0,   126,   126,   133,   134,   137,   145,   148,   151,   152,
      155,   156,   156,   159,   159,   170,   170,   173,   174,   177,
      178,   179,   182,   185,   194,   196,   198,   199,   200,   201,
-     202,   206,   206,   219,   219,   222,   222,   229,   229,   230,
-     230,   231,   231,   231,   232,   232,   235,   235,   238,   238,
-     243,   243,   251,   261,   268,   277,   282,   285,   290,   298,
-     299,   310,   312,   312,   316,   317,   320,   325,   330,   334,
-     335,   336,   345,   346,   347,   348,   349,   350,   351,   352,
-     355,   356,   359,   360,   361,   362,   363,   364
+     202,   206,   206,   219,   219,   227,   227,   234,   234,   235,
+     235,   241,   241,   241,   246,   246,   254,   254,   257,   257,
+     262,   262,   270,   280,   287,   295,   300,   303,   308,   316,
+     317,   328,   330,   330,   334,   335,   338,   343,   348,   352,
+     353,   354,   363,   364,   365,   366,   367,   368,   369,   370,
+     373,   374,   377,   378,   379,   380,   381,   382
 };
 #endif
 
@@ -1773,99 +1773,138 @@ else (yyval.nd_obj).nd_dot=(yyvsp[0].nd_obj).nd_dot;
 #line 1774 "y.tab.c"
     break;
 
+  case 34:
+#line 220 "miniC.y"
+        {
+		(yyval.nd_obj).nd=faire_noeud((yyvsp[-2].nd_obj3).nd,(yyvsp[0].nd_obj).nd,"While");
+		(yyval.nd_obj).nd_dot=faire_noeud_lcrs((yyvsp[-2].nd_obj3).nd_dot,NULL,"label=while");
+		(yyvsp[-2].nd_obj3).nd_dot->right_sibling=(yyvsp[0].nd_obj).nd_dot;
+	}
+#line 1784 "y.tab.c"
+    break;
+
   case 35:
-#line 222 "miniC.y"
+#line 227 "miniC.y"
                     {ajouter('K');}
-#line 1780 "y.tab.c"
+#line 1790 "y.tab.c"
     break;
 
   case 36:
-#line 223 "miniC.y"
+#line 228 "miniC.y"
                         {
 	(yyval.nd_obj).nd = faire_noeud((yyvsp[-2].nd_obj3).nd, (yyvsp[0].nd_obj).nd, (yyvsp[-5].nd_obj).nom); 
 
 	(yyval.nd_obj).nd_dot=faire_noeud_lcrs((yyvsp[-2].nd_obj3).nd_dot,NULL,"label=if shape=diamond");
 	(yyvsp[-2].nd_obj3).nd_dot->right_sibling=(yyvsp[0].nd_obj).nd_dot;	
 	}
-#line 1791 "y.tab.c"
+#line 1801 "y.tab.c"
     break;
 
   case 37:
-#line 229 "miniC.y"
+#line 234 "miniC.y"
                     {ajouter('K');}
-#line 1797 "y.tab.c"
+#line 1807 "y.tab.c"
     break;
 
   case 39:
-#line 230 "miniC.y"
+#line 235 "miniC.y"
                         {ajouter('K');}
-#line 1803 "y.tab.c"
+#line 1813 "y.tab.c"
+    break;
+
+  case 40:
+#line 236 "miniC.y"
+        {
+		(yyval.nd_obj).nd=faire_noeud((yyvsp[-2].nd_obj2).nd,(yyvsp[0].nd_obj).nd,"Switch");
+		(yyval.nd_obj).nd_dot=faire_noeud_lcrs((yyvsp[-2].nd_obj2).nd_dot,NULL,"label =Switch");
+		(yyvsp[-2].nd_obj2).nd_dot->right_sibling=(yyvsp[0].nd_obj).nd_dot;
+	}
+#line 1823 "y.tab.c"
     break;
 
   case 41:
-#line 231 "miniC.y"
+#line 241 "miniC.y"
                      {ajouter('K');}
-#line 1809 "y.tab.c"
+#line 1829 "y.tab.c"
     break;
 
   case 42:
-#line 231 "miniC.y"
+#line 241 "miniC.y"
                                                 {ajouter('K');}
-#line 1815 "y.tab.c"
+#line 1835 "y.tab.c"
+    break;
+
+  case 43:
+#line 242 "miniC.y"
+        {(yyval.nd_obj).nd=faire_noeud(faire_noeud(NULL,NULL,(yyvsp[-3].nd_obj).nom),(yyvsp[0].nd_obj).nd,"CASE");
+	(yyval.nd_obj).nd_dot=faire_noeud_lcrs(faire_noeud_lcrs(NULL,(yyvsp[0].nd_obj).nd_dot,concatener("label=",(yyvsp[-3].nd_obj).nom)),NULL,"label=CASE");
+
+	}
+#line 1844 "y.tab.c"
     break;
 
   case 44:
-#line 232 "miniC.y"
+#line 246 "miniC.y"
                          {ajouter('K');}
-#line 1821 "y.tab.c"
+#line 1850 "y.tab.c"
+    break;
+
+  case 45:
+#line 247 "miniC.y"
+                {
+	(yyval.nd_obj).nd=faire_noeud((yyvsp[0].nd_obj).nd,NULL,"Default");
+	(yyval.nd_obj).nd_dot=faire_noeud_lcrs((yyvsp[0].nd_obj).nd_dot,NULL,"label=Default");
+
+	}
+#line 1860 "y.tab.c"
     break;
 
   case 46:
-#line 235 "miniC.y"
+#line 254 "miniC.y"
                       {ajouter('K');}
-#line 1827 "y.tab.c"
+#line 1866 "y.tab.c"
     break;
 
   case 47:
-#line 236 "miniC.y"
+#line 255 "miniC.y"
                 {(yyval.nd_obj).nd=faire_noeud(NULL,NULL,"break");
 		(yyval.nd_obj).nd_dot=faire_noeud_lcrs(NULL,NULL,"label=break shape=box");}
-#line 1834 "y.tab.c"
+#line 1873 "y.tab.c"
     break;
 
   case 48:
-#line 238 "miniC.y"
+#line 257 "miniC.y"
                         {ajouter('K');}
-#line 1840 "y.tab.c"
+#line 1879 "y.tab.c"
     break;
 
   case 49:
-#line 239 "miniC.y"
+#line 258 "miniC.y"
         {
 	(yyval.nd_obj).nd = faire_noeud(NULL, NULL, "return");
 	(yyval.nd_obj).nd_dot=faire_noeud_lcrs(NULL,NULL,"label=RETURN shape=trapezium color=blue");
 }
-#line 1849 "y.tab.c"
+#line 1888 "y.tab.c"
     break;
 
   case 50:
-#line 243 "miniC.y"
+#line 262 "miniC.y"
                        {ajouter('K');}
-#line 1855 "y.tab.c"
+#line 1894 "y.tab.c"
     break;
 
   case 51:
-#line 244 "miniC.y"
+#line 263 "miniC.y"
         {
 		(yyvsp[-3].nd_obj).nd = faire_noeud(NULL, NULL, "return");
 	(yyval.nd_obj).nd = faire_noeud((yyvsp[-3].nd_obj).nd, (yyvsp[-1].nd_obj2).nd, "RETURN"); 
 	(yyval.nd_obj).nd_dot=faire_noeud_lcrs((yyvsp[-1].nd_obj2).nd_dot,NULL,"label=RETURN shape=trapezium color=blue");
 }
-#line 1865 "y.tab.c"
+#line 1904 "y.tab.c"
     break;
 
   case 52:
-#line 252 "miniC.y"
+#line 271 "miniC.y"
                 {	
 	(yyvsp[-2].nd_obj2).nd = faire_noeud(NULL, NULL, (yyvsp[-2].nd_obj2).nom); 
 	(yyval.nd_obj).nd = faire_noeud((yyvsp[-2].nd_obj2).nd, (yyvsp[0].nd_obj2).nd, ":="); 
@@ -1873,71 +1912,70 @@ else (yyval.nd_obj).nd_dot=(yyvsp[0].nd_obj).nd_dot;
 	(yyval.nd_obj).nd_dot=faire_noeud_lcrs((yyvsp[-2].nd_obj2).nd_dot,NULL,"label=\":=\"");
 	(yyvsp[-2].nd_obj2).nd_dot->right_sibling=(yyvsp[0].nd_obj2).nd_dot;
 	}
-#line 1877 "y.tab.c"
+#line 1916 "y.tab.c"
     break;
 
   case 53:
-#line 262 "miniC.y"
+#line 281 "miniC.y"
                 {
 		(yyval.nd_obj).nd=faire_noeud((yyvsp[-1].nd_obj).nd,NULL,"BLOC");
 		(yyval.nd_obj).nd_dot=faire_noeud_lcrs((yyvsp[-1].nd_obj).nd_dot,NULL,"label=BLOC");
 		}
-#line 1886 "y.tab.c"
+#line 1925 "y.tab.c"
     break;
 
   case 54:
-#line 269 "miniC.y"
+#line 288 "miniC.y"
                         {
-			printf("\n%s\n",(yyvsp[-4].nd_obj).nom);
 			(yyval.nd_obj).nd=faire_noeud((yyvsp[-2].nd_obj).nd,NULL,(yyvsp[-4].nd_obj).nom); 
 			sprintf(strTmp,"label=%s shape=septagon",(yyvsp[-4].nd_obj).nom);
 			(yyval.nd_obj).nd_dot=faire_noeud_lcrs((yyvsp[-2].nd_obj).nd_dot,NULL,strTmp);
 		}
-#line 1897 "y.tab.c"
+#line 1935 "y.tab.c"
     break;
 
   case 55:
-#line 278 "miniC.y"
+#line 296 "miniC.y"
                 {verefier_declaration((yyvsp[0].nd_obj).nom);
 		(yyval.nd_obj2).nd=faire_noeud(NULL,NULL,(yyvsp[0].nd_obj).nom);
 		(yyval.nd_obj2).nd_dot=faire_noeud_lcrs(NULL,NULL,concatener("label=",(yyvsp[0].nd_obj).nom));
 		}
-#line 1906 "y.tab.c"
+#line 1944 "y.tab.c"
     break;
 
   case 56:
-#line 282 "miniC.y"
+#line 300 "miniC.y"
                        {(yyval.nd_obj2).nd_dot= faire_noeud_lcrs((yyvsp[0].nd_obj).nd_dot,NULL,"label=TAB");}
-#line 1912 "y.tab.c"
+#line 1950 "y.tab.c"
     break;
 
   case 57:
-#line 285 "miniC.y"
+#line 303 "miniC.y"
                                         {
 		(yyvsp[-1].nd_obj2).nd_dot->description=concatener((yyvsp[-1].nd_obj2).nd_dot->description," style=dotted shape=triangle");
 		get_last_sibling((yyvsp[-3].nd_obj).nd_dot)->right_sibling=(yyvsp[-1].nd_obj2).nd_dot;
 		(yyval.nd_obj).nd_dot= (yyvsp[-3].nd_obj).nd_dot;
 	}
-#line 1922 "y.tab.c"
+#line 1960 "y.tab.c"
     break;
 
   case 58:
-#line 291 "miniC.y"
+#line 309 "miniC.y"
                 {(yyval.nd_obj).nd=faire_noeud(NULL,NULL,(yyvsp[0].nd_obj).nom);
 		sprintf(strTmp,"label=%s",(yyvsp[0].nd_obj).nom);
 		(yyval.nd_obj).nd_dot=faire_noeud_lcrs(NULL,NULL,strTmp);
 		}
-#line 1931 "y.tab.c"
+#line 1969 "y.tab.c"
     break;
 
   case 59:
-#line 298 "miniC.y"
+#line 316 "miniC.y"
                                    {(yyval.nd_obj2).nd=(yyvsp[-1].nd_obj2).nd;(yyval.nd_obj2).nd_dot=(yyvsp[-1].nd_obj2).nd_dot;}
-#line 1937 "y.tab.c"
+#line 1975 "y.tab.c"
     break;
 
   case 60:
-#line 300 "miniC.y"
+#line 318 "miniC.y"
         { 
 	strcpy((yyval.nd_obj2).type, (yyvsp[-2].nd_obj2).type);
 	(yyval.nd_obj2).nd = faire_noeud((yyvsp[-2].nd_obj2).nd, (yyvsp[0].nd_obj2).nd, (yyvsp[-1].nd_obj).nom); 
@@ -1948,85 +1986,85 @@ else (yyval.nd_obj).nd_dot=(yyvsp[0].nd_obj).nd_dot;
 	(yyvsp[-2].nd_obj2).nd_dot->right_sibling=(yyvsp[0].nd_obj2).nd_dot;
 	(yyval.nd_obj2).nd_dot=faire_noeud_lcrs((yyvsp[-2].nd_obj2).nd_dot,NULL, strTmp); 
 }
-#line 1952 "y.tab.c"
+#line 1990 "y.tab.c"
     break;
 
   case 61:
-#line 310 "miniC.y"
+#line 328 "miniC.y"
                                  {(yyval.nd_obj2).nd=faire_noeud((yyvsp[0].nd_obj2).nd,NULL,"-");
 		(yyval.nd_obj2).nd_dot=faire_noeud_lcrs((yyvsp[0].nd_obj2).nd_dot,NULL,"label=\"-\" ");}
-#line 1959 "y.tab.c"
+#line 1997 "y.tab.c"
     break;
 
   case 62:
-#line 312 "miniC.y"
+#line 330 "miniC.y"
                           {ajouter('C');}
-#line 1965 "y.tab.c"
+#line 2003 "y.tab.c"
     break;
 
   case 63:
-#line 313 "miniC.y"
+#line 331 "miniC.y"
         {
 	(yyval.nd_obj2).nd=faire_noeud(NULL,NULL,(yyvsp[-1].nd_obj).nom);
 	(yyval.nd_obj2).nd_dot=faire_noeud_lcrs(NULL,NULL,concatener("label=",(yyvsp[-1].nd_obj).nom));}
-#line 1973 "y.tab.c"
+#line 2011 "y.tab.c"
     break;
 
   case 64:
-#line 316 "miniC.y"
+#line 334 "miniC.y"
                          {(yyval.nd_obj2).nd=(yyvsp[0].nd_obj2).nd; (yyval.nd_obj2).nd_dot=(yyvsp[0].nd_obj2).nd_dot;}
-#line 1979 "y.tab.c"
+#line 2017 "y.tab.c"
     break;
 
   case 65:
-#line 317 "miniC.y"
+#line 335 "miniC.y"
                       {(yyval.nd_obj2).nd=(yyvsp[0].nd_obj).nd; (yyval.nd_obj2).nd_dot=(yyvsp[0].nd_obj).nd_dot;}
-#line 1985 "y.tab.c"
+#line 2023 "y.tab.c"
     break;
 
   case 66:
-#line 321 "miniC.y"
+#line 339 "miniC.y"
                 {(yyval.nd_obj).nd=faire_noeud((yyvsp[-2].nd_obj2).nd,(yyvsp[0].nd_obj).nd,"expressions");
 		(yyval.nd_obj).nd_dot=(yyvsp[-2].nd_obj2).nd_dot;
 		(yyvsp[-2].nd_obj2).nd_dot->right_sibling=(yyvsp[0].nd_obj).nd_dot;
 		}
-#line 1994 "y.tab.c"
+#line 2032 "y.tab.c"
     break;
 
   case 67:
-#line 326 "miniC.y"
+#line 344 "miniC.y"
                 {(yyval.nd_obj).nd=(yyvsp[0].nd_obj2).nd;
 		(yyval.nd_obj).nd_dot=(yyvsp[0].nd_obj2).nd_dot;}
-#line 2001 "y.tab.c"
+#line 2039 "y.tab.c"
     break;
 
   case 68:
-#line 331 "miniC.y"
+#line 349 "miniC.y"
 {
 (yyval.nd_obj3).nd=faire_noeud((yyvsp[-1].nd_obj3).nd,NULL,"not");
 (yyval.nd_obj3).nd_dot=faire_noeud_lcrs((yyvsp[-1].nd_obj3).nd_dot,NULL,"label=not");}
-#line 2009 "y.tab.c"
+#line 2047 "y.tab.c"
     break;
 
   case 70:
-#line 335 "miniC.y"
+#line 353 "miniC.y"
                                   {(yyval.nd_obj3).nd=(yyvsp[-1].nd_obj3).nd;(yyval.nd_obj3).nd_dot=(yyvsp[-1].nd_obj3).nd_dot;}
-#line 2015 "y.tab.c"
+#line 2053 "y.tab.c"
     break;
 
   case 71:
-#line 337 "miniC.y"
+#line 355 "miniC.y"
         { 
 	(yyval.nd_obj3).nd = faire_noeud((yyvsp[-2].nd_obj2).nd, (yyvsp[0].nd_obj2).nd, (yyvsp[-1].nd_obj).nom); 
 	sprintf(strTmp,"label=\"%s\"",(yyvsp[-1].nd_obj).nom);
 	(yyval.nd_obj3).nd_dot=faire_noeud_lcrs((yyvsp[-2].nd_obj2).nd_dot,NULL,strTmp);
 	(yyvsp[-2].nd_obj2).nd_dot->right_sibling=(yyvsp[0].nd_obj2).nd_dot;
 }
-#line 2026 "y.tab.c"
+#line 2064 "y.tab.c"
     break;
 
 
-#line 2030 "y.tab.c"
+#line 2068 "y.tab.c"
 
       default: break;
     }
@@ -2258,7 +2296,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 366 "miniC.y"
+#line 384 "miniC.y"
 
 int main(){
 	system("mkdir -p result");

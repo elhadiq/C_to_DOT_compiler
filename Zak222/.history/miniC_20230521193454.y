@@ -218,9 +218,7 @@ iteration	:
 }
 	|	WHILE {ajouter('K');} '(' condition ')' instruction
 	{
-		$$.nd=faire_noeud($4.nd,$6.nd,"While");
-		$$.nd_dot=faire_noeud_lcrs($4.nd_dot,NULL,"label=while");
-		$4.nd_dot->right_sibling=$6.nd_dot;
+		
 	}
 ;
 selection	:	
@@ -233,22 +231,8 @@ selection	:
 	}
 	|	IF  {ajouter('K');} '(' condition ')' instruction ELSE instruction
 	|	SWITCH  {ajouter('K');} '(' expression ')' instruction
-	{
-		$$.nd=faire_noeud($4.nd,$6.nd,"Switch");
-		$$.nd_dot=faire_noeud_lcrs($4.nd_dot,NULL,"label =Switch");
-		$4.nd_dot->right_sibling=$6.nd_dot;
-	}
 	|	CASE {ajouter('K');}  CONSTANTE {ajouter('K');} ':' instruction
-	{$$.nd=faire_noeud(faire_noeud(NULL,NULL,$3.nom),$6.nd,"CASE");
-	$$.nd_dot=faire_noeud_lcrs(faire_noeud_lcrs(NULL,$6.nd_dot,concatener("label=",$3.nom)),NULL,"label=CASE");
-
-	}
 	|	DEFAULT  {ajouter('K');} ':' instruction
-		{
-	$$.nd=faire_noeud($4.nd,NULL,"Default");
-	$$.nd_dot=faire_noeud_lcrs($4.nd_dot,NULL,"label=Default");
-
-	}
 ;
 saut	:	
 		BREAK {ajouter('K');}  ';'
