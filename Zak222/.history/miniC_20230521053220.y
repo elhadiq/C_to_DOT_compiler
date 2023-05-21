@@ -10,21 +10,10 @@
 // Table de symbole fonctions
     void ajouter(char);
     int chercher(char *);
-	struct noeud { 
-		struct noeud *gauche; 
-		struct noeud *droite; 
-		char *lexeme; 
-	};
-	struct noeud_lcrs { 
-		struct noeud_lcrs *left_child; 
-		struct noeud_lcrs *right_sibling; 
-		char *description;
-		int inode;
-	};
 
 
 // Affichage d'arbre syntaxique
-	void afficher_arbre(struct noeud* tree);
+	void afficher_arbre(struct noeud*);
 	void afficher_arbre_to_file(FILE* f,struct noeud*);
 	void afficher_dans_lorder(struct noeud *);
 	void affichage_prifixe_de_larbre_syntaxique(FILE* f,struct noeud *,int* j);
@@ -78,12 +67,23 @@
 	char reserves[12][10] = {"extern", "int", "void", "for", "while", "if", "then","else", "switch", "case", "default", "break"};
 	char code3v[500][100];//Tableu pour stocker le code 3 var
 
-
+	struct noeud { 
+		struct noeud *gauche; 
+		struct noeud *droite; 
+		char *lexeme; 
+	};
+	struct noeud_lcrs { 
+		struct noeud_lcrs *left_child; 
+		struct noeud_lcrs *right_sibling; 
+		char *description;
+		int inode;
+	};
 
 %}
-%token  IDENTIFICATEUR CONSTANTE VOID INT FOR WHILE IF ELSE SWITCH CASE DEFAULT
-%token  BREAK RETURN PLUS MOINS MUL DIV LSHIFT RSHIFT BAND BOR LAND LOR LT GT EXTERN
-%token  GEQ LEQ EQ NEQ NOT 
+%glr-parser
+%token <nd_obj> IDENTIFICATEUR CONSTANTE VOID INT FOR WHILE IF ELSE SWITCH CASE DEFAULT
+%token <nd_obj> BREAK RETURN PLUS MOINS MUL DIV LSHIFT RSHIFT BAND BOR LAND LOR LT GT
+%token <nd_obj> GEQ LEQ EQ NEQ NOT EXTERN
 %left PLUS MOINS
 %left MUL DIV
 %left LSHIFT RSHIFT
@@ -114,16 +114,16 @@ liste_declarateurs	:
 	|	declarateur
 ;
 declarateur	:	
-		IDENTIFICATEUR {ajouter('V');}
-	|	declarateur '[' CONSTANTE {ajouter('C');}']'
+		IDENTIFICATEUR 
+	|	declarateur '[' CONSTANTE ']'
 ;
 fonction	:	
-		 type IDENTIFICATEUR {ajouter('F');}'(' liste_parms ')' '{' liste_declarations liste_instructions '}'
-	|	  EXTERN  type IDENTIFICATEUR {ajouter('F');}'(' liste_parms ')' ';'{}
+		 type IDENTIFICATEUR '(' liste_parms ')' '{' liste_declarations liste_instructions '}'
+	|	  EXTERN  type IDENTIFICATEUR '(' liste_parms ')' ';'{}
 ;
 type	:	
-		VOID {inserer_type();}
-	|	INT {inserer_type();}
+		VOID
+	|	INT 
 ;
 liste_parms	:	
 		liste_parms ',' parm
@@ -131,7 +131,7 @@ liste_parms	:
 	|
 ;
 parm	:	
-		INT IDENTIFICATEUR {ajouter('V');}
+		INT IDENTIFICATEUR
 ;
 liste_instructions :	
 		liste_instructions instruction
@@ -147,20 +147,20 @@ instruction	:	 affectation ';'
 
 ;
 iteration	:	
-		FOR {ajouter('K');} '(' affectation ';' condition ';' affectation ')' instruction
-	|	WHILE {ajouter('K');} '(' condition ')' instruction
+		FOR '(' affectation ';' condition ';' affectation ')' instruction
+	|	WHILE '(' condition ')' instruction
 ;
 selection	:	
-		IF  {ajouter('K');} '(' condition ')' instruction %prec THEN
-	|	IF  {ajouter('K');} '(' condition ')' instruction ELSE instruction
-	|	SWITCH  {ajouter('K');} '(' expression ')' instruction
-	|	CASE {ajouter('K');}  CONSTANTE ':' instruction
-	|	DEFAULT  {ajouter('K');} ':' instruction
+		IF '(' condition ')' instruction %prec THEN
+	|	IF '(' condition ')' instruction ELSE instruction
+	|	SWITCH '(' expression ')' instruction
+	|	CASE CONSTANTE ':' instruction
+	|	DEFAULT ':' instruction
 ;
 saut	:	
-		BREAK {ajouter('K');}  ';'
-	|	RETURN  {ajouter('K');}';'
-	|	RETURN {ajouter('K');} expression ';'
+		BREAK ';'
+	|	RETURN ';'
+	|	RETURN expression ';'
 ;
 affectation	:	
 		variable '=' expression
@@ -172,7 +172,7 @@ appel	:
 		IDENTIFICATEUR '(' liste_expressions ')' ';'
 ;
 variable	:	
-		IDENTIFICATEUR 
+		IDENTIFICATEUR
 	|	variable '[' expression ']'
 ;
 expression	:	
@@ -225,10 +225,10 @@ int main(){
 	printf("_______________________________________\n\n");
 	int i=0;
 	for(i=0; i<compter_symbole; i++) {
-		printf("%s\t%s\t%s\t%d\t\n", table_de_symbols[i].nom_id, table_de_symbols[i].type_data, table_de_symbols[i].type, table_de_symbols[i].ligne_nombre);
+		printf("%s\t%s\t%s\t%d\t\n", table_de_symbols[i].id_name, table_de_symbols[i].data_type, table_de_symbols[i].type, table_de_symbols[i].line_no);
 	}
 	for(i=0;i<compter_symbole;i++) {
-		free(table_de_symbols[i].nom_id);
+		free(table_de_symbols[i].id_name);
 		free(table_de_symbols[i].type);
 	}
 	printf("\n\n");
@@ -247,6 +247,17 @@ int yywrap() {
     return 1;
 }
 
+void ajouter(char c) {
+	if(c == 'V'){
+		for(int i=0; i<10; i++){
+			if(!strcmp(reserves[i], strdup(yytext))){
+        		sprintf(errors[sem_errors], "Line %d: Variable nom \"%s\" est un mot clé reservé!\n", yylineno+1, yytext);
+				sem_errors++;
+				return;
+			}
+		}
+	}
+
 int chercher(char *type) {
 	int i;
 	for(i=compter_symbole-1; i>=0; i--) {
@@ -256,6 +267,16 @@ int chercher(char *type) {
 	}
 	return 0;
 }
+int chercher(char *type) {
+	int i;
+	for(i=compter_symbole-1; i>=0; i--) {
+		if(strcmp(table_de_symbols[i].nom_id, type)==0) {
+			return -1;
+		}
+	}
+	return 0;
+}
+
 void verefier_declaration(char *c) {
     requete = chercher(c);
     if(!requete) {
@@ -455,4 +476,10 @@ char* concatener(char*a,char*b){
 struct noeud_lcrs* get_last_sibling(struct noeud_lcrs* tree){
 	if(tree->right_sibling)return get_last_sibling(tree->right_sibling);
 	return tree;
+}
+
+void yyerror(const char *msg) {
+    fprintf(stderr, "Erreur de Syntax: %s\n", msg);
+    fprintf(stderr, "Le dernier lexème lue est '%s'\n", yytext);
+    fprintf(stderr, "L'erreur est apparue dans la ligne %d, column \n", yylineno+1 );
 }

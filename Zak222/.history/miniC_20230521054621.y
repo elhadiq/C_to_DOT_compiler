@@ -114,12 +114,12 @@ liste_declarateurs	:
 	|	declarateur
 ;
 declarateur	:	
-		IDENTIFICATEUR {ajouter('V');}
-	|	declarateur '[' CONSTANTE {ajouter('C');}']'
+		IDENTIFICATEUR 
+	|	declarateur '[' CONSTANTE ']'
 ;
 fonction	:	
-		 type IDENTIFICATEUR {ajouter('F');}'(' liste_parms ')' '{' liste_declarations liste_instructions '}'
-	|	  EXTERN  type IDENTIFICATEUR {ajouter('F');}'(' liste_parms ')' ';'{}
+		 type IDENTIFICATEUR '(' liste_parms ')' '{' liste_declarations liste_instructions '}'
+	|	  EXTERN  type IDENTIFICATEUR '(' liste_parms ')' ';'{}
 ;
 type	:	
 		VOID {inserer_type();}
@@ -131,7 +131,7 @@ liste_parms	:
 	|
 ;
 parm	:	
-		INT IDENTIFICATEUR {ajouter('V');}
+		INT IDENTIFICATEUR
 ;
 liste_instructions :	
 		liste_instructions instruction
@@ -147,20 +147,20 @@ instruction	:	 affectation ';'
 
 ;
 iteration	:	
-		FOR {ajouter('K');} '(' affectation ';' condition ';' affectation ')' instruction
-	|	WHILE {ajouter('K');} '(' condition ')' instruction
+		FOR '(' affectation ';' condition ';' affectation ')' instruction
+	|	WHILE '(' condition ')' instruction
 ;
 selection	:	
-		IF  {ajouter('K');} '(' condition ')' instruction %prec THEN
-	|	IF  {ajouter('K');} '(' condition ')' instruction ELSE instruction
-	|	SWITCH  {ajouter('K');} '(' expression ')' instruction
-	|	CASE {ajouter('K');}  CONSTANTE ':' instruction
-	|	DEFAULT  {ajouter('K');} ':' instruction
+		IF '(' condition ')' instruction %prec THEN
+	|	IF '(' condition ')' instruction ELSE instruction
+	|	SWITCH '(' expression ')' instruction
+	|	CASE CONSTANTE ':' instruction
+	|	DEFAULT ':' instruction
 ;
 saut	:	
-		BREAK {ajouter('K');}  ';'
-	|	RETURN  {ajouter('K');}';'
-	|	RETURN {ajouter('K');} expression ';'
+		BREAK ';'
+	|	RETURN ';'
+	|	RETURN expression ';'
 ;
 affectation	:	
 		variable '=' expression
@@ -172,7 +172,7 @@ appel	:
 		IDENTIFICATEUR '(' liste_expressions ')' ';'
 ;
 variable	:	
-		IDENTIFICATEUR 
+		IDENTIFICATEUR
 	|	variable '[' expression ']'
 ;
 expression	:	

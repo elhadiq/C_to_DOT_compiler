@@ -1,8 +1,9 @@
 /* A Bison parser, made by GNU Bison 3.5.1.  */
 
-/* Skeleton interface for Bison GLR parsers in C
+/* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 2002-2015, 2018-2020 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
+   Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -29,6 +30,9 @@
 
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
+
+/* Undocumented macros, especially those whose name start with YY_,
+   are private implementation details.  Do not rely on them.  */
 
 #ifndef YY_YY_Y_TAB_H_INCLUDED
 # define YY_YY_Y_TAB_H_INCLUDED
@@ -81,6 +85,41 @@ extern int yydebug;
     REL = 291
   };
 #endif
+/* Tokens.  */
+#define IDENTIFICATEUR 258
+#define CONSTANTE 259
+#define VOID 260
+#define INT 261
+#define FOR 262
+#define WHILE 263
+#define IF 264
+#define ELSE 265
+#define SWITCH 266
+#define CASE 267
+#define DEFAULT 268
+#define BREAK 269
+#define RETURN 270
+#define PLUS 271
+#define MOINS 272
+#define MUL 273
+#define DIV 274
+#define LSHIFT 275
+#define RSHIFT 276
+#define BAND 277
+#define BOR 278
+#define LAND 279
+#define LOR 280
+#define LT 281
+#define GT 282
+#define EXTERN 283
+#define GEQ 284
+#define LEQ 285
+#define EQ 286
+#define NEQ 287
+#define NOT 288
+#define THEN 289
+#define OP 290
+#define REL 291
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED

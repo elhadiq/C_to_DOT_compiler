@@ -169,10 +169,10 @@ bloc	:
 		'{' liste_declarations liste_instructions '}'
 ;
 appel	:	
-		IDENTIFICATEUR '(' liste_expressions ')' ';'
+		IDENTIFICATEUR {ajouter('K');} '(' liste_expressions ')' ';'
 ;
 variable	:	
-		IDENTIFICATEUR 
+		IDENTIFICATEUR
 	|	variable '[' expression ']'
 ;
 expression	:	

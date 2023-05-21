@@ -158,9 +158,9 @@ selection	:
 	|	DEFAULT  {ajouter('K');} ':' instruction
 ;
 saut	:	
-		BREAK {ajouter('K');}  ';'
-	|	RETURN  {ajouter('K');}';'
-	|	RETURN {ajouter('K');} expression ';'
+		BREAK ';'
+	|	RETURN ';'
+	|	RETURN expression ';'
 ;
 affectation	:	
 		variable '=' expression
@@ -172,7 +172,7 @@ appel	:
 		IDENTIFICATEUR '(' liste_expressions ')' ';'
 ;
 variable	:	
-		IDENTIFICATEUR 
+		IDENTIFICATEUR
 	|	variable '[' expression ']'
 ;
 expression	:	

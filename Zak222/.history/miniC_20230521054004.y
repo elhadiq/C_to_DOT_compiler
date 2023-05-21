@@ -10,17 +10,6 @@
 // Table de symbole fonctions
     void ajouter(char);
     int chercher(char *);
-	struct noeud { 
-		struct noeud *gauche; 
-		struct noeud *droite; 
-		char *lexeme; 
-	};
-	struct noeud_lcrs { 
-		struct noeud_lcrs *left_child; 
-		struct noeud_lcrs *right_sibling; 
-		char *description;
-		int inode;
-	};
 
 
 // Affichage d'arbre syntaxique
@@ -78,7 +67,17 @@
 	char reserves[12][10] = {"extern", "int", "void", "for", "while", "if", "then","else", "switch", "case", "default", "break"};
 	char code3v[500][100];//Tableu pour stocker le code 3 var
 
-
+	struct noeud { 
+		struct noeud *gauche; 
+		struct noeud *droite; 
+		char *lexeme; 
+	};
+	struct noeud_lcrs { 
+		struct noeud_lcrs *left_child; 
+		struct noeud_lcrs *right_sibling; 
+		char *description;
+		int inode;
+	};
 
 %}
 %token  IDENTIFICATEUR CONSTANTE VOID INT FOR WHILE IF ELSE SWITCH CASE DEFAULT
@@ -114,16 +113,16 @@ liste_declarateurs	:
 	|	declarateur
 ;
 declarateur	:	
-		IDENTIFICATEUR {ajouter('V');}
-	|	declarateur '[' CONSTANTE {ajouter('C');}']'
+		IDENTIFICATEUR 
+	|	declarateur '[' CONSTANTE ']'
 ;
 fonction	:	
-		 type IDENTIFICATEUR {ajouter('F');}'(' liste_parms ')' '{' liste_declarations liste_instructions '}'
-	|	  EXTERN  type IDENTIFICATEUR {ajouter('F');}'(' liste_parms ')' ';'{}
+		 type IDENTIFICATEUR '(' liste_parms ')' '{' liste_declarations liste_instructions '}'
+	|	  EXTERN  type IDENTIFICATEUR '(' liste_parms ')' ';'{}
 ;
 type	:	
-		VOID {inserer_type();}
-	|	INT {inserer_type();}
+		VOID
+	|	INT 
 ;
 liste_parms	:	
 		liste_parms ',' parm
@@ -131,7 +130,7 @@ liste_parms	:
 	|
 ;
 parm	:	
-		INT IDENTIFICATEUR {ajouter('V');}
+		INT IDENTIFICATEUR
 ;
 liste_instructions :	
 		liste_instructions instruction
@@ -147,20 +146,20 @@ instruction	:	 affectation ';'
 
 ;
 iteration	:	
-		FOR {ajouter('K');} '(' affectation ';' condition ';' affectation ')' instruction
-	|	WHILE {ajouter('K');} '(' condition ')' instruction
+		FOR '(' affectation ';' condition ';' affectation ')' instruction
+	|	WHILE '(' condition ')' instruction
 ;
 selection	:	
-		IF  {ajouter('K');} '(' condition ')' instruction %prec THEN
-	|	IF  {ajouter('K');} '(' condition ')' instruction ELSE instruction
-	|	SWITCH  {ajouter('K');} '(' expression ')' instruction
-	|	CASE {ajouter('K');}  CONSTANTE ':' instruction
-	|	DEFAULT  {ajouter('K');} ':' instruction
+		IF '(' condition ')' instruction %prec THEN
+	|	IF '(' condition ')' instruction ELSE instruction
+	|	SWITCH '(' expression ')' instruction
+	|	CASE CONSTANTE ':' instruction
+	|	DEFAULT ':' instruction
 ;
 saut	:	
-		BREAK {ajouter('K');}  ';'
-	|	RETURN  {ajouter('K');}';'
-	|	RETURN {ajouter('K');} expression ';'
+		BREAK ';'
+	|	RETURN ';'
+	|	RETURN expression ';'
 ;
 affectation	:	
 		variable '=' expression
@@ -172,7 +171,7 @@ appel	:
 		IDENTIFICATEUR '(' liste_expressions ')' ';'
 ;
 variable	:	
-		IDENTIFICATEUR 
+		IDENTIFICATEUR
 	|	variable '[' expression ']'
 ;
 expression	:	
@@ -455,4 +454,10 @@ char* concatener(char*a,char*b){
 struct noeud_lcrs* get_last_sibling(struct noeud_lcrs* tree){
 	if(tree->right_sibling)return get_last_sibling(tree->right_sibling);
 	return tree;
+}
+
+void yyerror(const char *msg) {
+    fprintf(stderr, "Erreur de Syntax: %s\n", msg);
+    fprintf(stderr, "Le dernier lexème lue est '%s'\n", yytext);
+    fprintf(stderr, "L'erreur est apparue dans la ligne %d, column \n", yylineno+1 );
 }

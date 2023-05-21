@@ -169,7 +169,7 @@ bloc	:
 		'{' liste_declarations liste_instructions '}'
 ;
 appel	:	
-		IDENTIFICATEUR '(' liste_expressions ')' ';'
+		IDENTIFICATEUR {verefier_declaration("F");} '(' liste_expressions ')' ';'
 ;
 variable	:	
 		IDENTIFICATEUR 
